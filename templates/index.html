@@ -1,0 +1,96 @@
+{include file="header.html" request="get"}
+        <header>
+            <div class="head-logo">
+                <h1>
+                    <a href="{LOCALHOST}" class="icon-logo">资源</a><a href="http://sxisa.org" class="vendor">创软</a>
+                    {if $isAdmin}
+                    <a href="post.php" id="admin-post" target="_blank" title="新增资源">+</a>
+                    {/if}
+                </h1>
+            </div>
+            <div class="head-search">
+                <input type="search" name="s" id="search" value="{urldecode($search)}" class="text" placeholder="客官~想要来点啥？ᕕ ( ᐛ ) ᕗ"/>
+                <input type="submit" value="&#xe900;" class="submit-btn icon-search"/>
+            </div>
+        </header>
+        <nav>
+            <ul class="type-list">
+                <li class="type-item {if $type == ''}type-curr{/if}">
+                    <a href="?{if $search != ''}s={$search}&{/if}{if $tag != ''}k={$tag}&{/if}">最新</a></li>
+                {foreach $typelist as $name => $id name=typelist}  
+                <li class="type-item {if $type == $name}type-curr{/if}">
+                    <a href="?{if $search != ''}s={$search}&{/if}{if $tag != ''}k={$tag}&{/if}t={$name}">{$name}</a>
+                </li>
+                {if $smarty.foreach.typelist.index == 2}
+                 <li class="type-item type-more">
+                    <a href="#more" title="查看更多分类" id="more-type">...</a>
+                </li>
+                {/if}
+                {/foreach}
+            </ul>
+        </nav>
+        <section class="res-list">
+            {if $tag != '' || $search != ''}
+            <h1>
+                {if $tag != ''}
+                    标签：<a class="link-rm icon-close" href="?{if $search != ''}s={$search}&{/if}{if $type != ''}t={$type}&{/if}">{urldecode($tag)}</a>
+                {/if} 
+                {if $search != ''}
+                    关键字：<a class="link-rm icon-close" href="?{if $tag != ''}k={$tag}&{/if}{if $type != ''}t={$type}&{/if}">{urldecode($search)}</a>
+                {/if}
+            </h1>
+            {/if}
+            {if count($res) > 0}
+            {section name=item loop=$res}
+            <article class="res-item">
+                <header>
+                    <h1 class="res-download" title="download {$res[item].name}">
+                        <a href="download.php?id={$res[item].id}" target="_blank" class="res-links{if !$isAdmin}  icon-download{/if}"  title="下载 {$res[item].name}">{$res[item].name}</a>
+                        {if $isAdmin}
+                        <a href="post.php?id={$res[item].id}" class="admin-edit" target="_blank">✐</a>
+                        {/if}
+                    </h1>
+                </header>
+                <p class="res-desc">{$res[item].desc}</p>
+                <footer>
+                    <p class="res-tags">
+                        {foreach $res[item].tags as $tagitem}  
+                            <span>  
+                                <a href="?{if $search != ''}s={$search}&{/if}{if $type != ''}t={$type}&{/if}k={urlencode($tagitem)}">{$tagitem}</a>, 
+                            </span>  
+                        {/foreach}  
+                    </p>
+                </footer>
+            </article>
+            {/section}
+            {if $pagecount > 1}
+            <nav>
+                <ul class="page-list">
+                    <li class="page-item"><a href="?{if $search != ''}s={$search}&{/if}{if $type != ''}t={$type}&{/if}{if $tag != ''}k={urlencode($tag)}&{/if}p={$p - 1}">&lt;</a></li>
+                    {for $var= $pageBegin to $pageEnd}
+                    <li class="page-item">
+                        {if $var != $p}
+                        <a href="?{if $search != ''}s={$search}&{/if}{if $type != ''}t={$type}&{/if}{if $tag != ''}k={urlencode($tag)}&{/if}p={$var}">
+                        {$var}
+                        </a>
+                        {else}
+                        {$var}
+                        {/if}
+                    </li>
+                    {/for}
+                    <li class="page-item"><a href="?{if $search != ''}s={$search}&{/if}{if $type != ''}t={$type}&{/if}{if $tag != ''}k={urlencode($tag)}&{/if}p={$p + 1}">&gt;</a></li>
+                </ul>
+            </nav>
+            {/if}
+            {else}
+            <article class="res-item">
+                <p class="res-desc">Σ(ﾟДﾟ；≡；ﾟдﾟ) 啥也没找到！</p>
+            </article>
+            {/if}
+            <article class="form-item">
+                <input type="hidden" name="t" value="{$type}" />
+                <input type="hidden" name="k" value="{urldecode($tag)}" />
+                <input type="hidden" name="p" value="{$p}" />
+            </article>            
+        </section>
+{include file="footer.html" request="get"}

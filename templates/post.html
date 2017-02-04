@@ -1,0 +1,67 @@
+{include file="header.html" request="post"}
+    <nav>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="{LOCALHOST}">首页</a></li>
+            <li class="nav-item"><a href="post.php">新增</a></li>
+            {if $id > 0}
+            <li class="nav-item"><a href="post.php?del={$id}">移除</a></li>
+            {/if}
+            <li class="nav-item"><a href="logout.php">登出</a></li>
+        </ul>
+    </nav>
+    <section class="post-info">
+        <article class="post-res">
+            <p>
+                <label for="name">名称</label>
+                <input type="text" name="name" id="name" class="text" maxlength="100" value="{$info.name}"/>
+            </p>
+            <p>
+                <label for="subject">分类</label>
+                <select name="subject" id="subject">
+                    <option value="-1">请选择</option>
+                    {foreach $typelist as $name => $id}
+                    <option value="{$id}"{if $info.subject == $id}selected{/if}>{$name}</option>
+                    {/foreach}
+                </select>
+            </p>
+            <p>
+                <label for="desc">简介</label>
+                <textarea name="desc" id="desc" class="textarea" cols="25">{$info.desc}</textarea>
+            </p>
+            <p>
+                <label for="tags">标签</label>
+                <input type="text" name="tags" id="tags" class="text" maxlength="100" value="{$info.tags}" placeholder="多个标签用英文逗号隔开"/>
+            </p>
+        </article>
+        {if $id > 0}
+        <article class="post-links">
+            <label for="desc">下载链接列表</label>
+            <ul class="res-posts">
+            {foreach $downloads as $link}
+                <li>
+                    <a href="?delink={$link.id}" target="_blank" class="icon-close" title="删除"><span class="hide">删除</span></a>
+                    <span>
+                        {if $link.id > 0}
+                            <span class="link-name">{$link.source}:</span>
+                            <span class="link-src">{$link.resLink}</span>
+                            {if $link.extCode != ""}<span class="link-extcode" title="提取码">{$link.extCode}</span>{/if}
+                        {/if}
+                    </span>
+                </li>
+            {/foreach}
+            </ul>
+            <textarea name="links" id="links" class="textarea" cols="10"></textarea>
+            <p class="form-tip">批量新增方法：名称,链接(提取码)</p>
+        </article>
+        {/if}
+        <article class="form-submit">
+            <p>
+                <input type="submit" value="提交" class="submit-btn"/>
+                <input type="hidden" name="id" id="id" value="{$info.id}" />
+            </p>
+        </article>
+    </section>
+    {TONGJI}
+    </form>
+    </body>
+</html>

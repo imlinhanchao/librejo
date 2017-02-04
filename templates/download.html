@@ -1,0 +1,12 @@
+{include file="header.html" request=""}
+        <ul class="download-list">
+        {foreach $downloads as $link}  
+            <li>  
+                <a href="{$link.resLink}{if $link.extCode != ''}#{$link.extCode}{/if}" target="_blank">{$link.source}</a>
+                {if $link.extCode != ''} <span class="link-ext" title="提取码">{$link.extCode}</span> {/if}
+            </li>  
+        {/foreach}
+        </ul>  
+        {TONGJI}
+    </body>
+</html>

@@ -1,0 +1,20 @@
+{include file="header.html" title="Resource Site Admin Login" request="post"}
+        <div id="admin">
+            <div id="login">
+                <a href="{LOCALHOST}" id="logo">
+                    <h1>管理后台</h1>
+                </a>
+            </div>
+            {if $error != ""}
+            <div><p class="msg-error">{$error}</p></div>
+            {/if}
+            <div id="section" class="login_form">
+                <p><label for="user" class="user icon-user"><span class="hide">用户名</span></label><input type="text" name="user" id="user" class="text"/></p>
+                <p><label for="passwd" class="passwd icon-key"><span class="hide">密码</span></label><input type="password" name="passwd" id="passwd" class="text"/></p>
+                <p><input type="submit" value="登录" class="submit-btn"/></p>
+            </div>
+        </div>
+        </form>
+        {TONGJI}
+    </body>
+</html>
