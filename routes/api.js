@@ -1,9 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var book = require('book');
-var lend = require('lend');
-var login = require('login');
+var book = require('./book');
+var lend = require('./lend');
+var login = require('./login');
 
 var router = express.Router();
 
