@@ -1,5 +1,7 @@
 var db = require('./db');
 var util = require('util');
+var prefix = require("./config").prefix;
+
 /*
 {
     "dbid": "25927585",
@@ -12,12 +14,15 @@ var util = require('util');
     "pubdate": "2014-8"
 }*/
 
-var book = {
-    new: function(data) {
+module.exports = {
+    new: function(data, callback) {
+        var keys = [ "dbid", "img", "name", "author", "page", "pub", "ISBN", "pubdate" ];
+        var id = -1;
+
         db.connect();
-        db.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
-            if (err) throw err;
-            console.log('The solution is: ', rows.insertId);
+        db.insert(prefix + "book_data", db.filiter(data, keys), function(err, rows, fields) {
+            id = rows.insertId;
+            callback(id, err);
         });
         db.end();
     }
