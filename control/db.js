@@ -29,13 +29,27 @@ module.exports.update = function (table, data, where, callback)
     }
     query = query.replace(/^,|,$/g, '') + " WHERE 1=1 ";
     for (var key in where) {
-        $query += "AND `" + key + "` = ";
+        $query += "AND `" + key + "` " + where[key].mat;
         if (where[key] != "now()")
-            query += "'" + where[key] + "'";
+            query += "'" + where[key].val + "'";
         else
             query += where[key];
     }
     //console.log(query);
+    return this.query(query, callback);
+}
+
+module.exports.select = function(query, where, page, callback) {
+    query = query.replace(/^,|,$/g, '') + " WHERE 1=1 ";
+    for (var key in where) {
+        query += "AND `" + key + "` " + where[key].mat;
+        if (where[key] != "now()")
+            query += "'" + where[key].val + "'";
+        else
+            query += where[key];
+    }
+    if (page) query += page;
+    console.log(query);
     return this.query(query, callback);
 }
 

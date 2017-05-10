@@ -5,10 +5,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var lessMiddleware = require('less-middleware');
+var hbs = require('hbs');
 
 var index = require('./routes/index');
-var users = require('./routes/users');
-
+var api = require('./routes/api');
 var app = express();
 
 // view engine setup
@@ -24,8 +24,26 @@ app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+var blocks = {};
+hbs.registerHelper('extend', function(name, context) {
+    var block = blocks[name];
+    if (!block) {
+        block = blocks[name] = [];
+    }
+
+    block.push(context.fn(this)); // for older versions of handlebars, use block.push(context(this));
+});
+
+hbs.registerHelper('block', function(name) {
+    var val = (blocks[name] || []).join('\n');
+
+    // clear the block
+    blocks[name] = [];
+    return val;
+});
+
 app.use('/', index);
-app.use('/users', users);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

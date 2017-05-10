@@ -3,8 +3,8 @@ module.exports = {
         host: 'localhost',
         user: 'root',
         password: '',
-        database:'szisa',
+        database:'isa',
         port: 3306
     },
-    "prefix": ""
+    "prefix": "lib_"
 };

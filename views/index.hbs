@@ -1,2 +1,14 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<div id="content">
+    <ul class="book-list">
+        <li v-for="book in books" :data-id="book.id" class="book-item">
+            <a :href="book.dbid | dblink" class="book_img" rel="nofollow" target="_blank"><img :src="book.img" :alt="book.name"></a>
+            <div class="book_desc">
+                <h2 class="t_over title"><a :href="book.dbid | dblink" :title="book.name" target="_blank">\{{ book.name }}</a></h2>
+                <p>作者:  \{{ book.author }}</p>
+                <p>出版社: \{{ book.publisher }}</p>
+                <p>页数: \{{ book.pages }}</p>
+                <p>ISBN: \{{ book.ISBN }}</p>
+			</div>
+        </li>
+    </ul>
+</div>
