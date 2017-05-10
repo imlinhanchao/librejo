@@ -24,6 +24,11 @@ router.post('/update', function (req, res) {
 
 router.post('/query', function (req, res) {
   var data = req.body;
+  data = Object.assign(data, {
+      order: {
+        id: "desc"
+      }
+  });
   ctrl.query(data, function(data, back) {
     res.json(back);    
     res.end();

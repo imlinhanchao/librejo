@@ -61,7 +61,8 @@ var book = {
         var mats = [ '=', '=', 'like', 'like', 'like', 'like', '=', '=' ];
         var id = -1;
 
-        var page = this.page(query.index, query.count);
+        var page = this.page(query);
+        var order = this.order(query)
 
         var whlist = db.filiter(query, whkeys);
         query = [];
@@ -81,7 +82,7 @@ var book = {
         IFNULL((SELECT ld.`valid` FROM `' + tblend + '` AS ld WHERE ld.`book` = bk.`id` AND ld.`valid` != -2 ORDER BY `lenddate` DESC limit 1 ), 0) isLend, \
         IFNULL((SELECT ld.`id` FROM `' + tblend + '` AS ld WHERE ld.`book` = bk.`id` AND ld.`valid` != -2 ORDER BY `lenddate` DESC limit 1 ), 0) Lend_Id \
         FROM `' + tbdata + '` AS bk ';
-        db.select(sql, query, page, function (err, rows, fields) {
+        db.select(sql, query, order + page, function (err, rows, fields) {
             callback(query, err ? errhelper.db(err) : errhelper.ok('查询', book.row2data(rows)));
         });
     }, 
@@ -90,11 +91,27 @@ var book = {
         this.update({valid: 0}, {id: id}, callback);
     },
 
-    page: function(index, count) {
+    page: function(query) {
         var sql = "";
-        index = index || 0;
-        if(index != 0 && count > 0) sql = " limit " + parseInt(index) + "," + paseInt(count);
+        var index = query.index || 0;
+        var count = query.count || 10;
+        if(index != 0 && count > 0) sql = " limit " + parseInt(index) + "," + parseInt(count);
         else if(count > 0) sql = " limit " + parseInt(count);
+        return sql;
+    },
+
+    order: function(query) {
+        var sql = "";
+        if (query.order){
+            var order = query.order;
+            var ordersql = "";
+            for (let k in order) {
+                ordersql += k + " " + order[k] + ",";
+            }
+            ordersql = ordersql.replace(/,$/g, "");
+            if (ordersql != "")
+                sql = " order by " + ordersql;
+        }
         return sql;
     },
 

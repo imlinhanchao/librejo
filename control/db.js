@@ -39,7 +39,7 @@ module.exports.update = function (table, data, where, callback)
     return this.query(query, callback);
 }
 
-module.exports.select = function(query, where, page, callback) {
+module.exports.select = function(query, where, orderAndPage, callback) {
     query = query.replace(/^,|,$/g, '') + " WHERE 1=1 ";
     for (var key in where) {
         query += "AND `" + key + "` " + where[key].mat;
@@ -48,7 +48,7 @@ module.exports.select = function(query, where, page, callback) {
         else
             query += where[key];
     }
-    if (page) query += page;
+    if (orderAndPage) query += orderAndPage;
     console.log(query);
     return this.query(query, callback);
 }
@@ -82,7 +82,7 @@ module.exports.filiter = function(data, keys) {
     var d = {};
     if (!data) return d;
     for (var i = 0; i < keys.length; i++) {
-        if (!data[keys[i]]) continue;
+        if (undefined == data[keys[i]]) continue;
         d[keys[i]] = this.escape(data[keys[i]]);
     }
     return d;

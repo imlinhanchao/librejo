@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{title}}</title>
+    <title>我的圖書 - {{title}}</title>
     <link rel='stylesheet' href='/css/view.css' />
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -9,7 +9,12 @@
     {{{block "scripts"}}}
   </head>
   <body>
+    <header>
+      <h1>我的圖書</h1>
+    </header>
     {{{body}}}
+    <footer>
+      <script src="/js/do.js"></script>
+    </footer>
   </body>
-  <script src="/js/do.js"></script>
 </html>
