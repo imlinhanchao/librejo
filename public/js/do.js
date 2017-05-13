@@ -1,4 +1,6 @@
-vm = new Vue({
+$eles = function(selector) { return document.querySelectorAll(selector) };
+$ele = function(selector) { return document.querySelector(selector) };
+vm = $ele("#content") && new Vue({
     el: '#content',
     data: {
         books : []

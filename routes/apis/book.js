@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var ctrl = require('../control/book');
+var ctrl = require('../../lib/book');
 var router = express.Router();
 
 router.use(bodyParser.json({limit: '1mb'}));
