@@ -1,0 +1,62 @@
+.form {
+    margin: auto;
+    max-width: 500px;
+}
+.icon-label {
+    background: @fore-clr;
+    color: @back-clr;
+    display: inline-block;
+    font-size: 200%;
+    width: 1.2em;
+    height: 1.2em;
+    &.fa::before {
+        vertical-align: middle;
+    }
+}
+
+.text-box {
+    font-size: 150%;
+    border: 0;
+    background: @middle-clr;
+    height: 1.5em;
+    vertical-align: top;
+    padding-left: .2em;
+    max-width: ~'calc(100% - 2em)';
+    
+}
+
+.text-area {
+    width: 100%;
+}
+
+.line-text {
+    text-align: center;
+    border: none;
+    border-bottom: 1px @fore-clr dashed;
+    font-size: 150%;
+    width: 100%;
+    max-width: 6em;
+}
+
+.normal-button {
+    border: 0;
+    background-color: @fore-clr;
+    color: @back-clr;
+    font-size: 150%;
+    padding: .3em 1.5em;  
+}
+
+.big-button {
+    border: 0;
+    font-size: 250%;
+    width: @big-btn-size;
+    height: @big-btn-size;
+    color: @back-clr;
+    border-radius: 50%;
+}
+
+.empty-button {
+    background-color: transparent;
+    border:0;
+    color: inherit;
+}

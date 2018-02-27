@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= CONFIG.name -%>
+<% if (locals.title) { -%>
+    <%= "- " + title -%>
+<% } -%>
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" href="/img/logo.png" type="image/png">
+    <link rel='stylesheet' href='//at.alicdn.com/t/font_494926_xhsa6yx7kwewmi.css' />
+    <link rel='stylesheet' href='/css/alert/sweetalert2.min.css' />
+    <link rel='stylesheet' href='/css/style.css' />
+<% if (locals.extend && extend.css) {
+    for (let i = 0; i < extend.css.length; i++) { -%>
+    <link rel='stylesheet' href="/css/<%= extend.css[i] %>" />
+<%  }
+} -%>
+<% if (locals.extend && extend.cssCode) { 
+    for (let i = 0; i < extend.cssCode.length; i++) { -%>
+    <style><%= extend.cssCode[i] -%></style>
+    <% }
+} -%>
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/axios/axios.min.js"></script>
+    <script src="/js/alert/sweetalert2.min.js"></script>
+  </head>
+  <body>
+    <div id="wrapper">
+    <%- body -%>
+    </div>
+    <%- include ./partials/footer -%>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<footer>
+    <p>Copyright ©
+        <%= (new Date()).getYear() + 1900 %><br>All Rights Reserved Powered By
+            <a href="https://sxisa.com" target="_blank">ISA.</a></p>
+    <script src="/js/common.js" type="text/javascript"></script>
+    <% if (locals.extend && extend.js) { 
+        for (let i = 0; i < extend.js.length; i++) { %>
+        <script src="/js/<%= extend.js[i] %>"></script>
+        <% }
+    } %>
+    <% if (locals.extend && extend.jsCode) { 
+        for (let i = 0; i < extend.jsCode.length; i++) { %>
+        <script><%- extend.jsCode[i] -%></script>
+        <% }
+    } %>
+    <div class="hide"><script src="//v1.cnzz.com/z_stat.php?id=5643392&web_id=5643392" language="JavaScript"></script></div>
+</footer>

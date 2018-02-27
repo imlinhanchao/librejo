@@ -4,15 +4,17 @@
  * Module dependencies.
  */
 
+const name = require('../package').name;
 var app = require('../app');
-var debug = require('debug')('libii:server');
+var debug = require('debug')(`${name}:server`);
 var http = require('http');
+var config = require('../config')
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || config.base.port);
 app.set('port', port);
 
 /**

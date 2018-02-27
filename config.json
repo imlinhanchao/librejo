@@ -1,0 +1,17 @@
+{
+    "base": {
+        "upload": "/public/upload/",
+        "fileurl": "upload/",
+        "port": 3000,
+        "domain": "http://localhost:3000",
+        "cookie_domain": "localhost",
+        "suffix": ".htm",
+        "identityKey": "_LIB_SESSION_ID_ZTPZ4Wa3KhFx5",
+        "secret": "v3VFEWGyVH4Uc"
+    },
+    "error": {
+    },
+    "web": {
+        "name": "我的图书馆"
+    }
+}
