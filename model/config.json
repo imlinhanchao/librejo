@@ -6,6 +6,6 @@
         "database": "db",
         "port": 3306,
         "dialect": "mysql",
-        "prefix": "pre_"
+        "prefix": "lib_"
     }
 }

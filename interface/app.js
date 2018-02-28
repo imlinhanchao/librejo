@@ -1,17 +1,24 @@
 
 class AppError extends Error {
-    constructor(status, message, data) {
+    constructor(state, message, data) {
         super(message);
-        this.status = status;
+        this.state = state;
         this.msg = message;
         this.data = data;
         this.stack = undefined;
         this.isdefine = true;
     };
 
+    toString() {
+        return {
+            state: this.state,
+            msg: this.message,
+            data: this.data || "",
+        };
+    }
     toJSON() {
         return {
-            status: this.status,
+            state: this.state,
             msg: this.message,
             data: this.data || "",
         };
@@ -106,9 +113,17 @@ class App {
 
     static ok(action, data = undefined, customizeTip = false) {
         return {
-            status: 0,
+            state: 0,
             msg: action + (customizeTip ? "" : "成功！"),
             data: data
+        }
+    }
+
+    static err(err) {
+        if (err.isdefine) {
+            return err;
+        } else {
+            return App.error.server(err.message, err.stack)
         }
     }
 
@@ -162,10 +177,10 @@ class App {
 
             server: function (err, stack) {
                 if (err) console.log(err);
+                if (stack) console.log(stack);
                 return new AppError(
                     -1,
-                    "服务器错误！" + (err ? err : ""),
-                    stack
+                    "服务器错误！" + (err ? err : "")
                 )
             },
         }

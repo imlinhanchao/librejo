@@ -5,7 +5,7 @@ var sequelize = new Sequelize(config.database, config.user, config.password, {
     host: config.host,
     dialect: config.dialect,
     port: config.port,
-    logging: true,
+    logging: config.logging,
     pool: {
         max: 5,
         min: 0,
@@ -36,13 +36,9 @@ function defineModel(name, attributes, defineAttr = {}) {
     }
     attrs.create_time = {
         type: Sequelize.INTEGER,
-        defaultValue: Sequelize.NOW,
-        allowNull: false
     };
     attrs.update_time = {
         type: Sequelize.INTEGER,
-        defaultValue: Sequelize.NOW,
-        allowNull: false
     };
     console.log('model defined for table: ' + name + '\n' + JSON.stringify(attrs, function (k, v) {
         if (k === 'type') {
@@ -71,24 +67,31 @@ function defineModel(name, attributes, defineAttr = {}) {
         timestamps: false,
         hooks: {
             beforeCreate: function (obj) {
-                let now = (new Date()).valueOf();
+                let now = (new Date()).valueOf() / 1000;
                 if (obj.isNewRecord) {
-                    console.log('will create entity...' + obj);
                     obj.create_time = now;
                     obj.update_time = now;
                 } else {
-                    console.log('will update entity...');
                     obj.update_time = now;
                 }
             },
+            beforeBulkCreate: function (records) {
+                let now = (new Date()).valueOf() / 1000;
+                for (let i in records) {
+                    if (records[i].isNewRecord) {
+                        records[i].create_time = now;
+                        records[i].update_time = now;
+                    } else {
+                        records[i].update_time = now;
+                    }
+                }
+            },
             beforeUpdate: function (obj) {
-                let now = (new Date()).valueOf();
+                let now = (new Date()).valueOf() / 1000;
                 if (obj.isNewRecord) {
-                    console.log('will create entity...' + obj);
                     obj.create_time = now;
                     obj.update_time = now;
                 } else {
-                    console.log('will update entity...');
                     obj.update_time = now;
                 }
             }
@@ -96,13 +99,16 @@ function defineModel(name, attributes, defineAttr = {}) {
     }));
 }
 const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATE', 'ENUM',
-    'DATEONLY', 'BOOLEAN', 'NOW', "fn", "col"];
+    'DATEONLY', 'BOOLEAN', 'NOW', "fn", "col"
+];
 var exp = {
     defineModel: defineModel,
-    sync: () => {
+    sync: async () => {
         // only allow create ddl in non-production environment:
         if (process.env.NODE_ENV !== 'production') {
-            sequelize.sync({ force: true });
+            await sequelize.sync({
+                force: true
+            });
         } else {
             throw new Error('Cannot sync() when NODE_ENV is set to \'production\'.');
         }

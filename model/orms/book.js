@@ -6,7 +6,7 @@ let orm = {
         primaryKey: true,
         autoIncrement: true,
         comment: "唯一id，自增长"
-    }, // 若无定义，则默认采用uuid作为唯一标识
+    },
     dbId: {
         type: db.STRING(20),
         comment: "豆瓣ID"
