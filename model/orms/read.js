@@ -1,18 +1,12 @@
 const db = require('../db');
 const prefix = require('../config').db.prefix;
 let orm = {
-    id: {
-        type: db.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        comment: '唯一id，自增长'
-    },
     bookId: {
-        type: db.INTEGER,
+        type: db.ID,
         comment: '图书ID'
     },
     accountId: {
-        type: db.INTEGER,
+        type: db.ID,
         comment: '读书帐号'
     },
     status: {

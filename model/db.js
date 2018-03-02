@@ -14,6 +14,13 @@ var sequelize = new Sequelize(config.database, config.user, config.password, {
 const ID_TYPE = Sequelize.UUID;
 function defineModel(name, attributes, defineAttr = {}) {
     var attrs = {};
+    if (!attributes.id) {
+        attrs.id = {
+            type: ID_TYPE,
+            defaultValue: Sequelize.UUIDV4,
+            primaryKey: true
+        };
+    }
     for (let key in attributes) {
         let value = attributes[key];
         if (typeof value === 'object' && value['type']) {
@@ -25,13 +32,6 @@ function defineModel(name, attributes, defineAttr = {}) {
                 allowNull: false
             };
         }
-    }
-    if (!attrs.id) {
-        attrs.id = {
-            type: ID_TYPE,
-            defaultValue: Sequelize.UUIDV4,
-            primaryKey: true
-        };
     }
     attrs.create_time = {
         type: Sequelize.INTEGER,

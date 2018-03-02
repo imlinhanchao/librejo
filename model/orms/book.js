@@ -1,12 +1,6 @@
 const db = require('../db');
 const prefix = require('../config').db.prefix;
 let orm = {
-    id: {
-        type: db.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        comment: '唯一id，自增长'
-    },
     dbId: {
         type: db.STRING(20),
         comment: '豆瓣ID'
@@ -36,7 +30,7 @@ let orm = {
         comment: 'ISBN码'
     },
     pub_date: {
-        type: db.INTEGER, // 时间采用时间戳
+        type: db.STRING(20),
         comment: '出版日期'
     }
 };
