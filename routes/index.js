@@ -3,7 +3,7 @@ var router = express.Router();
 var subffix = require(process.cwd() + '/config').base.suffix;
 const modules = require(require('path').resolve(process.cwd(), 'modules.js'));
 
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
     res.render('index', { title: '首页' });
 });
 

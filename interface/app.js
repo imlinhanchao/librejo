@@ -7,20 +7,20 @@ class AppError extends Error {
         this.data = data;
         this.stack = undefined;
         this.isdefine = true;
-    };
+    }
 
     toString() {
         return {
             state: this.state,
             msg: this.message,
-            data: this.data || "",
+            data: this.data || '',
         };
     }
     toJSON() {
         return {
             state: this.state,
             msg: this.message,
-            data: this.data || "",
+            data: this.data || '',
         };
     }
 }
@@ -28,7 +28,7 @@ class AppError extends Error {
 class App {
     constructor() {
 
-    };
+    }
 
     static filter(data, keys) {
         let d = {};
@@ -40,7 +40,7 @@ class App {
                 d[keys[i]] = d[keys[i]].replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
         }
         return d;
-    };
+    }
 
     static haskeys(data, keys) {
         if (!data) return false;
@@ -49,7 +49,7 @@ class App {
                 return false;
         }
         return true;
-    };
+    }
 
     static onlykeys(data, keys) {
         if (!data) return false;
@@ -57,22 +57,22 @@ class App {
             if (keys.indexOf(key) < 0) return false;
         }
         return true;
-    };
+    }
 
-    static res(data, msg = "") {
+    static res(data, msg = '') {
         return {
             state: 0,
             msg: msg,
             data: data
-        }
-    };
+        };
+    }
 
     static where(query) {
         let where = {};
         for (let k in query) {
-            if ("" === query[k])
+            if ('' === query[k])
                 continue;
-            where[k] = App.op(query[k])
+            where[k] = App.op(query[k]);
         }
         return where;
     }
@@ -80,7 +80,7 @@ class App {
     static order(order) {
         let orders = [];
         for (let k in order) {
-            if ("" === order[k])
+            if ('' === order[k])
                 continue;
             orders.push([k, order[k]]);
         }
@@ -89,20 +89,20 @@ class App {
 
     static op(data) {
         const ops = {
-            "<=": "$lte",
-            ">=": "$gte",
-            "!=": "$ne",
-            "!$": "$notLike",
-            "=": "$eq",
-            "<": "$lt",
-            ">": "$gt",
-            "^": "$bitXor",
-            "&": "$bitAnd",
-            "|": "$bitOr",
-            "$": "$like"
+            '<=': '$lte',
+            '>=': '$gte',
+            '!=': '$ne',
+            '!$': '$notLike',
+            '=': '$eq',
+            '<': '$lt',
+            '>': '$gt',
+            '^': '$bitXor',
+            '&': '$bitAnd',
+            '|': '$bitOr',
+            '$': '$like'
         };
 
-        let operator = "$eq";
+        let operator = '$eq';
         if (data.op && ops[data.op]) {
             operator = ops[data.op];
             data = data.val;
@@ -114,16 +114,16 @@ class App {
     static ok(action, data = undefined, customizeTip = false) {
         return {
             state: 0,
-            msg: action + (customizeTip ? "" : "成功！"),
+            msg: action + (customizeTip ? '' : '成功！'),
             data: data
-        }
+        };
     }
 
     static err(err) {
         if (err.isdefine) {
             return err;
         } else {
-            return App.error.server(err.message, err.stack)
+            return App.error.server(err.message, err.stack);
         }
     }
 
@@ -141,50 +141,50 @@ class App {
                             errorCode,
                             msg,
                             fn(data)
-                        )
-                    }
+                        );
+                    };
                 } else {
                     return new AppError(
                         errorCode,
                         msg
-                    )
+                    );
                 }
             },
             existed: function (obj, exist = true, customizeTip = false) {
                 return new AppError(
                     1,
-                    obj + (customizeTip ? "" : (exist ? "已存在！" : "不存在！"))
-                )
+                    obj + (customizeTip ? '' : (exist ? '已存在！' : '不存在！'))
+                );
             },
-            param: new AppError(2, "参数错误！"),
-            query: new AppError(3, "无效查询条件！"),
+            param: new AppError(2, '参数错误！'),
+            query: new AppError(3, '无效查询条件！'),
             db: function (err) {
                 return new AppError(
                     4,
-                    "数据库错误：" + err
+                    '数据库错误：' + err
                 );
             },
             network: function (err) {
                 return new AppError(
                     5,
-                    "网络错误：" + err
+                    '网络错误：' + err
                 );
             },
             limited: new AppError(
                 6,
-                "权限不足"
+                '权限不足'
             ),
 
             server: function (err, stack) {
-                if (err) console.log(err);
-                if (stack) console.log(stack);
+                if (err) console.warn(err);
+                if (stack) console.warn(stack);
                 return new AppError(
                     -1,
-                    "服务器错误！" + (err ? err : "")
-                )
+                    '服务器错误！' + (err ? err : '')
+                );
             },
-        }
-    };
+        };
+    }
 }
 
 

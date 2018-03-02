@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const config = require('./config').db;
-console.log('init sequelize...');
 var sequelize = new Sequelize(config.database, config.user, config.password, {
     host: config.host,
     dialect: config.dialect,
@@ -40,28 +39,6 @@ function defineModel(name, attributes, defineAttr = {}) {
     attrs.update_time = {
         type: Sequelize.INTEGER,
     };
-    console.log('model defined for table: ' + name + '\n' + JSON.stringify(attrs, function (k, v) {
-        if (k === 'type') {
-            for (let key in Sequelize) {
-                if (key === 'ABSTRACT' || key === 'NUMBER') {
-                    continue;
-                }
-                let dbType = Sequelize[key];
-                if (typeof dbType === 'function' && dbType.key) {
-                    if (v instanceof dbType) {
-                        if (v._length) {
-                            return `${dbType.key}(${v._length})`;
-                        }
-                        return dbType.key;
-                    }
-                    if (v === dbType) {
-                        return dbType.key;
-                    }
-                }
-            }
-        }
-        return v;
-    }, '  '));
     return sequelize.define(name, attrs, Object.assign(defineAttr, {
         tableName: name,
         timestamps: false,
@@ -99,7 +76,7 @@ function defineModel(name, attributes, defineAttr = {}) {
     }));
 }
 const TYPES = ['STRING', 'INTEGER', 'BIGINT', 'TEXT', 'DOUBLE', 'DATE', 'ENUM',
-    'DATEONLY', 'BOOLEAN', 'NOW', "fn", "col"
+    'DATEONLY', 'BOOLEAN', 'NOW', 'fn', 'col'
 ];
 var exp = {
     defineModel: defineModel,

@@ -12,7 +12,7 @@ function loader(Module) {
         next();
     });
 
-    router.post('/:fn', function (req, res, next) {
+    router.post('/:fn', function (req, res) {
         (async () => {
             try {
                 let module = new Module(req.session);
@@ -26,22 +26,24 @@ function loader(Module) {
         })();
     });
 
-    router.get('/:fn/:param', function (req, res, next) {
+    router.get('/:fn/:param', function (req, res) {
         (async () => {
             try {
                 let module = new Module(req.session);
                 let fn = req.params.fn;
                 let param = req.params.param;
-                if (module[fn]) res.json((await module[fn](param)));
-                else if (Module[fn]) res.json((await Module[fn](param)));
+                let ret = null;
+                if (module[fn]) ret = res.json((await module[fn](param)));
+                else if (Module[fn]) ret = res.json((await Module[fn](param)));
                 else throw (module.error.param);
+                return ret;
             } catch (err) {
                 return res.json(App.err(err));
             }
         })();
     });
 
-    router.get('/:fn', function (req, res, next) {
+    router.get('/:fn', function (req, res) {
         (async () => {
             try {
                 let module = new Module(req.session);

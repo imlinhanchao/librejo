@@ -11,8 +11,7 @@ var FileStore = require('session-file-store')(session);
 var partials = require('express-partials');
 
 var index = require('./routes/index');
-var modules = require(process.cwd() + '/modules')
-var config = require(process.cwd() + '/config')
+var config = require(process.cwd() + '/config');
 
 var app = express();
 
@@ -20,10 +19,10 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.locals["CONFIG"] = config.web;
+app.locals['CONFIG'] = config.web;
 
 // uncomment after placing your favicon in /public
-app.use(robots({UserAgent: '*', Disallow: '/'}))
+app.use(robots({ UserAgent: '*', Disallow: '/' }));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(partials());
 app.use(logger('dev'));
@@ -54,7 +53,7 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
