@@ -26,7 +26,21 @@ class AppError extends Error {
 }
 
 class App {
-    constructor() {
+    constructor(rsps = []) {
+        this.name = '';
+        rsps = rsps.concat([
+            { fun: App.ok, name: 'okquery', msg: '查询成功' },
+            { fun: App.ok, name: 'okcreate', msg: '创建成功' },
+            { fun: App.ok, name: 'okupdate', msg: '更新成功' },
+            { fun: App.ok, name: 'okdelete', msg: '删除成功' },
+        ]);
+
+        for (let i in rsps) {
+            let rsp = rsps[i];
+            this[rsp.name] = function (data=undefined) {
+                return rsp.fun(rsp.msg, data, true);
+            };
+        }
 
     }
 
@@ -157,24 +171,24 @@ class App {
         return op;
     }
 
-    static async query(data, Model, ops) {
+    async query(data, Model, ops) {
         let keys = Model.keys();
 
         keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
         
-        if (!this.haskeys(data, ['index', 'count', 'query'])) {
-            throw (this.error.param);
+        if (!App.haskeys(data, ['index', 'count', 'query'])) {
+            throw (App.error.param);
         }
         
         // 生成查询条件
         let q = { where: {}, order: [] };
-        data.query = this.filter(data.query, keys);
-        q.where = this.where(data.query, ops);
+        data.query = App.filter(data.query, keys);
+        q.where = App.where(data.query, ops);
 
         // 生成排序，默认以创建时间降序
         data.order = data.order || [];
         data.order.push(['create_time', 'DESC']);
-        q.order = this.order(data.order, keys);
+        q.order = App.order(data.order, keys);
 
         let datalist = [], total = 0;
         try {
@@ -189,15 +203,104 @@ class App {
             datalist = await Model.findAll(q);
             let fields = data.fields || keys;
 
-            datalist = datalist.map(d => this.filter(d, fields));
+            datalist = datalist.map(d => App.filter(d, fields));
         } catch (err) {
             if (err.isdefine) throw (err);
-            throw (this.error.db(err));
+            throw (App.error.db(err));
         }
         return {
             data: datalist,
             total: total
         };
+    }
+
+    async new(data, Model, unique) {
+        let keys = Model.keys();
+        
+        if (!App.haskeys(data, keys)) {
+            throw (App.error.param);
+        }
+
+        data = App.filter(data, keys);
+
+        try {
+            let where = {};
+            where[unique] = data[unique];
+            let record = await Model.findOne({
+                where: where
+            });
+
+            if (record) {
+                throw (App.error.existed(this.name));
+            }
+
+            record = await Model.create(data);
+
+            keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
+            return App.filter(record, keys);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (App.error.db(err));
+        }
+    }
+
+    async set(data, Model, unique = 'id') {
+        let keys = Model.keys();
+        keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
+
+        if (!App.haskeys(data, [unique])) {
+            throw (App.error.param);
+        }
+        
+        data = App.filter(data, keys);
+
+        try {
+            let where = {};
+            where[unique] = data[unique];
+            let record = await Model.findOne({
+                where: where
+            });
+
+            if (!record) {
+                throw (App.error.existed(this.name, false));
+            }
+
+            record = App.update(record, data, keys);
+            await record.save();
+
+            return App.filter(record, keys);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async del(data, Model, unique = 'id') {
+        let keys = ['id'];
+
+        if (!App.haskeys(data, keys)) {
+            throw (App.error.param);
+        }
+        
+        data = App.filter(data, keys);
+
+        try {
+            let where = {};
+            where[unique] = data[unique];
+            let record = await Model.findOne({
+                where: where
+            });
+
+            if (!record) {
+                throw (App.error.existed(this.name, false));
+            }
+
+            await record.destroy();
+            return record;
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
     }
 
     static ok(action, data = undefined, customizeTip = false) {
