@@ -30,6 +30,17 @@ class App {
 
     }
 
+    static update(oldData, newData, keys) {
+        if (!oldData || !newData) return oldData;
+        for (let i = 0; i < keys.length; i++) {
+            if (undefined == newData[keys[i]]) continue;
+            oldData[keys[i]] = newData[keys[i]];
+            if (oldData[keys[i]].replace)
+                oldData[keys[i]] = oldData[keys[i]].replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+        }
+        return oldData;
+    }
+
     static filter(data, keys) {
         let d = {};
         if (!data) return d;

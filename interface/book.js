@@ -5,6 +5,7 @@ const Book = model.book;
 
 let __error__ = Object.assign({}, App.error);
 __error__.existed = App.error.existed('图书');
+__error__.notexisted = App.error.existed('图书', false);
 
 class Module extends App {
     constructor() {
@@ -13,6 +14,7 @@ class Module extends App {
         const rsps = [
             { fun: App.ok, name: 'okget', msg: '获取成功' }, 
             { fun: App.ok, name: 'okcreate', msg: '创建成功' }, 
+            { fun: App.ok, name: 'okupdate', msg: '更新成功' }, 
         ];
 
         for (let i in rsps) {
@@ -48,12 +50,43 @@ class Module extends App {
             }
 
             book = await Book.create(data);
-            return this.okcreate(book.id);
+
+            keys = keys.concat(['id']);
+            return this.okcreate(App.filter(book, keys));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
         }
     }
+
+    async set(data) {
+        let keys = Book.keys();
+
+        keys = keys.concat(['id']);
+        
+        data = App.filter(data, keys);
+
+        try {
+            let book = await Book.findOne({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!book) {
+                throw (this.error.notexisted);
+            }
+
+            book = App.update(book, data, keys);
+            await book.save();
+
+            return this.okupdate(App.filter(book, keys));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+    
 }
 
 module.exports = Module;
