@@ -15,6 +15,7 @@ class Module extends App {
             { fun: App.ok, name: 'okquery', msg: '查询成功' }, 
             { fun: App.ok, name: 'okcreate', msg: '创建成功' }, 
             { fun: App.ok, name: 'okupdate', msg: '更新成功' }, 
+            { fun: App.ok, name: 'okdelete', msg: '删除成功' }, 
         ];
 
         for (let i in rsps) {
@@ -84,6 +85,34 @@ class Module extends App {
             await book.save();
 
             return this.okupdate(App.filter(book, keys));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async 'del'(data) {
+        let keys = ['id'];
+
+        if (!App.haskeys(data, keys)) {
+            throw (this.error.param);
+        }
+        
+        data = App.filter(data, keys);
+
+        try {
+            let book = await Book.findOne({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!book) {
+                throw (this.error.notexisted);
+            }
+
+            await book.destroy();
+            return this.okdelete(book.id);
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
