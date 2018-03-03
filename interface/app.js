@@ -91,7 +91,7 @@ class App {
         for (let k in query) {
             if ('' === query[k])
                 continue;
-            where[k] = App.op(query[k]);
+            where[k] = this.op(query[k]);
         }
         return where;
     }
@@ -152,7 +152,9 @@ class App {
             data = data.val;
         }
 
-        return JSON.parse('{"' + operator + '": ' + JSON.stringify(data) + '}');
+        let op = {};
+        op[operator] = JSON.stringify(data);
+        return op;
     }
 
     static async query(data, Model, ops) {
@@ -160,19 +162,19 @@ class App {
 
         keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
         
-        if (!App.haskeys(data, ['index', 'count', 'query'])) {
+        if (!this.haskeys(data, ['index', 'count', 'query'])) {
             throw (this.error.param);
         }
         
         // 生成查询条件
         let q = { where: {}, order: [] };
-        data.query = App.filter(data.query, keys);
-        q.where = App.where(data.query, ops);
+        data.query = this.filter(data.query, keys);
+        q.where = this.where(data.query, ops);
 
         // 生成排序，默认以创建时间降序
         data.order = data.order || [];
         data.order.push(['create_time', 'DESC']);
-        q.order = App.order(data.order, keys);
+        q.order = this.order(data.order, keys);
 
         let datalist = [], total = 0;
         try {
@@ -187,10 +189,10 @@ class App {
             datalist = await Model.findAll(q);
             let fields = data.fields || keys;
 
-            datalist = datalist.map(d => App.filter(d, fields));
+            datalist = datalist.map(d => this.filter(d, fields));
         } catch (err) {
             if (err.isdefine) throw (err);
-            throw (App.error.db(err));
+            throw (this.error.db(err));
         }
         return {
             data: datalist,
@@ -210,7 +212,7 @@ class App {
         if (err.isdefine) {
             return err;
         } else {
-            return App.error.server(err.message, err.stack);
+            return this.error.server(err.message, err.stack);
         }
     }
 
