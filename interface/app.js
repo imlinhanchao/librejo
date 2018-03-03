@@ -78,7 +78,15 @@ class App {
         };
     }
 
-    static where(query) {
+    static where(query, ops) {
+        Object.keys(ops).forEach((key) => {
+            if (!query[key] || query[key].op) return;
+            query[key] = {
+                op: ops[key],
+                val: query[key]
+            };
+        });
+
         let where = {};
         for (let k in query) {
             if ('' === query[k])
@@ -88,14 +96,37 @@ class App {
         return where;
     }
 
-    static order(order) {
+    static order(order, keys) {
         let orders = [];
         for (let k in order) {
-            if ('' === order[k])
-                continue;
-            orders.push([k, order[k]]);
+            let orderField = order[k];
+            let OrderType = 'ASC';
+            if (orderField instanceof Array
+             && orderField.length == 2
+             && ['ASC', 'DESC'].indexOf(orderField[1]) >= 0
+            ) {
+                OrderType = orderField[1];
+                orderField = orderField[0];
+            }
+            if (keys.indexOf(orderField) < 0) continue;
+            orders.push([orderField, OrderType]);
         }
         return orders;
+    }
+
+    static get ops() {
+        return {
+            Equal: '=',
+            notEqual: '!=',
+            less: '<',
+            lessOrEqual: '<=',
+            greater: '>',
+            greaterOrEqual: '>=',
+            notLike: '!$',
+            like: '$',
+            between: '<>',
+            notBetween: '!<>',
+        };
     }
 
     static op(data) {
@@ -110,7 +141,9 @@ class App {
             '^': '$bitXor',
             '&': '$bitAnd',
             '|': '$bitOr',
-            '$': '$like'
+            '$': '$like',
+            '<>': '$between',
+            '!<>': '$notBetween'
         };
 
         let operator = '$eq';
@@ -120,6 +153,49 @@ class App {
         }
 
         return JSON.parse('{"' + operator + '": ' + JSON.stringify(data) + '}');
+    }
+
+    static async query(data, Model, ops) {
+        let keys = Model.keys();
+
+        keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
+        
+        if (!App.haskeys(data, ['index', 'count', 'query'])) {
+            throw (this.error.param);
+        }
+        
+        // 生成查询条件
+        let q = { where: {}, order: [] };
+        data.query = App.filter(data.query, keys);
+        q.where = App.where(data.query, ops);
+
+        // 生成排序，默认以创建时间降序
+        data.order = data.order || [];
+        data.order.push(['create_time', 'DESC']);
+        q.order = App.order(data.order, keys);
+
+        let datalist = [], total = 0;
+        try {
+            q.attributes = [[Model.db.fn('COUNT', Model.db.col('id')), 'total']];
+            total = (await Model.findOne(q)).dataValues.total; // 获取总数
+
+            q.attributes = undefined;
+
+            q.offset = parseInt(data.index) || 0;
+            if (data.count > 0) q.limit = parseInt(data.count);
+
+            datalist = await Model.findAll(q);
+            let fields = data.fields || keys;
+
+            datalist = datalist.map(d => App.filter(d, fields));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (App.error.db(err));
+        }
+        return {
+            data: datalist,
+            total: total
+        };
     }
 
     static ok(action, data = undefined, customizeTip = false) {

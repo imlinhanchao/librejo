@@ -12,7 +12,7 @@ class Module extends App {
         super();
 
         const rsps = [
-            { fun: App.ok, name: 'okget', msg: '获取成功' }, 
+            { fun: App.ok, name: 'okquery', msg: '查询成功' }, 
             { fun: App.ok, name: 'okcreate', msg: '创建成功' }, 
             { fun: App.ok, name: 'okupdate', msg: '更新成功' }, 
         ];
@@ -61,8 +61,11 @@ class Module extends App {
 
     async set(data) {
         let keys = Book.keys();
-
         keys = keys.concat(['id']);
+
+        if (!App.haskeys(data, ['id'])) {
+            throw (this.error.param);
+        }
         
         data = App.filter(data, keys);
 
@@ -84,6 +87,24 @@ class Module extends App {
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
+        }
+    }
+    
+    async query(data) {
+        // $ = like
+        let ops = {
+            name: App.ops.like,
+            author: App.ops.like,
+            publisher: App.ops.like,
+        };
+
+        try {
+            let queryData = await App.query(
+                data, Book, ops
+            );
+            return this.okquery(queryData);
+        } catch (err) {
+            throw (err);
         }
     }
     
