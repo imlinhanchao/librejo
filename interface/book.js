@@ -44,7 +44,7 @@ class Module extends App {
         }
     }
     
-    async query(data) {
+    async query(data, onlyData = false) {
         // $ = like
         let ops = {
             name: App.ops.like,
@@ -56,6 +56,7 @@ class Module extends App {
             let queryData = await super.query(
                 data, Book, ops
             );
+            if (onlyData) return queryData;
             return this.okquery(queryData);
         } catch (err) {
             throw (err);
