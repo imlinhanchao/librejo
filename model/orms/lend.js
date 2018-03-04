@@ -13,6 +13,10 @@ let orm = {
         type: db.STRING(800),
         comment: '备注'
     },
+    status: {
+        type: db.INTEGER,
+        comment: '借阅状态' 
+    },
     lend_date: {
         type: db.INTEGER,
         comment: '借书日期'
