@@ -26,6 +26,7 @@ class Module extends App {
 
     async set(data) {
         try {
+            data.ISBN = undefined; // 已创建图书不允许修改ISBN
             return this.okupdate(await super.set(data, Book));
         } catch (err) {
             if (err.isdefine) throw (err);
