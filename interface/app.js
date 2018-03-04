@@ -214,7 +214,7 @@ class App {
         };
     }
 
-    async new(data, Model, unique) {
+    async new(data, Model, unique = null) {
         let keys = Model.keys();
         
         if (!App.haskeys(data, keys)) {
@@ -224,17 +224,19 @@ class App {
         data = App.filter(data, keys);
 
         try {
-            let where = {};
-            where[unique] = data[unique];
-            let record = await Model.findOne({
-                where: where
-            });
+            if (unique) {
+                let where = {};
+                where[unique] = data[unique];
+                let record = await Model.findOne({
+                    where: where
+                });
 
-            if (record) {
-                throw (App.error.existed(this.name));
+                if (record) {
+                    throw (App.error.existed(this.name));
+                }
             }
 
-            record = await Model.create(data);
+            let record = await Model.create(data);
 
             keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
             return App.filter(record, keys);
@@ -265,6 +267,7 @@ class App {
                 throw (App.error.existed(this.name, false));
             }
 
+            data[unique] = undefined;
             record = App.update(record, data, keys);
             await record.save();
 
