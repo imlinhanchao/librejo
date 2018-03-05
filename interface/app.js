@@ -41,12 +41,12 @@ class App {
                 return rsp.fun(rsp.msg, data, true);
             };
         }
-
     }
 
-    static update(oldData, newData, keys) {
-        if (!oldData || !newData) return oldData;
+    static update(oldData, newData, keys, bcreate=false) {
+        if (!oldData || !newData) throw this.error.param;
         for (let i = 0; i < keys.length; i++) {
+            if (!bcreate && oldData[keys[i]] == undefined) continue;
             if (undefined == newData[keys[i]]) continue;
             oldData[keys[i]] = newData[keys[i]];
             if (oldData[keys[i]].replace)
@@ -236,6 +236,7 @@ class App {
                 }
             }
 
+            data.id = undefined;
             let record = await Model.create(data);
 
             keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
