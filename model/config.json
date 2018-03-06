@@ -3,9 +3,10 @@
         "host": "sql.service.com",
         "user": "username",
         "password": "password",
-        "database": "db",
+        "database": "lib",
         "port": 3306,
         "dialect": "mysql",
-        "prefix": "lib_"
+        "prefix": "lib_",
+        "logging": false
     }
 }
