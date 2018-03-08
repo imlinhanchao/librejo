@@ -325,7 +325,7 @@ class App {
 
     static get error() {
         return {
-            __count: 7,
+            __count: 8,
             init: function (errorCode) {
                 this.__count = errorCode;
             },
@@ -369,6 +369,10 @@ class App {
             limited: new AppError(
                 6,
                 '权限不足'
+            ),
+            nologin: new AppError(
+                7,
+                '你没有登录或登录信息已过期！'
             ),
 
             server: function (err, stack) {

@@ -7,7 +7,6 @@ const __salt = '00b6652f-0520-4941-94b0-b51d30f97df8';
 
 let __error__ = Object.assign({}, App.error);
 __error__.verify = App.error.reg('帐号或密码错误！');
-__error__.nologin = App.error.reg('当前没有登录！');
 __error__.existed = App.error.existed('帐号');
 __error__.notexisted = App.error.existed('帐号', false);
 
