@@ -48,8 +48,9 @@ function loader(Module) {
             try {
                 let module = new Module(req.session);
                 let fn = req.params.fn;
-                if (module[fn]) res.json((await module[fn]()));
-                else if (Module[fn]) res.json((await Module[fn]()));
+                let param = req.query;
+                if (module[fn]) res.json((await module[fn](param)));
+                else if (Module[fn]) res.json((await Module[fn](param)));
                 else throw (module.error.param);
             } catch (err) {
                 return res.json(App.err(err));
