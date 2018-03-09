@@ -10,7 +10,7 @@ var robots = require('express-robots');
 var FileStore = require('session-file-store')(session);
 var partials = require('express-partials');
 
-var index = require('./routes/index');
+var api = require('./routes/api');
 var config = require(process.cwd() + '/config');
 
 var app = express();
@@ -43,7 +43,7 @@ app.use(session({
     }
 }));
 
-app.use('/', index);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
