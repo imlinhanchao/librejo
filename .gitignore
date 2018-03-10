@@ -37,3 +37,10 @@ public/css/*.css
 
 # test files
 test*
+
+*/config/env.js
+
+# webpack build files
+public/dist
+public/static
+public/index.html

@@ -1,9 +1,0 @@
-<%- include ./partials/header -%>
-<article id="content" class="mobile">
-    <section id="form">
-        <h1>登录</h1>
-        <p><label for="user" class="icon-label fa fa-user"><span class="hide">用户名</span></label><input class="text-box" type="text" id="user" name="n" placeholder="用户名" autofocus @keyup.13="focus('#passwd')" v-model="login_account.number"/></p>
-        <p><label for="passwd" class="icon-label fa fa-lock"><span class="hide">密码</span></label><input class="text-box" type="password" id="passwd" name="p" placeholder="密码" @keyup.13="login" v-model="login_account.passwd"></p>
-        <p><input class="normal-button bg-foreground" type="submit" id="login" value="登录" @click="login"></p>
-    </section>
-</article>
