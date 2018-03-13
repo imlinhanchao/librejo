@@ -1,58 +1,93 @@
-<style scoped>
-    .index {
+<style scoped lang="less">
+.layout{
+    border-radius: 4px;
+    overflow: hidden;
+}
+.layout-header {
+    height: 100px;
+    display: flex;
+    background: transparent;
+    position: relative;
+}
+.layout-menu {
+    display: flex;
+    margin: auto;
+    width: 100%;
+    background: transparent;
+}
+.layout-logo{
+    justify-content: flex-start;
+    align-content: center; 
+    width: 60px;
+    height: 60px;
+    border-radius: 3px;
+    float: left;
+    background-size: 100%;
+    img {
+        width: 100%;
+    }
+}
+.layout-nav{
+    justify-content: flex-end;
+    margin: 0 auto;
+    margin-right: 0px;
+}
+.layout-footer{
+    p {
+        padding: 1em;
+        text-align: center;
         width: 100%;
         position: absolute;
-        top: 0;
         bottom: 0;
-        left: 0;
-        text-align: center;
+        color: #808080;
     }
-
-    .index h1 {
-        height: 150px;
-    }
-
-    .index h1 img {
-        height: 100%;
-    }
-
-    .index h2 {
-        color: #666;
-        margin-bottom: 200px;
-    }
-
-    .index h2 p {
-        margin: 0 0 50px;
-    }
-
-    .index .ivu-row-flex {
-        height: 100%;
-    }
+}
 </style>
 <template>
-    <div class="index">
-        <Row type="flex" justify="center" align="middle">
-            <Col span="24">
-                <h1>
-                    <img src="../assets/logo.svg">
-                </h1>
-                <h2>
-                    <p>Welcome to My Library!</p>
-                    <Button type="ghost" @click="handleStart">Start View</Button>
-                </h2>
-            </Col>
-        </Row>
+    <div class="layout">
+        <Layout>
+            <Header class="layout-header">
+                <Menu mode="horizontal" theme="light" active-name="1" class="layout-menu">
+                    <div class="layout-logo">
+                        <img src="../assets/logo.svg" alt="我的图书馆" />
+                    </div>
+                    <div class="layout-nav">
+                        <MenuItem name="home">
+                            <router-link to="/">
+                            <Icon type="ios-navigate"></Icon>
+                            首页</router-link>
+                        </MenuItem>
+                        <MenuItem name="login" v-if="!$root.loginUser">
+                            <router-link to="/login">
+                            <Icon type="person"></Icon>
+                            登录</router-link>
+                        </MenuItem>
+                        <Submenu name="account" v-if="$root.loginUser">
+                            <template slot="title">
+                                <Icon type="person"></Icon>
+                            {{$root.loginUser.username}}</template>
+                            <MenuItem name="logout">
+                                <router-link to="/login">
+                                <Icon type="log-out"></Icon>
+                                退出</router-link>
+                            </MenuItem>
+                        </Submenu>
+                    </div>
+                </Menu>
+            </Header>
+            <Content :style="{padding: '0 50px'}">
+                <Layout>
+                    <router-view />
+                </Layout>
+            </Content>
+            <Footer class="layout-footer">
+                <p>2018 &copy; Hancel</p>
+            </Footer>
+        </Layout>
     </div>
 </template>
 <script>
     export default {
-        methods: {
-            handleStart() {
-                this.$Modal.info({
-                    title: 'My Library',
-                    content: 'Now, enjoy the books of Library.'
-                });
-            }
-        }
-    };
+        
+    }
 </script>

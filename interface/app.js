@@ -176,9 +176,11 @@ class App {
 
         keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
         
-        if (!App.haskeys(data, ['index', 'count', 'query'])) {
+        if (!App.haskeys(data, ['index', 'count'])) {
             throw (App.error.param);
         }
+
+        data.query = data.query || {};
         
         // 生成查询条件
         let q = { where: {}, order: [] };

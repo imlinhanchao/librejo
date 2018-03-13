@@ -5,15 +5,15 @@ let util = {
 
 };
 util.title = function(title) {
-    title = title ? title + ' - Home' : 'iView project';
+    title = title ? title + ' - Home' : '我的图书馆';
     window.document.title = title;
 };
 
 const ajaxUrl = env === 'development' ?
-    'http://127.0.0.1:8888' :
+    'api/' :
     env === 'production' ?
-    'https://www.url.com' :
-    'https://debug.url.com';
+    'api/' :
+    'api/';
 
 util.ajax = axios.create({
     baseURL: ajaxUrl,
