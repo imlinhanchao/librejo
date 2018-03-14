@@ -4,7 +4,6 @@
     overflow: hidden;
 }
 .layout-header {
-    height: 100px;
     display: flex;
     background: transparent;
     position: relative;
@@ -18,11 +17,11 @@
 .layout-logo{
     justify-content: flex-start;
     align-content: center; 
-    width: 60px;
-    height: 60px;
+    width: 40px;
     border-radius: 3px;
     float: left;
     background-size: 100%;
+    display: flex;
     img {
         width: 100%;
     }
@@ -75,7 +74,7 @@
                     </div>
                 </Menu>
             </Header>
-            <Content :style="{padding: '0 50px'}">
+            <Content :style="{padding: '10px 50px'}">
                 <Layout>
                     <router-view />
                 </Layout>
