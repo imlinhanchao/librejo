@@ -1,9 +1,15 @@
 const routers = [{
     path: '/',
     meta: {
-        title: ''
+        title: '首页'
     },
     component: (resolve) => require(['./views/index.vue'], resolve),
+    beforeRouteEnter(to, from, next) {
+        if(!this.$root.loginUser) {
+            to = '/';
+            next();
+        }
+    },
     children: [
         {
             path: '',
@@ -11,7 +17,11 @@ const routers = [{
                 title: '首页'
             },
             component: (resolve) => require(['./views/home.vue'], resolve)
-        },
+        }
     ]
-}];
+    }, {
+        path: '*',
+        redirect: '/'
+    }
+];
 export default routers;

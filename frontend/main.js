@@ -5,16 +5,18 @@ import Routers from './router';
 import Vuex from 'vuex';
 import Util from './libs/util';
 import App from './app.vue';
+import store from './store';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
+import axios from 'axios';
 
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = Util.ajaxUrl;
+Vue.prototype.$axios = axios;
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
-
 Vue.use(iView);
-
-
 
 // 路由配置
 const RouterConfig = {
@@ -34,26 +36,20 @@ router.afterEach(() => {
     window.scrollTo(0, 0);
 });
 
-
-const store = new Vuex.Store({
-    state: {
-
-    },
-    getters: {
-
-    },
-    mutations: {
-
-    },
-    actions: {
-
-    }
-});
-
-
 new Vue({
     el: '#app',
-    router: router,
-    store: store,
-    render: h => h(App)
+    router,
+    store,
+    render: h => h(App),
+    data: {
+    },
+    beforeMount() {
+    },
+    methods: {
+    },
+    computed: {
+    },
+    mounted () {
+        this.$store.dispatch('checklogin', (rsp, err) => { });
+    }
 });

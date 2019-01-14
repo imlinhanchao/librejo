@@ -3,15 +3,15 @@ const prefix = require('../config').db.prefix;
 let orm = {
     username: {
         type: db.STRING(20),
-        comment: '用户名'
-    },
-    passwd: {
-        type: db.STRING(64),
-        comment: '密码'
+        comment: '登录帐号'
     },
     nickname: {
         type: db.STRING(20),
         comment: '昵称'
+    },
+    passwd: {
+        type: db.STRING(64),
+        comment: '密码'
     },
     email: {
         type: db.STRING(100),
@@ -25,8 +25,12 @@ let orm = {
         type: db.STRING(200),
         comment: '签名'
     },
+    lastlogin: {
+        type: db.INTEGER,
+        comment: '最后登录时间'
+    }
 };
-let table_name = prefix + 'user_info';
+let table_name = prefix + 'account';
 module.exports = db.defineModel(table_name, orm, {
     comment: '用户表',
 });

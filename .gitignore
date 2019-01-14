@@ -29,18 +29,20 @@ node_modules
 # Debug log from npm
 npm-debug.log
 
-# vscode config
-.vscode
+# session files
+sessions
 
-# less compiled files
-public/css/*.css
+package-lock.json
 
-# test files
-test*
-
-*/config/env.js
-
-# webpack build files
-public/dist
-public/static
+# static build
 public/index.html
+public/dist
+
+# env js
+env.js
+
+# upload directory
+upload/
+
+# db config
+model/config.json

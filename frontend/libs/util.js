@@ -1,23 +1,21 @@
 import axios from 'axios';
 import env from '../config/env';
+import config from '../../config.json'
 
 let util = {
 
 };
 util.title = function(title) {
-    title = title ? title + ' - Home' : '我的图书馆';
+    title = title ? title + ' - ' + config.web.name: config.web.name;
     window.document.title = title;
 };
 
 const ajaxUrl = env === 'development' ?
-    'api/' :
+    `http://localhost:${config.base.port}/api/` :
     env === 'production' ?
     'api/' :
     'api/';
 
-util.ajax = axios.create({
-    baseURL: ajaxUrl,
-    timeout: 30000
-});
+util.ajaxUrl = ajaxUrl;
 
 export default util;

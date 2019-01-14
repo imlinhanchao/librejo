@@ -1,17 +1,28 @@
 {
     "base": {
-        "upload": "/public/upload/",
-        "fileurl": "upload/",
         "port": 3000,
         "domain": "http://localhost:3000",
         "cookie_domain": "localhost",
         "suffix": ".htm",
         "identityKey": "_LIB_SESSION_ID_ZTPZ4Wa3KhFx5",
-        "secret": "v3VFEWGyVH4Uc"
+        "secret": "v3VFEWGyVH4Uc",
+        "salt": "00622432-5249-4939-82f4-2249dfbcae90"
     },
     "error": {
     },
     "web": {
         "name": "我的图书馆"
+    },
+    "file": {
+        "upload": "/public/upload/",
+        "fileurl": "upload/",
+        "maxSize": 5
+    },
+    "db": {
+        "database": "db",
+        "dialect": "mysql",
+        "prefix": "pre_",
+        "port": 3306,
+        "logging": true
     }
 }

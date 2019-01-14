@@ -5,7 +5,7 @@ class AppError extends Error {
         this.state = state;
         this.msg = message;
         this.data = data;
-        this.stack = undefined;
+        this.stack = process.env.NODE_ENV === 'development' ? this.stack : undefined;
         this.isdefine = true;
     }
 
@@ -43,134 +43,7 @@ class App {
         }
     }
 
-    static update(oldData, newData, keys, bcreate=false) {
-        if (!oldData || !newData) throw this.error.param;
-        for (let i = 0; i < keys.length; i++) {
-            if (!bcreate && oldData[keys[i]] == undefined) continue;
-            if (undefined == newData[keys[i]]) continue;
-            oldData[keys[i]] = newData[keys[i]];
-            if (oldData[keys[i]].replace)
-                oldData[keys[i]] = oldData[keys[i]].replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
-        }
-        return oldData;
-    }
-
-    static filter(data, keys) {
-        let d = {};
-        if (!data) return d;
-        for (let i = 0; i < keys.length; i++) {
-            if (undefined == data[keys[i]]) continue;
-            d[keys[i]] = data[keys[i]];
-            if (d[keys[i]].replace)
-                d[keys[i]] = d[keys[i]].replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
-        }
-        return d;
-    }
-
-    static haskeys(data, keys) {
-        if (!data) return false;
-        for (let i = 0; i < keys.length; i++) {
-            if (undefined == data[keys[i]]) 
-                return false;
-        }
-        return true;
-    }
-
-    static onlykeys(data, keys) {
-        if (!data) return false;
-        for (let key in data) {
-            if (keys.indexOf(key) < 0) return false;
-        }
-        return true;
-    }
-
-    static res(data, msg = '') {
-        return {
-            state: 0,
-            msg: msg,
-            data: data
-        };
-    }
-
-    static where(query, ops) {
-        Object.keys(ops).forEach((key) => {
-            if (!query[key] || query[key].op) return;
-            query[key] = {
-                op: ops[key],
-                val: query[key]
-            };
-        });
-
-        let where = {};
-        for (let k in query) {
-            if ('' === query[k])
-                continue;
-            where[k] = this.op(query[k]);
-        }
-        return where;
-    }
-
-    static order(order, keys) {
-        let orders = [];
-        for (let k in order) {
-            let orderField = order[k];
-            let OrderType = 'ASC';
-            if (orderField instanceof Array
-             && orderField.length == 2
-             && ['ASC', 'DESC'].indexOf(orderField[1]) >= 0
-            ) {
-                OrderType = orderField[1];
-                orderField = orderField[0];
-            }
-            if (keys.indexOf(orderField) < 0) continue;
-            orders.push([orderField, OrderType]);
-        }
-        return orders;
-    }
-
-    static get ops() {
-        return {
-            Equal: '=',
-            notEqual: '!=',
-            less: '<',
-            lessOrEqual: '<=',
-            greater: '>',
-            greaterOrEqual: '>=',
-            notLike: '!$',
-            like: '$',
-            between: '<>',
-            notBetween: '!<>',
-        };
-    }
-
-    static op(data) {
-        const ops = {
-            '<=': '$lte',
-            '>=': '$gte',
-            '!=': '$ne',
-            '!$': '$notLike',
-            '=': '$eq',
-            '<': '$lt',
-            '>': '$gt',
-            '^': '$bitXor',
-            '&': '$bitAnd',
-            '|': '$bitOr',
-            '$': '$like',
-            '<>': '$between',
-            '!<>': '$notBetween'
-        };
-
-        let operator = '$eq';
-        if (data.op && ops[data.op]) {
-            operator = ops[data.op];
-            data = data.val;
-        }
-
-        let op = {};
-        op[operator] = JSON.stringify(data);
-        return op;
-    }
-
+    // 通用查询接口
     async query(data, Model, ops) {
         let keys = Model.keys();
 
@@ -216,6 +89,7 @@ class App {
         };
     }
 
+    // 通用新增接口
     async new(data, Model, unique = null) {
         let keys = Model.keys();
         
@@ -249,7 +123,8 @@ class App {
         }
     }
 
-    async set(data, Model, unique = 'id') {
+    // 通用更新接口
+    async set(data, Model, preUpdate = function () { }, unique = 'id') {
         let keys = Model.keys();
         keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
 
@@ -270,6 +145,8 @@ class App {
                 throw (App.error.existed(this.name, false));
             }
 
+            preUpdate(record);
+
             data[unique] = undefined;
             record = App.update(record, data, keys);
             await record.save();
@@ -281,8 +158,9 @@ class App {
         }
     }
 
+    // 通用删除接口
     async del(data, Model, unique = 'id') {
-        let keys = ['id'];
+        let keys = [unique];
 
         if (!App.haskeys(data, keys)) {
             throw (App.error.param);
@@ -309,6 +187,143 @@ class App {
         }
     }
 
+    // 过滤对象数据
+    static filter(data, keys, defaultValue) {
+        let d = {};
+        if (!data) return d;
+        for (let i = 0; i < keys.length; i++) {
+            if (undefined == data[keys[i]]) {
+                if (defaultValue !== undefined) data[keys[i]] = defaultValue;
+                continue;
+            }
+            d[keys[i]] = data[keys[i]];
+            if (d[keys[i]].replace)
+                d[keys[i]] = d[keys[i]].replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+        }
+        return d;
+    }
+
+    // 检查对象数据，包含检查
+    static haskeys(data, keys) {
+        if (!data) return false;
+        for (let i = 0; i < keys.length; i++) {
+            if (undefined == data[keys[i]]) 
+                return false;
+        }
+        return true;
+    }
+
+    // 检查对象数据，仅包含检查
+    static onlykeys(data, keys) {
+        if (!data) return false;
+        for (let key in data) {
+            if (keys.indexOf(key) < 0) return false;
+        }
+        return true;
+    }
+
+    // 更新数据到对象
+    static update(oldData, newData, keys, bcreate=false) {
+        if (!oldData || !newData) throw this.error.param;
+        for (let i = 0; i < keys.length; i++) {
+            if (!bcreate && oldData[keys[i]] == undefined) continue;
+            if (undefined == newData[keys[i]]) continue;
+            oldData[keys[i]] = newData[keys[i]];
+            if (oldData[keys[i]].replace)
+                oldData[keys[i]] = oldData[keys[i]].replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+        }
+        return oldData;
+    }
+
+    static where(query, ops) {
+        Object.keys(ops).forEach((key) => {
+            if (!query[key] || query[key].op) return;
+            query[key] = {
+                op: ops[key],
+                val: query[key]
+            };
+        });
+
+        let where = {};
+        for (let k in query) {
+            if ('' === query[k])
+                continue;
+            where[k] = this.op(query[k]);
+        }
+        return where;
+    }
+
+    static order(order, keys) {
+        let orders = [];
+        for (let k in order) {
+            let orderField = order[k];
+            let OrderType = 'ASC';
+            if (orderField instanceof Array
+             && orderField.length == 2
+             && ['ASC', 'DESC'].indexOf(orderField[1]) >= 0
+            ) {
+                OrderType = orderField[1];
+                orderField = orderField[0];
+            }
+            if (keys.indexOf(orderField) < 0) continue;
+            orders.push([orderField, OrderType]);
+        }
+        return orders;
+    }
+
+    static get ops() {
+        return {
+            equal: '=',
+            notEqual: '!=',
+            less: '<',
+            lessOrEqual: '<=',
+            greater: '>',
+            greaterOrEqual: '>=',
+            notLike: '!$',
+            like: '$',
+            between: '<>',
+            notBetween: '!<>',
+            in: '~',
+        };
+    }
+
+    static op(data) {
+        const ops = {
+            '<=': '$lte',
+            '>=': '$gte',
+            '!=': '$ne',
+            '!$': '$notLike',
+            '=': '$eq',
+            '<': '$lt',
+            '>': '$gt',
+            '^': '$bitXor',
+            '&': '$bitAnd',
+            '|': '$bitOr',
+            '$': '$like',
+            '<>': '$between',
+            '!<>': '$notBetween',
+            '~': '$in'
+        };
+
+        let operator = '$eq';
+        if (data.op && ops[data.op]) {
+            operator = ops[data.op];
+            data = data.val;
+        }
+
+        let op = {};
+        op[operator] = data;
+        return op;
+    }
+
+    static res(data, msg = '') {
+        return {
+            state: 0,
+            msg: msg,
+            data: data
+        };
+    }
+
     static ok(action, data = undefined, customizeTip = false) {
         return {
             state: 0,
@@ -327,7 +342,7 @@ class App {
 
     static get error() {
         return {
-            __count: 8,
+            __count: 9,
             init: function (errorCode) {
                 this.__count = errorCode;
             },
@@ -354,7 +369,7 @@ class App {
                     obj + (customizeTip ? '' : (exist ? '已存在！' : '不存在！'))
                 );
             },
-            param: new AppError(2, '参数错误！'),
+            param: new AppError(2, '接口参数错误！'),
             query: new AppError(3, '无效查询条件！'),
             db: function (err) {
                 return new AppError(
@@ -372,11 +387,14 @@ class App {
                 6,
                 '权限不足'
             ),
-            nologin: new AppError(
+            unauthorized: new AppError(
                 7,
+                '越权请求'
+            ),
+            nologin: new AppError(
+                8,
                 '你没有登录或登录信息已过期！'
             ),
-
             server: function (err, stack) {
                 if (err) console.warn(err);
                 if (stack) console.warn(stack);

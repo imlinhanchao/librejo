@@ -14,10 +14,7 @@
             "error",
             4
         ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
+        "linebreak-style": 0,
         "quotes": [
             "error",
             "single"
@@ -27,9 +24,15 @@
             "always"
         ],
         "no-console": [
-            "error", 
-            { 
+            "error",
+            {
                 "allow": ["warn", "error", "info"]
+            }
+        ],
+        "vue/no-parsing-error": [
+            2, 
+            {
+                "x-invalid-end-tag": false
             }
         ]
     }

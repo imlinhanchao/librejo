@@ -38,18 +38,16 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     cookie: {
-        domain: config.base.cookie_domain,
-        maxAge: 60 * 60 * 24 * 1000  // 有效期，单位是毫秒
+        domain: process.env.NODE_ENV === 'development' ? 'localhost' : config.base.cookie_domain,
+        maxAge: 60 * 60 * 24 * 1000 * 365  // 有效期，单位是毫秒
     }
 }));
 
 app.use('/api', api);
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+// 其他页面交给vue处理
+app.use(function (req, res/*, next*/) {
+    res.sendfile('public/index.html');
 });
 
 // error handler
