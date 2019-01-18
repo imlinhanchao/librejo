@@ -46,3 +46,6 @@ upload/
 
 # db config
 model/config.json
+
+# Mac Temp file
+.DS_Store
