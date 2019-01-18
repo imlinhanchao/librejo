@@ -5,7 +5,7 @@ const App = modules.app;
 const Account = modules.account;
 
 router.all('/:interface/:fn*', function (req, res, next) {
-    // 允许不登录访问的接口，若所有函数都允许，则写为 interface: '*'
+    // 鍏佽涓嶇櫥褰曡闂殑鎺ュ彛锛岃嫢鎵�鏈夊嚱鏁伴兘鍏佽锛屽垯鍐欎负 interface: '*'
     const no_login_interface = {
         account: ['login', 'query'],
         book: [ 'query' ],
