@@ -38,7 +38,7 @@
     vertical-align: middle;
   }
   .separator {
-    border-left: 1px solid #707070;
+    border-left: 1px solid #A7AEB7;
     display: inline-block;
     height: 30%;
     margin: 0 0.5em;
@@ -49,14 +49,15 @@
     list-style: none;
     &:hover {
       .menu-item {
-        color: #707070;
+        color: #A7AEB7;
         &:hover {
           color: #fff;
         }
       }
       .menu-list {
         height: auto;
-        padding: 2em 0.4em 0.4em;
+        padding: 2em 0.6em 0.4em 0.4em;
+        top: 1em;
       }
     }
     .menu-item {
@@ -73,21 +74,41 @@
       list-style: none;
       z-index: 99;
       position: absolute;
-      top: 1em;
+      top: 2.8em;
       height: 0;
-      background: #232425;
+      background: #030914;
       left: 0.8em;
-      color: #707070;
+      color: #A7AEB7;
       border-radius: 0.5em;
       overflow: hidden;
       li {
         line-height: 2em;
         cursor: pointer;
         &:hover {
-          color: #fff;
+          color: #1991fb;
         }
       }
     }
+  }
+}
+.layout-footer {
+  text-align: center;
+  background: transparent;
+  height: 5em;
+  p {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1em;
+  }
+  button.plus-btn {
+    box-shadow: 1px 1px 5px #aaa;
+    border-radius: 2em;
+    width: 4em;
+    height: 4em;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
   }
 }
 </style>
@@ -97,6 +118,9 @@
   &:focus {
     outline: 0;
     box-shadow: none;
+    &+.ivu-input-prefix {
+        color: #1991fb;
+    }
   }
 }
 </style>
@@ -162,7 +186,8 @@
       </Layout>
     </Content>
     <Footer class="layout-footer">
-      <p>2018 &copy; Hancel</p>
+      <Button class="plus-btn" type="primary" shape="circle" icon="md-add"></Button>
+      <p>&copy; {{new Date().getFullYear()}} Library. All rights reserved.</p>
     </Footer>
     <Modal v-model="loginModel" title="登录" width="300">
       <Form ref="loginForm" :model="login" :rules="ruleValidate" class="layout-form">

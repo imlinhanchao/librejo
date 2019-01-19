@@ -1,7 +1,7 @@
 const routers = [{
     path: '/',
     meta: {
-        title: '首页'
+        title: 'Home'
     },
     component: (resolve) => require(['./views/index.vue'], resolve),
     beforeRouteEnter(to, from, next) {
@@ -14,7 +14,7 @@ const routers = [{
         {
             path: '',
             meta: {
-                title: '首页'
+                title: 'Home'
             },
             component: (resolve) => require(['./views/home.vue'], resolve)
         }

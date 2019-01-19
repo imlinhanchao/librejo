@@ -11,7 +11,7 @@
     "error": {
     },
     "web": {
-        "name": "我的图书馆"
+        "name": "My Book"
     },
     "file": {
         "upload": "/public/upload/",

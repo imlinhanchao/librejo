@@ -3,7 +3,7 @@
 @import './font.less';
 
 // Here are the variables to cover, such as:
-//@primary-color: #3d3b4f;
+@primary-color: #1991fb;
 
 html, body {
     min-height: 100%;
@@ -13,6 +13,7 @@ html, body {
 
 body {
     background: #FFF;
+    color: #030914;
     min-height: 100%; 
     margin: auto;
     font: 300 1em/1.8 'Open Sans', Helvetica Neue, Helvetica, Arial, PingFang SC, Lantinghei SC, Microsoft Yahei, sans-serif;
@@ -54,4 +55,8 @@ a {
 
 .ivu-btn-text:focus {
     box-shadow: none;
+}
+
+.ivu-input-prefix i, .ivu-input-suffix i {
+    color: inherit;
 }
