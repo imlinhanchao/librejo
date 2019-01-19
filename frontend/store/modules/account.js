@@ -10,7 +10,7 @@ const mutations = {
 };
 const actions = {
     login({ state, commit }, { user, callback }) {
-        axios.post('/api/account/login', user)
+        axios.post('/account/login', user)
             .then((rsp) => {
                 rsp = rsp.data;
                 if (rsp.state == 0) {
@@ -24,7 +24,7 @@ const actions = {
             });
     },
     logout({ commit }, callback) {
-        axios.get('/api/account/logout')
+        axios.get('/account/logout')
             .then((rsp) => {
                 rsp = rsp.data;
                 if (rsp.state == 0) {
@@ -38,7 +38,7 @@ const actions = {
             });
     },
     checklogin({ commit }, callback) {
-        axios.get('/api/account/info')
+        axios.get('/account/info')
             .then((rsp) => {
                 rsp = rsp.data;
                 if (rsp.state == 0) {
@@ -52,7 +52,7 @@ const actions = {
             });
     },
     getInfo({ commit }, { username, callback }) {
-        axios.post('/api/account/query', { username })
+        axios.post('/account/query', { username })
             .then((rsp) => {
                 rsp = rsp.data;
                 callback(rsp);

@@ -19,9 +19,9 @@
         "maxSize": 5
     },
     "db": {
-        "database": "db",
+        "database": "lib",
         "dialect": "mysql",
-        "prefix": "pre_",
+        "prefix": "lib_",
         "port": 3306,
         "logging": true
     }

@@ -7,6 +7,7 @@
   display: flex;
   background: transparent;
   position: relative;
+  padding: 0 2em;
 }
 .layout-search {
   justify-content: flex-start;
@@ -85,7 +86,10 @@
         line-height: 2em;
         cursor: pointer;
         &:hover {
-          color: #1991fb;
+          color: #D21C13;
+        }
+        .ivu-icon {
+            width: 16px; 
         }
       }
     }
@@ -107,9 +111,12 @@
     width: 4em;
     height: 4em;
     position: fixed;
-    bottom: 1em;
-    right: 1em;
+    bottom: 3em;
+    right: 3em;
   }
+}
+.login-link {
+    font-weight: bold;
 }
 </style>
 <style lang="less">
@@ -119,7 +126,7 @@
     outline: 0;
     box-shadow: none;
     &+.ivu-input-prefix {
-        color: #1991fb;
+        color: #D21C13;
     }
   }
 }
@@ -141,10 +148,12 @@
       </div>
       <div class="layout-side">
         <div class="layout-avatar">
-          <Avatar icon="ios-person" size="default"/>
+          <Avatar icon="ios-person" size="default" v-if="isLogin"/>
         </div>
         <div class="layout-menu">
-          <span class="separator"></span>
+          <span class="separator" :style="{
+              visibility: isLogin ? 'visible' : 'hidden'
+          }"></span>
           <ul class="menu">
             <li>
               <span :class="menuItemClasses">
@@ -158,19 +167,23 @@
                   <Icon type="ios-bookmark"></Icon>
                   <span>Books</span>
                 </li>
-                <li>
+                <li v-if="!isLogin" @click="loginModel=true">
+                  <Icon custom="fa fa-sign-in"></Icon>
+                  <span>Login</span>
+                </li>
+                <li v-if="isLogin">
                   <Icon type="ios-hand"></Icon>
                   <span>Lends</span>
                 </li>
-                <li>
+                <li v-if="isLogin">
                   <Icon type="md-document"/>
                   <span>Notes</span>
                 </li>
-                <li>
+                <li v-if="isLogin">
                   <Icon type="md-settings"/>
                   <span>Setting</span>
                 </li>
-                <li>
+                <li v-if="isLogin" @click="logoutAccount">
                   <Icon type="md-log-out"/>
                   <span>Logout</span>
                 </li>
@@ -180,14 +193,14 @@
         </div>
       </div>
     </Header>
-    <Content :style="{padding: '10px 50px'}">
+    <Content :style="{padding: '10px 2em'}">
       <Layout>
         <router-view/>
       </Layout>
     </Content>
     <Footer class="layout-footer">
       <Button class="plus-btn" type="primary" shape="circle" icon="md-add"></Button>
-      <p>&copy; {{new Date().getFullYear()}} Library. All rights reserved.</p>
+      <p>&copy; 2018 ~ {{new Date().getFullYear()}} Library. All rights reserved.</p>
     </Footer>
     <Modal v-model="loginModel" title="登录" width="300">
       <Form ref="loginForm" :model="login" :rules="ruleValidate" class="layout-form">
@@ -198,7 +211,7 @@
             placeholder="用户名"
             @keyup.13="document.getElementById('password').focus()"
           >
-            <Icon type="ios-person-outline" slot="prepend"></Icon>
+            <Icon custom="fa fa-user" slot="prepend"></Icon>
           </Input>
         </FormItem>
         <FormItem prop="passwd">
@@ -209,7 +222,7 @@
             placeholder="密码"
             @keyup.13="loginSubmit('loginForm')"
           >
-            <Icon type="ios-locked-outline" slot="prepend"></Icon>
+            <Icon custom="fa fa-lock" slot="prepend"></Icon>
             <Button
               slot="append"
               :icon="showIcon"
@@ -244,7 +257,6 @@ export default {
         passwd: [{ required: true, message: "请输入密码。", trigger: "blur" }]
       },
       login_loading: false,
-      menuActive: "1-1"
     };
   },
   computed: {
@@ -258,7 +270,7 @@ export default {
       return ["menu-list", this.isCollapsed ? "actived-menu" : ""];
     },
     name() {
-      return this.loginUser ? this.loginUser.name : "";
+      return this.loginUser ? this.loginUser.nickname : "";
     },
     isLogin() {
       return this.$store.getters.isLogin;
@@ -267,7 +279,7 @@ export default {
       return [this.isCollapsed ? "collapsed" : ""];
     },
     showIcon() {
-      return this.isPasswdShow ? "eye-disabled" : "eye";
+      return this.isPasswdShow ? "md-eye-off" : "md-eye";
     },
     passwdType() {
       return this.isPasswdShow ? "text" : "password";
@@ -284,7 +296,6 @@ export default {
           err = (err && err.message) || rsp.msg;
           // this.$Message.error(err);
         }
-        this.menuActive = "1-1";
       });
     },
     loginSubmit() {
@@ -297,7 +308,7 @@ export default {
               this.login_loading = false;
               if (rsp && rsp.state == 0) {
                 this.loginModel = false;
-                this.menuActive = "1-1";
+                this.$Message.success(`Welcome ${this.name} !`);
               } else {
                 err = (err && err.message) || rsp.msg;
                 this.$Message.error(err);

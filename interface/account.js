@@ -63,17 +63,16 @@ class Module extends App {
 
         data = App.filter(data, Account.keys());
         
-        try {
-            let account = await this.exist(data.username, true);
-            if (account) {
-                throw (this.error.existed);
-            }
-            
+        try {            
             data.nickname = data.username;
             data.lastlogin = new Date().valueOf() / 1000;
             let sha256 = crypto.createHash('sha256');
             data.passwd = sha256.update(data.passwd + __salt).digest('hex');
-            account = await super.new(data, Account);
+            data.email = '';
+            data.phone = '';
+            data.motto = '';
+            data.avatar = '';
+            let account = await super.new(data, Account, 'username');
             if (onlyData) return account;
             return this.okcreate(App.filter(account, this.saftKey));
         } catch (err) {

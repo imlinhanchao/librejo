@@ -25,6 +25,10 @@ let orm = {
         type: db.STRING(200),
         comment: '签名'
     },
+    avatar: {
+        type: db.STRING(200),
+        comment: '头像'
+    },
     lastlogin: {
         type: db.INTEGER,
         comment: '最后登录时间'
