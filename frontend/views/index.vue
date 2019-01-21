@@ -199,7 +199,7 @@
       </Layout>
     </Content>
     <Footer class="layout-footer">
-      <Button class="plus-btn" type="primary" shape="circle" icon="md-add"></Button>
+      <Button class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/new')"></Button>
       <p>&copy; 2018 ~ {{new Date().getFullYear()}} Library. All rights reserved.</p>
     </Footer>
     <Modal v-model="loginModel" title="登录" width="300">
@@ -240,6 +240,7 @@
   </Layout>
 </template>
 <script>
+
 export default {
   data() {
     return {
@@ -298,8 +299,8 @@ export default {
         }
       });
     },
-    loginSubmit() {
-      this.$refs["loginForm"].validate(valid => {
+    loginSubmit(form) {
+      this.$refs[form].validate(valid => {
         if (valid) {
           this.login_loading = true;
           this.$store.dispatch("login", {

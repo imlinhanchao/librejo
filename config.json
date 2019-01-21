@@ -16,7 +16,7 @@
     "file": {
         "upload": "/public/upload/",
         "fileurl": "upload/",
-        "maxSize": 5
+        "maxSize": 2
     },
     "db": {
         "database": "lib",

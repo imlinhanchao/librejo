@@ -17,7 +17,15 @@ const routers = [{
                 title: 'Home'
             },
             component: (resolve) => require(['./views/home.vue'], resolve)
+        },
+        {
+            path: 'new',
+            meta: {
+                title: 'New'
+            },
+            component: (resolve) => require(['./views/new.vue'], resolve)
         }
+
     ]
     }, {
         path: '*',
