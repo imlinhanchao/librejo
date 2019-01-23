@@ -2,13 +2,17 @@
 const model = require('../model');
 const App = require('./app');
 const Book = model.book;
+const Account = require('./account');
 
 let __error__ = Object.assign({}, App.error);
 
 class Module extends App {
-    constructor() {
+    constructor(session) {
         super([]);
         this.name = '图书';
+        this.session = session;
+        this.saftKey = Book.keys().concat(['userId']);
+        this.account = new Account(session);
     }
 
     get error() {
@@ -17,7 +21,10 @@ class Module extends App {
 
     async new(data) {
         try {
-            return this.okcreate(await super.new(data, Book, 'ISBN'));
+            data.userId = this.account.userId;
+            return this.okcreate(
+                App.filter(await super.new(data, Book, ['userId', 'ISBN']), this.saftKey)
+            );
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -26,8 +33,14 @@ class Module extends App {
 
     async set(data) {
         try {
+            data.userId = undefined;
             data.ISBN = undefined; // 已创建图书不允许修改ISBN
-            return this.okupdate(await super.set(data, Book));
+            return this.okupdate(
+                App.filter(await super.set(data, Book, (book) => {
+                    if (book.userId != this.account.userId) {
+                        throw this.error.unauthorized;
+                    }
+                }), this.saftKey));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
@@ -36,7 +49,11 @@ class Module extends App {
 
     async del(data) {
         try {
-            let book = await super.del(data, Book);
+            let book = await super.del(data, Book, (book) => {
+                if (book.userId != this.account.userId) {
+                    throw this.error.unauthorized;
+                }
+            });
             return this.okdelete(book.id);
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -50,6 +67,7 @@ class Module extends App {
             name: App.ops.like,
             author: App.ops.like,
             publisher: App.ops.like,
+            userId: App.ops.equal
         };
 
         try {
