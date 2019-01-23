@@ -1,6 +1,10 @@
 const db = require('../db');
 const prefix = require('../config').db.prefix;
 let orm = {
+    userId: {
+        type: db.ID,
+        comment: '用户ID'
+    },
     dbId: {
         type: db.STRING(20),
         comment: '豆瓣ID'
