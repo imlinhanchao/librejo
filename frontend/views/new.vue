@@ -129,8 +129,7 @@ export default {
     },
     computed: {
         bookImg() {
-            let url = env === 'development' ? `http://localhost:${config.base.port}` : ''
-            return this.book.img ? url + '/upload/' + this.book.img : url + '/img/default.jpg';
+            return this.book.img ? '/upload/' + this.book.img : '/img/default.jpg';
         },
         maxSize() {
             return config.file.maxSize * 1024;
@@ -139,8 +138,7 @@ export default {
             return {}
         },
         uploadInterface() {
-            let url = '/api/lib/upload';
-            return env === 'development' ? `http://localhost:${config.base.port}${url}` : url;
+            return '/api/lib/upload';
         }
     }
 }

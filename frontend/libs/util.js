@@ -10,11 +10,7 @@ util.title = function(title) {
     window.document.title = title;
 };
 
-const ajaxUrl = env === 'development' ?
-    `http://localhost:${config.base.port}/api/` :
-    env === 'production' ?
-    'api/' :
-    'api/';
+const ajaxUrl = 'api/';
 
 util.ajaxUrl = ajaxUrl;
 

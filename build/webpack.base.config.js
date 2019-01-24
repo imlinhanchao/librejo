@@ -98,5 +98,21 @@ module.exports = {
         alias: {
             'vue': 'vue/dist/vue.esm.js'
         }
+    },
+    devServer: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3000',
+                pathRewrite: {'^/api' : '/api'}
+            },
+            '/img': {
+                target: 'http://localhost:3000',
+                pathRewrite: {'^/img' : '/img'}
+            },
+            '/upload': {
+                target: 'http://localhost:3000',
+                pathRewrite: {'^/upload' : '/upload'}
+            }
+        }
     }
 };
