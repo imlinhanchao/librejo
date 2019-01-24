@@ -33,9 +33,10 @@ let orm = {
         type: db.STRING(100),
         comment: 'ISBN码'
     },
-    pub_date: {
+    pubDate: {
         type: db.STRING(20),
-        comment: '出版日期'
+        comment: '出版日期',
+        field: 'pub_date'
     }
 };
 let table_name = prefix + 'book_info';

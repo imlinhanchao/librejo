@@ -3,6 +3,8 @@ const model = require('../model');
 const App = require('./app');
 const Book = model.book;
 const Account = require('./account');
+const fs = require('../lib/files');
+const path = require('path');
 
 let __error__ = Object.assign({}, App.error);
 
@@ -22,6 +24,9 @@ class Module extends App {
     async new(data) {
         try {
             data.userId = this.account.userId;
+            if (data.img.indexOf('http') == 0) {
+                data.img = await this.__downloadImg(data.img);
+            }
             return this.okcreate(
                 App.filter(await super.new(data, Book, ['userId', 'ISBN']), this.saftKey)
             );
@@ -81,6 +86,15 @@ class Module extends App {
         }
     }
     
+    async __downloadImg(src) {
+        let ext = path.extname(new URL(src).pathname);
+        let filename = `${new Date().valueOf()}.${parseInt(Math.random() * 100000)}${ext}`;
+        let file = await fs.download(src, filename);
+        let newfile = `${file.hash}${ext}`;
+        let newpath = path.join(path.dirname(file.path), newfile);
+        fs.rename(file.path, newpath);
+        return file.url.replace(filename, newfile);
+    }
 }
 
 module.exports = Module;
