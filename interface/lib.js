@@ -1,12 +1,7 @@
-const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
 const App = require('./app');
 const files = require('../lib/files');
-
-const readFile = util.promisify(fs.readFile);
-const writeFile = util.promisify(fs.writeFile);
 
 const filecfg = require('../config').file;
 
@@ -27,25 +22,24 @@ class Module extends App {
     
     async upload(req) {
         try {
-            let dirpath = path.join(process.cwd(), filecfg.upload)
+            let dirpath = path.join(process.cwd(), filecfg.upload);
             files.mkdir(dirpath);
-            let filenames = []
+            let filenames = [];
             for (let i = 0; i < req.files.length; i++) {
                 if (req.files[i].size > filecfg.maxSize * 1024 * 1024) {
                     throw(this.error.toobig);
                 }
                 let data = req.files[i].buffer;
-                let sha256 = crypto.createHash('sha256');
-                let hash = sha256.update(data).digest('hex');
+                let hash = files.hash(data);
                 let filename = hash + path.extname(req.files[i].originalname);
                 let savepath = path.join(dirpath, filename);
                 if (!files.exists(savepath))
-                    await writeFile(savepath, data);
-                filenames.push(filename)
+                    fs.writeFileSync(savepath, data);
+                filenames.push(filename);
             }
             return this.okupload(filenames);
         } catch (error) {
-            console.dir(error)
+            console.error(error);
         }
     }
 }
