@@ -262,7 +262,7 @@ export default {
   },
   computed: {
     loginUser() {
-      return this.$store.getters.userInfo;
+      return this.$store.getters['account/info'];
     },
     menuItemClasses() {
       return ["menu-item", this.isCollapsed ? "actived-menu" : ""];
@@ -274,7 +274,7 @@ export default {
       return this.loginUser ? this.loginUser.nickname : "";
     },
     isLogin() {
-      return this.$store.getters.isLogin;
+      return this.$store.getters['account/isLogin'];
     },
     collapsed() {
       return [this.isCollapsed ? "collapsed" : ""];
@@ -292,7 +292,7 @@ export default {
   mounted() {},
   methods: {
     logoutAccount() {
-      this.$store.dispatch("logout", (rsp, err) => {
+      this.$store.dispatch("account/logout", (rsp, err) => {
         if (!rsp || rsp.state != 0) {
           err = (err && err.message) || rsp.msg;
           // this.$Message.error(err);
@@ -303,7 +303,7 @@ export default {
       this.$refs[form].validate(valid => {
         if (valid) {
           this.login_loading = true;
-          this.$store.dispatch("login", {
+          this.$store.dispatch("account/login", {
             user: this.login,
             callback: (rsp, err) => {
               this.login_loading = false;

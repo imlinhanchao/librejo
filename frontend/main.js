@@ -50,6 +50,6 @@ new Vue({
     computed: {
     },
     mounted () {
-        this.$store.dispatch('checklogin', (rsp, err) => { });
+        this.$store.dispatch('account/checklogin', (rsp, err) => { });
     }
 });

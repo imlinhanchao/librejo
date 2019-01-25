@@ -67,11 +67,12 @@ const getters = {
     isLogin: (state) => {
         return !!state.loginUser;
     },
-    userInfo: (state) => {
+    info: (state) => {
         return state.loginUser;
     }
 };
 export default {
+    namespaced: true,
     state,
     mutations,
     getters,
