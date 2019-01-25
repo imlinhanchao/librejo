@@ -22,6 +22,10 @@
     flex: 1;
     padding-left: .6em;
 }
+.pend-btn {
+    padding-left: 8px;
+    padding-right: 8px;
+}
 </style>
 
 <template>
@@ -51,7 +55,10 @@
             </section>
             <Form class="book-form" ref="bookForm" :model="book" :rules="ruleValidate" :label-width="100">
                 <FormItem label="ISBN" prop="ISBN" required>
-                    <Input v-model="book.ISBN" placeholder="ISBN" :maxlength="200" size="default"/>
+                    <Input v-model="book.ISBN" placeholder="ISBN" :maxlength="200" size="default">
+                        <Button slot="prepend" class="pend-btn" icon="ios-search"/>
+                        <Button slot="append" class="pend-btn" icon="md-qr-scanner"/>
+                    </Input>
                 </FormItem>
                 <FormItem label="Book Name" prop="name" required>
                     <Input v-model="book.name" placeholder="Book Name" :maxlength="200" size="default"/>
