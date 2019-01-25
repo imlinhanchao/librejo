@@ -276,9 +276,6 @@ export default {
     isLogin() {
       return this.$store.getters['account/isLogin'];
     },
-    collapsed() {
-      return [this.isCollapsed ? "collapsed" : ""];
-    },
     showIcon() {
       return this.isPasswdShow ? "md-eye-off" : "md-eye";
     },
