@@ -129,7 +129,7 @@ export default {
     },
     computed: {
         bookImg() {
-            return this.book.img ? '/upload/' + this.book.img : '/img/default.jpg';
+            return this.book.img ? config.file.fileurl + this.book.img : '/img/default.jpg';
         },
         maxSize() {
             return config.file.maxSize * 1024;
