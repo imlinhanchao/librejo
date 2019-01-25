@@ -59,6 +59,7 @@ class Module extends App {
                 if (book.userId != this.account.userId) {
                     throw this.error.unauthorized;
                 }
+                return true;
             });
             return this.okdelete(book.id);
         } catch (err) {

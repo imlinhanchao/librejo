@@ -125,7 +125,7 @@ class App {
     }
 
     // 通用更新接口
-    async set(data, Model, preUpdate = function () { }, unique = 'id') {
+    async set(data, Model, preUpdate = null, unique = 'id') {
         let keys = Model.keys();
         keys = ['id'].concat(keys).concat(['create_time', 'update_time']);
 
@@ -146,7 +146,7 @@ class App {
                 throw (App.error.existed(this.name, false));
             }
 
-            if (preUpdate(record)) {
+            if (preUpdate && preUpdate(record)) {
                 data[unique] = undefined;
                 record = App.update(record, data, keys);
                 await record.save();
@@ -162,7 +162,7 @@ class App {
     }
 
     // 通用删除接口
-    async del(data, Model, preDelete = function () { }, unique = 'id') {
+    async del(data, Model, preDelete = null, unique = 'id') {
         let keys = [unique];
 
         if (!App.haskeys(data, keys)) {
@@ -182,7 +182,7 @@ class App {
                 throw (App.error.existed(this.name, false));
             }
 
-            if (preDelete(record)) {
+            if (preDelete && preDelete(record)) {
                 await record.destroy();
                 return record;
             } else {
