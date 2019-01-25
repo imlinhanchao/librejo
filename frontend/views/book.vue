@@ -63,7 +63,7 @@
                     <Input v-model="book.publisher" placeholder="Publisher" :maxlength="200" size="default"/>
                 </FormItem>
                 <FormItem label="Publish Date" prop="pubDate">
-                    <DatePicker type="month" v-model="book.pubDate" format="yyyy-MM" placeholder="Publish Date" size="default"></DatePicker>
+                    <DatePicker type="month" v-model="yearMonth" format="yyyy-MM" placeholder="Publish Date" size="default"></DatePicker>
                 </FormItem>
                 <FormItem label="Page Number" prop="page" required>
                     <InputNumber v-model="book.page" :min="1" placeholder="Page" size="default"/>
@@ -85,7 +85,7 @@ export default {
         return {
             book: {
                 name: '',
-                dbid: '',
+                dbId: '',
                 img: '',
                 author: '',
                 publisher: '',
@@ -101,7 +101,17 @@ export default {
     },
     methods: {
         handleSubmit() {
-
+            this.$store.dispatch('book/insert', {
+                book: this.book,
+                callback: (rsp, err) => {
+                    if (rsp && rsp.state == 0) {
+                        this.$Message.success(`New Book "${rsp.data.name}" Success!`);
+                    } else {
+                        err = (err && err.message) || rsp.msg;
+                        this.$Message.error(err);
+                    }
+                }
+            })
         },
         handleSuccess (res, file) {
             let rsp = file.response;
@@ -139,6 +149,14 @@ export default {
         },
         uploadInterface() {
             return '/api/lib/upload';
+        },
+        yearMonth: {
+            get() {
+                return this.pubDate ? new Date(this.pubDate + '-01') : '';
+            },
+            set(month) {
+                this.$set(this.book, 'pubDate', month.getFullYear() + '-' + ('0' + (month.getMonth() + 1)).slice(0, 2));
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ util.title = function(title) {
     window.document.title = title;
 };
 
-const ajaxUrl = 'api/';
+const ajaxUrl = '/api/';
 
 util.ajaxUrl = ajaxUrl;
 
