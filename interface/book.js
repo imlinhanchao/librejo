@@ -13,7 +13,7 @@ class Module extends App {
         super([]);
         this.name = '图书';
         this.session = session;
-        this.saftKey = Book.keys().concat(['userId']);
+        this.saftKey = Book.keys();
         this.account = new Account(session);
     }
 
@@ -45,6 +45,7 @@ class Module extends App {
                     if (book.userId != this.account.userId) {
                         throw this.error.unauthorized;
                     }
+                    return true;
                 }), this.saftKey));
         } catch (err) {
             if (err.isdefine) throw (err);

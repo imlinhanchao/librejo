@@ -146,7 +146,6 @@ class App {
                 throw (App.error.existed(this.name, false));
             }
 
-            preUpdate(record);
             if (preUpdate(record)) {
                 data[unique] = undefined;
                 record = App.update(record, data, keys);
