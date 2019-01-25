@@ -199,7 +199,7 @@
       </Layout>
     </Content>
     <Footer class="layout-footer">
-      <Button class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/new')"></Button>
+      <Button class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>
       <p>&copy; 2018 ~ {{new Date().getFullYear()}} Library. All rights reserved.</p>
     </Footer>
     <Modal v-model="loginModel" title="登录" width="300">
