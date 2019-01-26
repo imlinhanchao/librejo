@@ -89,7 +89,8 @@ class Module extends App {
             name: App.ops.like,
             author: App.ops.like,
             publisher: App.ops.like,
-            userId: App.ops.equal
+            userId: App.ops.equal,
+            create_time: App.ops.less
         };
 
         try {

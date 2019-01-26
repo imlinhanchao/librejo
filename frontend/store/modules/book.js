@@ -50,6 +50,19 @@ const actions = {
                 callback(null, error);
                 console.error(error.message);
             });
+    },
+    query({ commit }, { index, count = 10, query = {}, callback}) {
+        axios.post('/book/query/', {
+            index, count, query
+        })
+        .then((rsp) => {
+            rsp = rsp.data;
+            callback(rsp);
+        })
+        .catch((error) => {
+            callback(null, error);
+            console.error(error.message);
+        });
     }
 };
 

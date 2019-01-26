@@ -10,13 +10,16 @@
             </DropdownMenu>
         </Dropdown>
         <Content class="layout-content">
+            <bookList />
         </Content>
     </div>
 </template>
 <script>
     import axios from 'axios';
+    import bookList from '../components/book-list.vue'
     export default {
         components: {
+            bookList
         },
         mounted() {
         },
