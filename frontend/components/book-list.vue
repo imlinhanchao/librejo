@@ -119,7 +119,7 @@
                                     <Button shape="circle" type="text" title="Borrow"><Icon type="md-hand"></Icon></Button>
                                 </Col>
                                 <Col span="5" class="form-item">
-                                    <Button shape="circle" type="text" title="Edit"><Icon custom="fa fa-pencil"></Icon></Button>
+                                    <Button shape="circle" type="text" title="Edit" @click="$router.push(`/book/${item.book.id}`)"><Icon custom="fa fa-pencil"></Icon></Button>
                                 </Col>
                                 <Col span="5" class="form-item">
                                     <Button shape="circle" type="text" title="Delete"><Icon custom="fa fa-trash"></Icon></Button>
