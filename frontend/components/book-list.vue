@@ -144,11 +144,16 @@ export default {
     data () {
         return {
             books: [],
-            timestamp: new Date().valueOf()
+            timestamp: new Date().valueOf(),
+            total: 0
         }
     },
     mounted () {
         this.query(0);
+        window.addEventListener('scroll', this.scrollEvent);
+    },
+    destroyed() {
+        window.removeEventListener('scroll', this.scrollEvent);
     },
     methods: {
         query(index, name) {
@@ -169,6 +174,7 @@ export default {
                             }
                             img.src = '/upload/' + d.img;
                         })
+                        this.total = rsp.data.total;
                     } else {
                         err = (err && err.message) || rsp.msg;
                         this.$Message.error(err);
@@ -176,13 +182,19 @@ export default {
                 }
             })
         },
-        reflowed: function () {
+        reflowed () {
             this.isBusy = false
         },
-        addItems: function () {
-            if (!this.isBusy && this.items.length < this.total) {
+        addBooks () {
+            if (!this.isBusy && this.books.length < this.total) {
                 this.isBusy = true;
-                this.getbook(this.items.length);
+                this.query(this.books.length);
+            }
+        },
+        scrollEvent() {
+            let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollTop + window.innerHeight >= document.body.clientHeight) {
+                this.addBooks && this.addBooks();
             }
         }
     }
