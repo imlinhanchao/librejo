@@ -106,7 +106,7 @@
     bottom: 1em;
   }
   button.plus-btn {
-    box-shadow: 1px 1px 5px #aaa;
+    box-shadow: 0px 0px 10px #00000066;
     border-radius: 2em;
     width: 4em;
     height: 4em;
