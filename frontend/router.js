@@ -24,6 +24,13 @@ const routers = [{
                 title: 'New Book'
             },
             component: (resolve) => require(['./views/book.vue'], resolve)
+        },
+        {
+            path: 'book/:id',
+            meta: {
+                title: 'Update Book'
+            },
+            component: (resolve) => require(['./views/book.vue'], resolve)
         }
 
     ]

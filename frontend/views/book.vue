@@ -26,6 +26,17 @@
     padding-left: 8px;
     padding-right: 8px;
 }
+button.delete-btn {
+    background: #515a6e;
+    border-color: #c5c8ce;
+    &:hover {
+        background: #808695;
+    }
+
+    &:focus {
+        box-shadow: none;
+    }
+}
 </style>
 
 <template>
@@ -33,7 +44,9 @@
         <header class="header">
             <Breadcrumb>
                 <BreadcrumbItem to="/">Home</BreadcrumbItem>
-                <BreadcrumbItem>New</BreadcrumbItem>
+                <BreadcrumbItem v-if="!isUpdate">New</BreadcrumbItem>
+                <BreadcrumbItem v-if="isUpdate">Update</BreadcrumbItem>
+                <BreadcrumbItem v-if="isUpdate">{{book.name}}</BreadcrumbItem>
             </Breadcrumb>
         </header>
         <Content class="content">
@@ -55,10 +68,11 @@
             </section>
             <Form class="book-form" ref="bookForm" :model="book" :rules="ruleValidate" :label-width="100">
                 <FormItem label="ISBN" prop="ISBN" required>
-                    <Input v-model="book.ISBN" placeholder="ISBN" :maxlength="200" size="default">
-                        <Button slot="prepend" class="pend-btn" icon="ios-search"/>
+                    <Input v-model="book.ISBN" v-if="!isUpdate" :disabled="isUpdate" placeholder="ISBN" :maxlength="200" size="default">
+                        <Button slot="prepend" class="pend-btn" icon="ios-search" @click="search"/>
                         <Button slot="append" class="pend-btn" icon="md-qr-scanner"/>
                     </Input>
+                    <span v-if="isUpdate" >{{book.ISBN}}</span>
                 </FormItem>
                 <FormItem label="Book Name" prop="name" required>
                     <Input v-model="book.name" placeholder="Book Name" :maxlength="200" size="default"/>
@@ -76,7 +90,9 @@
                     <InputNumber v-model="book.page" :min="1" placeholder="Page" size="default"/>
                 </FormItem>
                 <FormItem>
-                    <Button type="primary" @click="handleSubmit" :loading="loading">Submit</Button>
+                    <Button type="primary" v-if="!isUpdate" @click="handleSubmit" :loading="loading">Submit</Button>
+                    <Button type="primary" v-if="isUpdate" @click="handleUpdate" :loading="loading">Update</Button>
+                    <Button type="primary" class="delete-btn" v-if="isUpdate" @click="handleRemove" :loading="removeloading">Remove</Button>
                 </FormItem>
             </Form>
         </Content>
@@ -91,6 +107,7 @@ export default {
     data() {
         return {
             book: {
+                id: '',
                 name: '',
                 dbId: '',
                 img: '',
@@ -100,19 +117,78 @@ export default {
                 ISBN: '',
                 pubDate: ''
             },
-            loading: false
+            loading: false,
+            removeloading: false,
+            isUpdate: false
         };
     },
     mounted() {
-
+        this.init();
     },
     methods: {
+        init () {
+            if (this.bookId) {
+                this.isUpdate = true;
+                this.$store.dispatch('book/get', {
+                    id: this.bookId,
+                    callback: (rsp, err) => {
+                        if (rsp && rsp.state == 0) {
+                            this.book = rsp.data;
+                        } else {
+                            err = (err && err.message) || rsp.msg;
+                            this.$Message.error(err);
+                            this.$router.push('/book/new');
+                        }
+                    }
+                })
+            } else {
+                this.isUpdate = false;
+            }
+        },
+        handleUpdate() {
+            this.loading = true;
+            this.$store.dispatch('book/set', {
+                book: this.book,
+                callback: (rsp, err) => {
+                    this.loading = false;
+                    if (rsp && rsp.state == 0) {
+                        this.$Message.success(`Update Book Success!`);
+                    } else {
+                        err = (err && err.message) || rsp.msg;
+                        this.$Message.error(err);
+                    }
+                }
+            })
+        },
+        handleRemove() {
+            this.removeloading = true;
+            this.$store.dispatch('book/remove', {
+                id: this.book.id,
+                callback: (rsp, err) => {
+                    this.removeloading = false;
+                    if (rsp && rsp.state == 0) {
+                        this.$Message.success(`Remove Book Success!`);
+                        this.$router.push('/book/new');
+                        this.isUpdate = false;
+                        this.$refs['bookForm'].resetFields();
+                    } else {
+                        err = (err && err.message) || rsp.msg;
+                        this.$Message.error(err);
+                    }
+                }
+            })
+        },
         handleSubmit() {
+            this.loading = true;
             this.$store.dispatch('book/insert', {
                 book: this.book,
                 callback: (rsp, err) => {
+                    this.loading = false;
                     if (rsp && rsp.state == 0) {
-                        this.$Message.success(`New Book "${rsp.data.name}" Success!`);
+                        this.$Message.success(`New Book Success!`);
+                        this.$router.push('/book/' + rsp.data.id);
+                        this.book = rsp.data;
+                        this.isUpdate = true;
                     } else {
                         err = (err && err.message) || rsp.msg;
                         this.$Message.error(err);
@@ -142,11 +218,38 @@ export default {
                 title: 'Exceeding file size limit',
                 desc: 'File  ' + file.name + ' is too large, no more than 2M.'
             });
+        },
+        search() {
+            this.$axios.get('/douban/isbn/' + this.book.ISBN)
+                .then((rsp) => {
+                    rsp = rsp.data;
+                    let data = rsp.data;
+                    if (rsp.state == 0) {
+                        this.book = {
+                            img: data.images.large.replace('view/subject/l/public', 'lpic'),
+                            name: data.title,
+                            dbId: data.id,
+                            author: data.author[0] || '',
+                            publisher: data.publisher,
+                            page: parseInt(data.pages),
+                            ISBN: data.isbn13,
+                            pubDate: ''
+                        };
+                        this.yearMonth = new Date(data.pubdate);
+                    } else {
+                        this.$Message.error(rsp.msg);
+                    }
+                })
+                .catch((error) => {
+                    this.$Message.error(error.message);
+                    console.error(error);
+                });
         }
     },
     computed: {
         bookImg() {
-            return this.book.img ? config.file.fileurl + this.book.img : '/img/default.jpg';
+            let img = this.book.img.indexOf('http') == 0 ? this.book.img : config.file.fileurl + this.book.img;
+            return this.book.img ? img : '/img/default.jpg';
         },
         maxSize() {
             return config.file.maxSize * 1024;
@@ -159,10 +262,31 @@ export default {
         },
         yearMonth: {
             get() {
-                return this.pubDate ? new Date(this.pubDate + '-01') : '';
+                return this.book.pubDate ? new Date(this.book.pubDate + '-01') : '';
             },
             set(month) {
-                this.$set(this.book, 'pubDate', month.getFullYear() + '-' + ('0' + (month.getMonth() + 1)).slice(0, 2));
+                if (month.getFullYear)
+                    this.$set(this.book, 'pubDate', month.getFullYear() + '-' + ('0' + (month.getMonth() + 1)).slice(0, 2));
+            }
+        },
+        bookId () {
+            return this.$route.params.id;
+        }
+    },
+    watch: {
+        isUpdate(val) {
+            if(!val) {
+                this.book = {
+                    id: '',
+                    name: '',
+                    dbId: '',
+                    img: '',
+                    author: '',
+                    publisher: '',
+                    page: 1,
+                    ISBN: '',
+                    pubDate: ''
+                };
             }
         }
     }

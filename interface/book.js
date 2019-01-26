@@ -7,13 +7,14 @@ const fs = require('../lib/files');
 const path = require('path');
 
 let __error__ = Object.assign({}, App.error);
+__error__.notexisted = App.error.existed('图书', false);
 
 class Module extends App {
     constructor(session) {
         super([]);
         this.name = '图书';
         this.session = session;
-        this.saftKey = Book.keys();
+        this.saftKey = Book.keys().concat(['id']);
         this.account = new Account(session);
     }
 
@@ -66,6 +67,20 @@ class Module extends App {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));
         }
+    }
+
+    async get(id, onlyData = false) {
+        let book = await Book.findOne({
+            where: { id }
+        });
+
+        if (!book) {
+            throw this.error.notexisted;
+        }
+
+        if (onlyData) return App.filter(book, this.saftKey);
+
+        return this.okquery(App.filter(book, this.saftKey));
     }
     
     async query(data, onlyData = false) {
