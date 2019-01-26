@@ -144,7 +144,7 @@
         />
       </div>
       <div class="layout-logo">
-        <img src="../assets/logo.svg">
+        <router-link to="/"><img src="../assets/logo.svg"></router-link>
       </div>
       <div class="layout-side">
         <div class="layout-avatar">
@@ -164,8 +164,8 @@
             <li>
               <ul :class="menuClasses">
                 <li>
-                  <Icon type="ios-bookmark"></Icon>
-                  <span>Books</span>
+                  <router-link to="/"><Icon type="ios-bookmark"></Icon>
+                  <span>Books</span></router-link>
                 </li>
                 <li v-if="!isLogin" @click="loginModel=true">
                   <Icon custom="fa fa-sign-in"></Icon>
