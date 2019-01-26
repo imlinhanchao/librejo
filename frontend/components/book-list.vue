@@ -86,52 +86,55 @@
 }
 </style>
 <template>
-    <waterfall 
-        align="center"
-        :line-gap="300"
-        :min-line-gap="100"
-        :max-line-gap="220"
-        :single-max-width="500"
-        :watch="books"
-        @reflowed="reflowed"
-        ref="waterfall">
-        <!-- each component is wrapped by a waterfall slot -->
-        <waterfall-slot
-            v-for="(item, index) in books"
-            :width="item.width"
-            :height="item.height"
-            :order="index"
-            :key="item.index"
-            move-class="item-move"
-            class="book"
-        >
-            <section class="item" :index="item.index">
-                <div class="panel">
-                    <div class="thum"><img :src="'/upload/' + item.book.img" alt=""></div>
-                    <div class="info">
-                        <div class="header">
-                            <span class="title" :title="item.book.name">{{item.book.name}}</span>
-                            <router-link :to="'/b/' + item.book.id" class="fa fa-arrow-right link"></router-link>
+    <Layout>
+        <waterfall 
+            align="center"
+            :line-gap="300"
+            :min-line-gap="100"
+            :max-line-gap="220"
+            :single-max-width="500"
+            :watch="books"
+            @reflowed="reflowed"
+            ref="waterfall">
+            <!-- each component is wrapped by a waterfall slot -->
+            <waterfall-slot
+                v-for="(item, index) in books"
+                :width="item.width"
+                :height="item.height"
+                :order="index"
+                :key="item.index"
+                move-class="item-move"
+                class="book"
+            >
+                <section class="item" :index="item.index">
+                    <div class="panel">
+                        <div class="thum"><img :src="'/upload/' + item.book.img" alt=""></div>
+                        <div class="info">
+                            <div class="header">
+                                <span class="title" :title="item.book.name">{{item.book.name}}</span>
+                                <router-link :to="'/b/' + item.book.id" class="fa fa-arrow-right link"></router-link>
+                            </div>
+                            <Row class="footer" type="flex" justify="space-between">
+                                <Col span="5" class="form-item">
+                                    <Button shape="circle" type="text" title="Borrow"><Icon type="md-hand"></Icon></Button>
+                                </Col>
+                                <Col span="5" class="form-item">
+                                    <Button shape="circle" type="text" title="Edit"><Icon custom="fa fa-pencil"></Icon></Button>
+                                </Col>
+                                <Col span="5" class="form-item">
+                                    <Button shape="circle" type="text" title="Delete"><Icon custom="fa fa-trash"></Icon></Button>
+                                </Col>
+                                <Col span="5" class="form-item">
+                                    <Button shape="circle" type="text" title="Notes"><Icon type="md-quote"></Icon></Button>
+                                </Col>
+                            </Row>
                         </div>
-                        <Row class="footer" type="flex" justify="space-between">
-                            <Col span="5" class="form-item">
-                                <Button shape="circle" type="text" title="Borrow"><Icon type="md-hand"></Icon></Button>
-                            </Col>
-                            <Col span="5" class="form-item">
-                                <Button shape="circle" type="text" title="Edit"><Icon custom="fa fa-pencil"></Icon></Button>
-                            </Col>
-                            <Col span="5" class="form-item">
-                                <Button shape="circle" type="text" title="Delete"><Icon custom="fa fa-trash"></Icon></Button>
-                            </Col>
-                            <Col span="5" class="form-item">
-                                <Button shape="circle" type="text" title="Notes"><Icon type="md-quote"></Icon></Button>
-                            </Col>
-                        </Row>
                     </div>
-                </div>
-            </section>
-        </waterfall-slot>
-    </waterfall>
+                </section>
+            </waterfall-slot>
+        </waterfall>
+        <p style="color: #AAA; text-align:center;" v-if="total && total == books.length">--- No More Books ---</p>
+    </Layout>
 </template>
 <script>
 import Waterfall from 'vue-waterfall/lib/waterfall'
