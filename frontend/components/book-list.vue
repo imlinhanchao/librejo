@@ -162,7 +162,11 @@ export default {
         query(index, name) {
             this.$store.dispatch('book/query', {
                 index,
-                query: { name, create_time: this.timestamp},
+                query: { 
+                    name, 
+                    create_time: this.timestamp,
+                    userId: this.$store.getters['account/info'].id
+                },
                 callback: (rsp, err) => {
                     this.loading = false;
                     if (rsp && rsp.state == 0) {
