@@ -144,6 +144,7 @@ export default {
             } else {
                 this.isUpdate = false;
             }
+            this.$refs['bookForm'].resetFields();
         },
         handleUpdate() {
             this.loading = true;
@@ -288,6 +289,9 @@ export default {
                     pubDate: ''
                 };
             }
+        },
+        '$route' (to, from) {
+            this.init();
         }
     }
 }
