@@ -109,7 +109,7 @@ export default {
         },
         scrollEvent() {
             let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-            if (scrollTop + window.innerHeight >= document.body.clientHeight) {
+            if (scrollTop + window.innerHeight >= document.body.clientHeight - 5) {
                 this.addBooks && this.addBooks();
             }
         },
