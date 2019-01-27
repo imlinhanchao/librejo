@@ -41,7 +41,7 @@
   .separator {
     border-left: 1px solid #A7AEB7;
     display: inline-block;
-    height: 30%;
+    height: 1em;
     margin: 0 0.5em;
     visibility: hidden;
     &.visibi-sep {
@@ -175,17 +175,33 @@
                     padding-top: 0;
                     top: 3em;
                 }
-                .menu-item:hover {
-                    color: #2b435e;
+                .menu-item {
+                    margin-left: .5em;
+                    padding-left: .5px; 
+                    &:hover{
+                        color: #2b435e;
+                    }
+                }
+                .separator.visibi-sep {
+                    visibility: visible;
+                    position: absolute;
+                    margin: auto;
+                    width: 0;
+                    height: 0;
+                    border-style: solid;
+                    border-width: 0 5px 6px 5px;
+                    border-color: transparent transparent #000000 transparent;
+                    visibility: visible;
+                    bottom: 1em;
+                    margin-left: .6em;
                 }
             }
             .menu-li {
                 text-align: center;
             }
-
-        }
-        .separator.visibi-sep {
-            visibility: hidden;
+            .separator.visibi-sep {
+                visibility: hidden;
+            }
         }
     }
     .layout-avatar {
@@ -243,11 +259,11 @@
           <Avatar icon="ios-person" size="default" v-if="isLogin"/>
         </div>
         <div class="layout-menu">
-          <span class="separator" :class="{
-              'visibi-sep': isLogin
-          }"></span>
           <ul class="menu">
             <li class="menu-li">
+              <span class="separator" :class="{
+                  'visibi-sep': isLogin
+              }"></span>
               <span :class="menuItemClasses">
                 <Icon custom="fa fa-bars"/>
                 <span class="menu-title">Menu</span>
