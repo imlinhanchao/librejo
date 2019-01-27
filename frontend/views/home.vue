@@ -1,6 +1,6 @@
 <template>
     <div class="index">
-        <Dropdown placement="bottom-start" @on-click="switchBooks">
+        <Dropdown placement="bottom-start" @on-click="switchBooks" v-if="isLogin">
             <a href="javascript:void(0)">
                 {{bookType[currentType]}}
                 <Icon type="ios-arrow-down"></Icon>
@@ -44,6 +44,9 @@
                     'Reading',
                     'Lent'
                 ]
+            },
+            isLogin() {
+            return this.$store.getters['account/isLogin'];
             }
         }
     };

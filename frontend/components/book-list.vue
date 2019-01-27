@@ -134,7 +134,6 @@
             </waterfall-slot>
         </waterfall>
         <p style="color: #AAA; text-align:center;" v-if="total && total == books.length">--- No More Books ---</p>
-        <p style="color: #AAA; text-align:center;" v-if="!$store.getters['account/isLogin']">You must login first.</p>
         <p style="color: #AAA; text-align:center;" v-if="total == 0 && $store.getters['account/isLogin']">You must <router-link to="/book/new">add</router-link> your book first.</p>
     </Layout>
 </template>
@@ -162,6 +161,7 @@ export default {
     },
     methods: {
         query(index, name) {
+            if (!this.$store.getters['account/isLogin']) return;
             this.$store.dispatch('book/query', {
                 index,
                 query: { 

@@ -4,9 +4,10 @@ const routers = [{
         title: 'Home'
     },
     component: (resolve) => require(['./views/index.vue'], resolve),
+    props: { loginPage: false },
     beforeRouteEnter(to, from, next) {
         if(!this.$root.loginUser) {
-            to = '/';
+            to = '/login';
             next();
         }
     },
@@ -35,6 +36,13 @@ const routers = [{
 
     ]
     }, {
+        path: '/login',
+        meta: {
+            title: 'Login'
+        },
+        component: (resolve) => require(['./views/index.vue'], resolve),
+        props: { loginPage: true }
+    },{
         path: '*',
         redirect: '/'
     }

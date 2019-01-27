@@ -118,6 +118,16 @@
 .login-link {
     font-weight: bold;
 }
+.login-tip {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: 2em;
+}
 </style>
 <style lang="less">
 #search_book {
@@ -167,7 +177,7 @@
                   <router-link to="/"><Icon type="ios-bookmark"></Icon>
                   <span>Books</span></router-link>
                 </li>
-                <li v-if="!isLogin" @click="loginModel=true">
+                <li v-if="!isLogin" @click="loginAccount">
                   <Icon custom="fa fa-sign-in"></Icon>
                   <span>Login</span>
                 </li>
@@ -196,6 +206,7 @@
     <Content :style="{padding: '10px 2em'}">
       <Layout>
         <router-view/>
+        <p v-if="!isLogin" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
       </Layout>
     </Content>
     <Footer class="layout-footer">
@@ -242,6 +253,12 @@
 <script>
 
 export default {
+  props: {
+    loginPage: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       isCollapsed: false,
@@ -286,14 +303,22 @@ export default {
       return this.$marked(this.notes, { sanitize: true });
     }
   },
-  mounted() {},
+  mounted() {
+      this.loginModel = this.loginPage;
+  },
   methods: {
+    loginAccount() {
+        this.$router.replace('/login');
+        this.loginModel=true;
+    },
     logoutAccount() {
       this.$store.dispatch("account/logout", (rsp, err) => {
         if (!rsp || rsp.state != 0) {
           err = (err && err.message) || rsp.msg;
           // this.$Message.error(err);
+          return;
         }
+        this.$router.replace('/login');
       });
     },
     loginSubmit(form) {
@@ -307,6 +332,7 @@ export default {
               if (rsp && rsp.state == 0) {
                 this.loginModel = false;
                 this.$Message.success(`Welcome ${this.name} !`);
+                this.$router.replace('/');
               } else {
                 err = (err && err.message) || rsp.msg;
                 this.$Message.error(err);
