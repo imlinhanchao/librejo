@@ -37,6 +37,37 @@ button.delete-btn {
         box-shadow: none;
     }
 }
+.fullscreen {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    #scan-canvas {
+        position: absolute;
+        max-width: 480px;
+        max-height: 800px;
+        height: 100%;
+        width: 100%;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+    }
+}
+</style>
+<style lang="less">
+#scan-canvas video {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
 </style>
 
 <template>
@@ -69,7 +100,7 @@ button.delete-btn {
             <Form class="book-form" ref="bookForm" :model="book" :rules="ruleValidate" :label-width="100">
                 <FormItem label="ISBN" prop="ISBN" required>
                     <Input v-model="book.ISBN" v-if="!isUpdate" :disabled="isUpdate" placeholder="ISBN" :maxlength="200" size="default">
-                        <Button slot="prepend" class="pend-btn" icon="md-qr-scanner"/>
+                        <Button slot="prepend" class="pend-btn" icon="md-qr-scanner" @click="scanInit"/>
                         <Button slot="append" class="pend-btn" icon="ios-search" @click="search"/>
                     </Input>
                     <span v-if="isUpdate" >{{book.ISBN}}</span>
@@ -96,12 +127,14 @@ button.delete-btn {
                 </FormItem>
             </Form>
         </Content>
+        <section v-show="isScan" class="fullscreen"><div id="scan-canvas"></div></section>
     </Layout>
 </template>
 
 <script>
 import env from '../config/env';
 import config from '../../config.json';
+import Quagga from 'quagga';
 
 export default {
     data() {
@@ -119,7 +152,8 @@ export default {
             },
             loading: false,
             removeloading: false,
-            isUpdate: false
+            isUpdate: false,
+            isScan: false
         };
     },
     mounted() {
@@ -245,6 +279,31 @@ export default {
                     this.$Message.error(error.message);
                     console.error(error);
                 });
+        },
+        scanInit() {
+            this.isScan = true;
+            Quagga.init({
+                inputStream : {
+                    name : "Live",
+                    type : "LiveStream",
+                    target: document.getElementById('scan-canvas')    // Or '#yourElement' (optional)
+                },
+                decoder : {
+                    readers : ["ean_reader"]
+                }
+            }, (err) => {
+                if (err) {
+                    this.$Message.error(err);
+                    return;
+                }
+                Quagga.start();
+
+                Quagga.onDetected((data) => {
+                    this.book.ISBN = data.codeResult.code;
+                    Quagga.stop();
+                    this.isScan = false;
+                })
+            });
         }
     },
     computed: {
