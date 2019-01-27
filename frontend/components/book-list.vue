@@ -106,7 +106,7 @@
                 move-class="item-move"
                 class="book"
             >
-                <bookItem :book="item.book" />
+                <bookItem :book="item.book" @remove="removeBook"/>
             </waterfall-slot>
         </waterfall>
         <p style="color: #AAA; text-align:center;" v-if="total && total == books.length">--- No More Books ---</p>
@@ -183,6 +183,10 @@ export default {
             if (scrollTop + window.innerHeight >= document.body.clientHeight) {
                 this.addBooks && this.addBooks();
             }
+        },
+        removeBook(id) {
+            this.total -= 1;
+            this.books = this.books.filter(b => b.book.id != id);
         }
     }
 }

@@ -30,7 +30,7 @@
             top: .5em;
             right: .5em;
             left: .5em;
-            .link {
+            .read {
                 position: absolute;
                 right: 0;
                 width: 2em;
@@ -38,8 +38,6 @@
                 border-radius: 1em;
                 background: #00000066;
                 text-align: center;
-                line-height: 1.9em;
-                transform: rotate(-45deg);
             }
             .title {
                 position: absolute;
@@ -60,24 +58,29 @@
             bottom: .5em;
             right: .5em;
             left: .5em;
-            .form-item {
+        }
+        .form-item {
+            text-align: center;
+            button {
+                padding: 0;
+                display: inline-block;
+                height: 2em;
+                width: 2em;
+                color: inherit;
+                font-size: 1.2em;
                 text-align: center;
-                button {
-                    padding: 0;
-                    display: inline-block;
-                    height: 2em;
-                    width: 2em;
-                    color: inherit;
-                    font-size: 1.2em;
-                    text-align: center;
-                    line-height: 0em;
-                    background: #00000066;
-                    &:hover {
-                        background: #27272766;
-                        color: #D21C13;
-                    }
+                line-height: 0em;
+                background: #00000066;
+                color: #FFF;
+                &:hover {
+                    background: #27272766;
+                    color: #D21C13;
                 }
             }
+        }
+        .ivu-poptip {
+            color: #000;
+            text-align: left;
         }
     }
 }
@@ -87,9 +90,9 @@
         <div class="panel">
             <div class="thum"><img :src="'/upload/' + book.img" alt=""></div>
             <div class="info">
-                <div class="header">
-                    <span class="title" :title="book.name">{{book.name}}</span>
-                    <router-link :to="'/b/' + book.id" class="fa fa-arrow-right link"></router-link>
+                <div class="header form-item">
+                    <span class="title" :title="book.name"><router-link :to="'/b/' + book.id">{{book.name}}</router-link></span>
+                    <Button shape="circle" type="text" title="Read" class="read"><Icon custom="fa fa-bookmark-o"></Icon></Button>
                 </div>
                 <Row class="footer" type="flex" justify="space-between">
                     <Col span="5" class="form-item">
@@ -99,7 +102,12 @@
                         <Button shape="circle" type="text" title="Edit" @click="$router.push(`/book/${book.id}`)"><Icon custom="fa fa-pencil"></Icon></Button>
                     </Col>
                     <Col span="5" class="form-item">
-                        <Button shape="circle" type="text" title="Delete"><Icon custom="fa fa-trash"></Icon></Button>
+                        <Poptip
+                            confirm
+                            title="Are you sure you want to remove this book?"
+                            @on-ok="deleteEvent">
+                            <Button shape="circle" type="text" title="Delete"><Icon custom="fa fa-trash"></Icon></Button>
+                        </Poptip>
                     </Col>
                     <Col span="5" class="form-item">
                         <Button shape="circle" type="text" title="Notes"><Icon type="md-quote"></Icon></Button>
@@ -126,7 +134,21 @@ export default {
     mounted () {
     },
     methods: {
-
+        deleteEvent() {
+            this.$store.dispatch('book/remove', {
+                id: this.book.id,
+                callback: (rsp, err) => {
+                    this.removeloading = false;
+                    if (rsp && rsp.state == 0) {
+                        this.$Message.success(`Remove Book Success!`);
+                        this.$emit('remove', this.book.id);
+                    } else {
+                        err = (err && err.message) || rsp.msg;
+                        this.$Message.error(err);
+                    }
+                }
+            })
+        }
     }
 }
 </script>
