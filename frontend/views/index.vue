@@ -389,6 +389,10 @@ export default {
   },
   mounted() {
       this.loginModel = this.loginPage;
+      if (!this.isLogin && this.$route.path != '/login') {
+          this.$router.replace('/login');
+          this.loginModel = true;
+      }
   },
   methods: {
     loginAccount() {
@@ -402,7 +406,7 @@ export default {
           // this.$Message.error(err);
           return;
         }
-        this.$router.replace('/login');
+        this.loginAccount();
       });
     },
     loginSubmit(form) {
