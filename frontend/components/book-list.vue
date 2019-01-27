@@ -1,4 +1,11 @@
 <style lang="less" scoped>
+.loading {
+    position: relative;
+    height: 2em;
+    div {
+        background: transparent;
+    }
+}
 </style>
 <template>
     <Layout>
@@ -26,6 +33,7 @@
         </waterfall>
         <p style="color: #AAA; text-align:center;" v-if="total && total == books.length">--- No More Books ---</p>
         <p style="color: #AAA; text-align:center;" v-if="total == 0 && $store.getters['account/isLogin']">You must <router-link to="/book/new">add</router-link> your book first.</p>
+        <p v-show="loading" class="loading"><Spin fix></Spin></p>
     </Layout>
 </template>
 <script>
@@ -48,7 +56,8 @@ export default {
             books: [],
             timestamp: new Date().valueOf(),
             total: 0,
-            lastRequest: 0
+            lastRequest: 0,
+            loading: false
         }
     },
     mounted () {
@@ -67,6 +76,7 @@ export default {
     methods: {
         query(index, query) {
             if (!this.$store.getters['account/isLogin']) return;
+            this.loading = true;
             let lastRequest = new Date().valueOf();
             this.lastRequest = lastRequest;
             this.$store.dispatch('book/query', {
@@ -77,7 +87,6 @@ export default {
                 }, query || {}),
                 callback: (rsp, err) => {
                     if (this.lastRequest != lastRequest) return;
-                    this.loading = false;
                     if (rsp && rsp.state == 0) {
                         rsp.data.data.forEach(d => {
                             let img = new Image();
@@ -87,6 +96,7 @@ export default {
                                     height: img.height,
                                     book: d,
                                 });
+                                this.loading = false;
                             }
                             img.src = '/upload/' + d.img;
                         })
@@ -94,6 +104,7 @@ export default {
                     } else {
                         err = (err && err.message) || rsp.msg;
                         this.$Message.error(err);
+                        this.loading = false;
                     }
                 }
             })
