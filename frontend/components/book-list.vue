@@ -106,31 +106,7 @@
                 move-class="item-move"
                 class="book"
             >
-                <section class="item" :index="item.index">
-                    <div class="panel">
-                        <div class="thum"><img :src="'/upload/' + item.book.img" alt=""></div>
-                        <div class="info">
-                            <div class="header">
-                                <span class="title" :title="item.book.name">{{item.book.name}}</span>
-                                <router-link :to="'/b/' + item.book.id" class="fa fa-arrow-right link"></router-link>
-                            </div>
-                            <Row class="footer" type="flex" justify="space-between">
-                                <Col span="5" class="form-item">
-                                    <Button shape="circle" type="text" title="Borrow"><Icon type="md-hand"></Icon></Button>
-                                </Col>
-                                <Col span="5" class="form-item">
-                                    <Button shape="circle" type="text" title="Edit" @click="$router.push(`/book/${item.book.id}`)"><Icon custom="fa fa-pencil"></Icon></Button>
-                                </Col>
-                                <Col span="5" class="form-item">
-                                    <Button shape="circle" type="text" title="Delete"><Icon custom="fa fa-trash"></Icon></Button>
-                                </Col>
-                                <Col span="5" class="form-item">
-                                    <Button shape="circle" type="text" title="Notes"><Icon type="md-quote"></Icon></Button>
-                                </Col>
-                            </Row>
-                        </div>
-                    </div>
-                </section>
+                <bookItem :book="item.book" />
             </waterfall-slot>
         </waterfall>
         <p style="color: #AAA; text-align:center;" v-if="total && total == books.length">--- No More Books ---</p>
@@ -138,12 +114,14 @@
     </Layout>
 </template>
 <script>
-import Waterfall from 'vue-waterfall/lib/waterfall'
-import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+import Waterfall from 'vue-waterfall/lib/waterfall';
+import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot';
+import bookItem from './book-item';
 export default {
     components: {
         Waterfall,
-        WaterfallSlot
+        WaterfallSlot,
+        bookItem
     },
     data () {
         return {
