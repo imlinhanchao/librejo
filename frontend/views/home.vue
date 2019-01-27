@@ -10,7 +10,7 @@
             </DropdownMenu>
         </Dropdown>
         <Content class="layout-content">
-            <bookList />
+            <bookList :params="query"/>
         </Content>
     </div>
 </template>
@@ -22,10 +22,13 @@
             bookList
         },
         mounted() {
+            this.init();
         },
         methods: {
             switchBooks(type) {
                 this.currentType = type;
+            },
+            init() {
             }
         },
         data() {
@@ -34,7 +37,7 @@
                 total: 0,
                 align: 'center',
                 isBusy: false,
-                currentType: 0
+                currentType: 0,
             };
         },
         computed: {
@@ -46,7 +49,17 @@
                 ]
             },
             isLogin() {
-            return this.$store.getters['account/isLogin'];
+                return this.$store.getters['account/isLogin'];
+            },
+            query () {
+                return {
+                    name: this.$route.params.word ? `%${this.$route.params.word}%` : undefined
+                };
+            }
+        },
+        watch: {
+            '$router': (to, from) => {
+                this.init()
             }
         }
     };

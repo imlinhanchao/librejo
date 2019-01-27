@@ -6,7 +6,7 @@ const routers = [{
     component: (resolve) => require(['./views/index.vue'], resolve),
     props: { loginPage: false },
     beforeRouteEnter(to, from, next) {
-        if(!this.$root.loginUser) {
+        if(!this.$store.getters['account/isLogin']) {
             to = '/login';
             next();
         }
@@ -16,6 +16,13 @@ const routers = [{
             path: '',
             meta: {
                 title: 'Home'
+            },
+            component: (resolve) => require(['./views/home.vue'], resolve)
+        },
+        {
+            path: 's/:word',
+            meta: {
+                title: 'Search'
             },
             component: (resolve) => require(['./views/home.vue'], resolve)
         },

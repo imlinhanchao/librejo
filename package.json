@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "start": "node ./bin/www",
-        "dev": "webpack-dev-server --content-base ./views/ --open --inline --hot --compress --history-api-fallback --config ./build/webpack.dev.config.js",
+        "dev": "webpack-dev-server --host 0.0.0.0 --disableHostCheck=true --content-base ./views/ --open --inline --hot --compress --history-api-fallback --config ./build/webpack.dev.config.js",
         "server": "cross-env NODE_ENV=development node ./bin/www",
         "build": "webpack --progress --hide-modules --config ./build/webpack.prod.config.js",
         "initdb": "node scripts/init_db.js",
@@ -31,6 +31,7 @@
         "morgan": "~1.8.1",
         "multer": "^1.3.1",
         "mysql2": "^1.5.3",
+        "quagga": "^0.12.1",
         "request": "^2.81.0",
         "request-promise": "^4.2.1",
         "sequelize": "^4.37.10",

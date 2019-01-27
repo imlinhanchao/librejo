@@ -33,6 +33,11 @@ import Waterfall from 'vue-waterfall/lib/waterfall';
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot';
 import bookItem from './book-item';
 export default {
+    props: {
+        params: {
+            type: Object,
+        }
+    },
     components: {
         Waterfall,
         WaterfallSlot,
@@ -42,27 +47,36 @@ export default {
         return {
             books: [],
             timestamp: new Date().valueOf(),
-            total: 0
+            total: 0,
+            lastRequest: 0
         }
     },
     mounted () {
-        this.query(0);
+        this.query(0, this.params);
         window.addEventListener('scroll', this.scrollEvent);
     },
     destroyed() {
         window.removeEventListener('scroll', this.scrollEvent);
     },
+    watch: {
+        params(val) {
+            this.books = [];
+            this.query(0, val);
+        }
+    },
     methods: {
-        query(index, name) {
+        query(index, query) {
             if (!this.$store.getters['account/isLogin']) return;
+            let lastRequest = new Date().valueOf();
+            this.lastRequest = lastRequest;
             this.$store.dispatch('book/query', {
                 index,
-                query: { 
-                    name, 
+                query: Object.assign({ 
                     create_time: this.timestamp,
                     userId: this.$store.getters['account/info'].id
-                },
+                }, query || {}),
                 callback: (rsp, err) => {
+                    if (this.lastRequest != lastRequest) return;
                     this.loading = false;
                     if (rsp && rsp.state == 0) {
                         rsp.data.data.forEach(d => {

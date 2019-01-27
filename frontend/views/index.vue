@@ -223,6 +223,8 @@
           placeholder="Search Book"
           class="search-input"
           style="border:0;"
+          @on-keydown.enter="search"
+          v-model="searchWord"
         />
         <Button type="text"
               slot="prepend"
@@ -355,7 +357,8 @@ export default {
         passwd: [{ required: true, message: "请输入密码。", trigger: "blur" }]
       },
       login_loading: false,
-      isSearch: false
+      isSearch: false,
+      searchWord: this.$route.params.word || ''
     };
   },
   computed: {
@@ -422,6 +425,9 @@ export default {
           });
         }
       });
+    },
+    search () {
+        this.$router.replace('/s/' + this.searchWord);
     }
   }
 };
