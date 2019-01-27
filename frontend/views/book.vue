@@ -57,6 +57,14 @@ button.delete-btn {
         margin: auto;
     }
 }
+@media (max-width: 480px)  {
+    .content {
+        display: block;
+    }
+    .book-img {
+        margin: 0 auto 1em;
+    }
+}
 </style>
 <style lang="less">
 #scan-canvas video {

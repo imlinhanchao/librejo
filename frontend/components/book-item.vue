@@ -84,6 +84,13 @@
         }
     }
 }
+@media (max-width: 480px)  {
+    .book {
+        .info {
+            font-size: 150%;
+        }
+    }
+}
 </style>
 <template>
     <section class="book" :index="book.index">

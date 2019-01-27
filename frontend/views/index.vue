@@ -43,6 +43,10 @@
     display: inline-block;
     height: 30%;
     margin: 0 0.5em;
+    visibility: hidden;
+    &.visibi-sep {
+        visibility: visible;
+    }
   }
   .menu {
     display: inline-block;
@@ -128,6 +132,66 @@
     margin: auto;
     height: 2em;
 }
+.search-btn {
+    display: none;
+    font-size: 1em; 
+}
+@media (max-width: 480px)  {
+    .search-btn {
+        display: inline-block;
+    }
+    .search-input {
+        display: none;
+    }
+    .search-focus {
+        position: absolute;
+        background: #FFF;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 0 2em;
+        .search-input {
+            display: inline-block;
+            width: 75%;
+        }
+        .search-close {
+            box-shadow: none;
+            display: inline-block;
+            font-size: 2em;
+            padding: 0;
+        }
+    }
+    .layout-header {
+        padding: 0 0 0 2em;
+    }
+    .layout-menu {
+        .menu {
+            width: 7em;
+            .menu-title {
+                display: none;
+            }
+            &:hover {
+                .menu-list {
+                    padding-top: 0;
+                    top: 3em;
+                }
+                .menu-item:hover {
+                    color: #2b435e;
+                }
+            }
+            .menu-li {
+                text-align: center;
+            }
+
+        }
+        .separator.visibi-sep {
+            visibility: hidden;
+        }
+    }
+    .layout-avatar {
+        display: none;
+    }
+}
 </style>
 <style lang="less">
 #search_book {
@@ -144,7 +208,15 @@
 <template>
   <Layout class="layout">
     <Header class="layout-header">
-      <div class="layout-search">
+      <div class="layout-search" :class="extendSearch">
+        <Button type="text"
+              slot="prepend"
+              icon="ios-search"
+              class="search-btn"
+              style="box-shadow:none;"
+              @click="isSearch=true"
+              v-show="!isSearch"
+            ></Button>
         <Input
           element-id="search_book"
           prefix="ios-search"
@@ -152,6 +224,14 @@
           class="search-input"
           style="border:0;"
         />
+        <Button type="text"
+              slot="prepend"
+              icon="ios-close"
+              class="search-close"
+              style="box-shadow:none;"
+              @click="isSearch=false"
+              v-show="isSearch"
+            ></Button>
       </div>
       <div class="layout-logo">
         <router-link to="/"><img src="../assets/logo.svg"></router-link>
@@ -161,14 +241,14 @@
           <Avatar icon="ios-person" size="default" v-if="isLogin"/>
         </div>
         <div class="layout-menu">
-          <span class="separator" :style="{
-              visibility: isLogin ? 'visible' : 'hidden'
+          <span class="separator" :class="{
+              'visibi-sep': isLogin
           }"></span>
           <ul class="menu">
-            <li>
+            <li class="menu-li">
               <span :class="menuItemClasses">
                 <Icon custom="fa fa-bars"/>
-                <span>Menu</span>
+                <span class="menu-title">Menu</span>
               </span>
             </li>
             <li>
@@ -210,7 +290,7 @@
       </Layout>
     </Content>
     <Footer class="layout-footer">
-      <Button class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>
+      <Button v-if="isLogin" class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>
       <p>&copy; 2018 ~ {{new Date().getFullYear()}} Library. All rights reserved.</p>
     </Footer>
     <Modal v-model="loginModel" title="登录" width="300">
@@ -275,6 +355,7 @@ export default {
         passwd: [{ required: true, message: "请输入密码。", trigger: "blur" }]
       },
       login_loading: false,
+      isSearch: false
     };
   },
   computed: {
@@ -299,8 +380,8 @@ export default {
     passwdType() {
       return this.isPasswdShow ? "text" : "password";
     },
-    compiledMarkdown: function() {
-      return this.$marked(this.notes, { sanitize: true });
+    extendSearch() {
+        return this.isSearch ? 'search-focus' : '';
     }
   },
   mounted() {
