@@ -75,7 +75,6 @@ export default {
     },
     methods: {
         query(index, query) {
-            if (!this.$store.getters['account/isLogin']) return;
             this.loading = true;
             let lastRequest = new Date().valueOf();
             this.lastRequest = lastRequest;

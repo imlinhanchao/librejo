@@ -10,7 +10,7 @@
             </DropdownMenu>
         </Dropdown>
         <Content class="layout-content">
-            <bookList :params="query"/>
+            <bookList :params="query" v-if="this.isLogin"/>
         </Content>
     </div>
 </template>
