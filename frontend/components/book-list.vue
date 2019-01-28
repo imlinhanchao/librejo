@@ -101,6 +101,7 @@ export default {
                             img.src = '/upload/' + d.img;
                         })
                         this.total = rsp.data.total;
+                        if (!this.total) this.loading = false;
                     } else {
                         err = (err && err.message) || rsp.msg;
                         this.$Message.error(err);
