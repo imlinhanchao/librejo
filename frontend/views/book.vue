@@ -120,7 +120,7 @@ button.delete-btn {
             </section>
             <Form class="book-form" ref="bookForm" :model="book" :rules="ruleValidate" :label-width="100">
                 <FormItem label="ISBN" prop="ISBN" required>
-                    <Input v-model="book.ISBN" v-if="!isUpdate" :disabled="isUpdate" placeholder="ISBN" :maxlength="200" size="default">
+                    <Input autofocus v-model="book.ISBN" v-if="!isUpdate" :disabled="isUpdate" placeholder="ISBN" :maxlength="200" size="default">
                         <Button slot="prepend" class="pend-btn" icon="md-qr-scanner" @click="scanInit"/>
                         <Button slot="append" class="pend-btn" icon="ios-search" @click="search"/>
                     </Input>
@@ -299,7 +299,7 @@ export default {
                             ISBN: data.isbn13,
                             pubDate: ''
                         };
-                        this.yearMonth = new Date(data.pubdate);
+                        this.yearMonth = new Date(data.pubdate.replace(/年/, '-').replace(/月/, ''));
                     } else {
                         this.$Message.error(rsp.msg);
                     }
