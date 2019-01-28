@@ -42,7 +42,7 @@
     border-left: 1px solid #A7AEB7;
     display: inline-block;
     height: 1em;
-    margin: 0 0.5em;
+    margin: 0 0.8em;
     visibility: hidden;
     &.visibi-sep {
         visibility: visible;
@@ -50,7 +50,7 @@
   }
   .menu {
     display: inline-block;
-    width: 5em;
+    width: 7em;
     list-style: none;
     &:hover {
       .menu-item {
