@@ -42,7 +42,7 @@
     border-left: 1px solid #A7AEB7;
     display: inline-block;
     height: 1em;
-    margin: 0 0.8em;
+    margin: 0 .4em 0 .8em;
     visibility: hidden;
     &.visibi-sep {
         visibility: visible;
@@ -92,10 +92,10 @@
         &:hover {
           color: #D21C13;
         }
-        .ivu-icon {
-            width: 16px; 
-        }
       }
+    }
+    .ivu-icon {
+        width: 16px; 
     }
   }
 }
