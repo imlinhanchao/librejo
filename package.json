@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "start": "node ./bin/www",
-        "dev": "webpack-dev-server --host 0.0.0.0 --disableHostCheck=true --content-base ./views/ --open --inline --hot --compress --history-api-fallback --config ./build/webpack.dev.config.js",
+        "dev": "webpack-dev-server --disableHostCheck=true --content-base ./views/ --open --inline --hot --compress --history-api-fallback --config ./build/webpack.dev.config.js",
         "server": "cross-env NODE_ENV=development node ./bin/www",
         "build": "webpack --progress --hide-modules --config ./build/webpack.prod.config.js",
         "initdb": "node scripts/init_db.js",
