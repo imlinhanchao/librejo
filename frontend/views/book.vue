@@ -243,20 +243,24 @@ export default {
             })
         },
         handleSubmit() {
-            this.loading = true;
-            this.$store.dispatch('book/insert', {
-                book: this.book,
-                callback: (rsp, err) => {
-                    this.loading = false;
-                    if (rsp && rsp.state == 0) {
-                        this.$Message.success(`New Book Success!`);
-                        this.$router.push('/book/' + rsp.data.id);
-                        this.book = rsp.data;
-                        this.isUpdate = true;
-                    } else {
-                        err = (err && err.message) || rsp.msg;
-                        this.$Message.error(err);
-                    }
+            this.$refs['bookForm'].validate((valid) => {
+                if (valid) {
+                    this.loading = true;
+                    this.$store.dispatch('book/insert', {
+                        book: this.book,
+                        callback: (rsp, err) => {
+                            this.loading = false;
+                            if (rsp && rsp.state == 0) {
+                                this.$Message.success(`New Book Success!`);
+                                this.$router.push('/book/' + rsp.data.id);
+                                this.book = rsp.data;
+                                this.isUpdate = true;
+                            } else {
+                                err = (err && err.message) || rsp.msg;
+                                this.$Message.error(err);
+                            }
+                        }
+                    })
                 }
             })
         },
