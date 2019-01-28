@@ -50,6 +50,10 @@ new Vue({
     computed: {
     },
     mounted () {
-        this.$store.dispatch('account/checklogin', (rsp, err) => { });
+        this.$store.dispatch('account/checklogin', (rsp, err) => { 
+            if (!this.$store.getters['account/isLogin'] && this.$route.path != '/login') {
+                this.$router.replace('/login');
+            }
+        });
     }
 });

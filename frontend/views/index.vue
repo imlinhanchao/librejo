@@ -405,10 +405,6 @@ export default {
   },
   mounted() {
       this.loginModel = this.loginPage;
-      if (!this.isLogin && this.$route.path != '/login') {
-          this.$router.replace('/login');
-          this.loginModel = true;
-      }
   },
   methods: {
     loginAccount() {
