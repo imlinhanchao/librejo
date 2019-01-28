@@ -39,11 +39,12 @@ button.delete-btn {
 }
 .fullscreen {
     position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    left: -1px;
+    right: -1px;
+    top: -1px;
+    bottom: -1px;
     z-index: 100;
+    background: #000;
     #scan-canvas {
         position: absolute;
         max-width: 480px;
@@ -55,6 +56,14 @@ button.delete-btn {
         top: 0;
         bottom: 0;
         margin: auto;
+    }
+    .close-btn {
+        position: absolute;
+        top: .5em;
+        right: .5em;
+        color: #FFF;
+        font-size: 1.5em;
+        z-index: 500;
     }
 }
 @media (max-width: 480px)  {
@@ -75,6 +84,7 @@ button.delete-btn {
     top: 0;
     bottom: 0;
     margin: auto;
+    z-index: 400;
 }
 </style>
 
@@ -135,7 +145,10 @@ button.delete-btn {
                 </FormItem>
             </Form>
         </Content>
-        <section v-show="isScan" class="fullscreen"><div id="scan-canvas"></div></section>
+        <section v-show="isScan" class="fullscreen">
+            <Button type="text" icon="md-close" @click="scanClose" class="close-btn"></Button>
+            <div id="scan-canvas"></div>
+        </section>
     </Layout>
 </template>
 
@@ -308,10 +321,13 @@ export default {
 
                 Quagga.onDetected((data) => {
                     this.book.ISBN = data.codeResult.code;
-                    Quagga.stop();
-                    this.isScan = false;
+                    this.scanClose();
                 })
             });
+        },
+        scanClose() {
+            Quagga.stop();
+            this.isScan = false;
         }
     },
     computed: {
