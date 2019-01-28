@@ -31,8 +31,8 @@
                 <bookItem :book="item.book" @remove="removeBook"/>
             </waterfall-slot>
         </waterfall>
-        <p style="color: #AAA; text-align:center;" v-if="total && total == books.length">--- No More Books ---</p>
-        <p style="color: #AAA; text-align:center;" v-if="total == 0 && $store.getters['account/isLogin']">You must <router-link to="/book/new">add</router-link> your book first.</p>
+        <p style="color: #AAA; text-align:center;" v-if="!loading && total && total == books.length">--- No More Books ---</p>
+        <p style="color: #AAA; text-align:center;" v-if="!loading && total == 0 && $store.getters['account/isLogin']">You must <router-link to="/book/new">add</router-link> your book first.</p>
         <p v-show="loading" class="loading"><Spin fix></Spin></p>
     </Layout>
 </template>
