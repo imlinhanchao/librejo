@@ -64,6 +64,9 @@ button.delete-btn {
         color: #FFF;
         font-size: 1.5em;
         z-index: 500;
+        &:hover {
+            background: transparent;
+        }
     }
 }
 @media (max-width: 480px)  {
@@ -179,6 +182,11 @@ export default {
     },
     mounted() {
         this.init();
+    },
+    destoryed() {
+        if(this.isScan) {
+            Quagga.stop();
+        }
     },
     methods: {
         init () {
@@ -322,6 +330,7 @@ export default {
                 Quagga.onDetected((data) => {
                     this.book.ISBN = data.codeResult.code;
                     this.scanClose();
+                    this.search();
                 })
             });
         },
