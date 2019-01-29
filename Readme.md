@@ -17,7 +17,7 @@
 ## 目录说明
 1. bin - 服务启动入口  
 2. interface - 业务接口实现   
-3. fontend - 前端代码  
+3. frontend - 前端代码  
     1. assets - 前端资源  
     2. components - 前端组件
     3. config - 运行与编译变量配置
