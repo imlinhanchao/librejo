@@ -256,13 +256,15 @@
       </div>
       <div class="layout-side">
         <div class="layout-avatar">
-          <Avatar icon="ios-person" size="default" v-if="isLogin"/>
+            <router-link v-if="$root.isLogin"  :to="'/u/' + $root.loginUser.username">
+                <Avatar icon="ios-person" size="default" :title="$root.name"/>
+            </router-link>
         </div>
         <div class="layout-menu">
           <ul class="menu">
             <li class="menu-li">
               <span class="separator" :class="{
-                  'visibi-sep': isLogin
+                  'visibi-sep': $root.isLogin
               }"></span>
               <span :class="menuItemClasses">
                 <Icon custom="fa fa-bars"/>
@@ -275,23 +277,23 @@
                   <router-link to="/"><Icon type="ios-bookmark"></Icon>
                   <span>Books</span></router-link>
                 </li>
-                <li v-if="!isLogin" @click="loginAccount">
+                <li v-if="!$root.isLogin" @click="loginAccount">
                   <Icon custom="fa fa-sign-in"></Icon>
                   <span>Login</span>
                 </li>
-                <li v-if="isLogin">
+                <li v-if="$root.isLogin">
                   <Icon type="ios-hand"></Icon>
                   <span>Lends</span>
                 </li>
-                <li v-if="isLogin">
+                <li v-if="$root.isLogin">
                   <Icon type="md-document"/>
                   <span>Notes</span>
                 </li>
-                <li v-if="isLogin">
+                <li v-if="$root.isLogin">
                   <Icon type="md-settings"/>
                   <span>Setting</span>
                 </li>
-                <li v-if="isLogin" @click="logoutAccount">
+                <li v-if="$root.isLogin" @click="logoutAccount">
                   <Icon type="md-log-out"/>
                   <span>Logout</span>
                 </li>
@@ -304,11 +306,11 @@
     <Content :style="{padding: '10px 2em'}">
       <Layout>
         <router-view/>
-        <p v-if="!isLogin" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
+        <p v-if="!$root.isLogin" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
       </Layout>
     </Content>
     <Footer class="layout-footer">
-      <Button v-if="isLogin" class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>
+      <Button v-if="$root.isLogin" class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>
       <p>&copy; 2018 ~ {{new Date().getFullYear()}} Library. All rights reserved.</p>
     </Footer>
     <Login v-model="loginModel" />
@@ -335,20 +337,11 @@ export default {
     };
   },
   computed: {
-    loginUser() {
-      return this.$store.getters['account/info'];
-    },
     menuItemClasses() {
       return ["menu-item", this.isCollapsed ? "actived-menu" : ""];
     },
     menuClasses() {
       return ["menu-list", this.isCollapsed ? "actived-menu" : ""];
-    },
-    name() {
-      return this.loginUser ? this.loginUser.nickname : "";
-    },
-    isLogin() {
-      return this.$store.getters['account/isLogin'];
     },
     extendSearch() {
         return this.isSearch ? 'search-focus' : '';

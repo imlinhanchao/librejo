@@ -1,6 +1,6 @@
 <template>
     <div class="index">
-        <Dropdown placement="bottom-start" @on-click="switchBooks" v-if="isLogin">
+        <Dropdown placement="bottom-start" @on-click="switchBooks" v-if="$root.isLogin">
             <a href="javascript:void(0)">
                 {{bookType[currentType]}}
                 <Icon type="ios-arrow-down"></Icon>
@@ -10,7 +10,7 @@
             </DropdownMenu>
         </Dropdown>
         <Content class="layout-content">
-            <bookList :params="query" v-if="this.isLogin"/>
+            <bookList :params="query" v-if="$root.isLogin"/>
         </Content>
     </div>
 </template>
@@ -33,10 +33,6 @@
         },
         data() {
             return {
-                items: [],
-                total: 0,
-                align: 'center',
-                isBusy: false,
                 currentType: 0,
             };
         },
@@ -47,9 +43,6 @@
                     'Reading',
                     'Lent'
                 ]
-            },
-            isLogin() {
-                return this.$store.getters['account/isLogin'];
             },
             query () {
                 return {

@@ -48,10 +48,22 @@ new Vue({
     methods: {
     },
     computed: {
+        loginUser() {
+            return this.$store.getters['account/info'];
+        },
+        name() {
+            return this.loginUser ? this.loginUser.nickname : '';
+        },
+        isLogin() {
+            return this.$store.getters['account/isLogin'];
+        }      
     },
     created () {
         this.$store.dispatch('account/checklogin', (rsp, err) => { 
-            if (!this.$store.getters['account/isLogin'] && this.$route.path != '/login') {
+            if (!this.$store.getters['account/isLogin'] 
+              && this.$route.path != '/login'
+              && this.$route.path != '/'
+              && this.$route.path.indexOf('/u/')) {
                 this.$router.replace('/login');
             }
         });
