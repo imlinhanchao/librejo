@@ -49,7 +49,7 @@ new Vue({
     },
     computed: {
         loginUser() {
-            return this.$store.getters['account/info'];
+            return this.isLogin ? this.$store.getters['account/info'] : {};
         },
         name() {
             return this.loginUser ? this.loginUser.nickname : '';

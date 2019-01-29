@@ -6,7 +6,7 @@ const routers = [{
     component: (resolve) => require(['./views/index.vue'], resolve),
     props: { loginPage: false },
     beforeRouteEnter(to, from, next) {
-        if(!this.$store.getters['account/isLogin']) {
+        if(!this.$store.getters['account/isLogin'] && to.path.indexOf('/u/')) {
             to = '/login';
             next();
         }
@@ -39,6 +39,12 @@ const routers = [{
                 title: 'Update Book'
             },
             component: (resolve) => require(['./views/book.vue'], resolve)
+        }, {
+            path: 'u/:user',
+            meta: {
+                title: 'User'
+            },
+            component: (resolve) => require(['./views/user.vue'], resolve),
         }
 
     ]

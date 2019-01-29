@@ -306,7 +306,7 @@
     <Content :style="{padding: '10px 2em'}">
       <Layout>
         <router-view/>
-        <p v-if="!$root.isLogin" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
+        <p v-if="!$root.isLogin && $route.path.indexOf('/u/') < 0" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
       </Layout>
     </Content>
     <Footer class="layout-footer">

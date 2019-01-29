@@ -8,6 +8,7 @@ const __salt = require('../config').salt;
 let __error__ = Object.assign({}, App.error);
 __error__.verify = App.error.reg('帐号或密码错误！');
 __error__.existed = App.error.existed('帐号');
+__error__.notexisted = App.error.existed('帐号', false);
 __error__.usertooshort = App.error.reg('用户名太短！');
 __error__.passtooshort = App.error.reg('密码太短！');
 
@@ -169,7 +170,7 @@ class Module extends App {
                 count: -1,
                 query
             };
-            data.fields = fields || this.saftKey;
+            data.fields = fields || this.saftKey.filter(k => ['email', 'phone'].indexOf(k) < 0);
             let queryData = await super.query(
                 data, Account, ops
             );
