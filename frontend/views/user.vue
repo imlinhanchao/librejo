@@ -40,11 +40,9 @@
 <script>
     import axios from 'axios';
     import bookList from '../components/book-list.vue'
-    import gravatar from 'vue-gravatar';
     export default {
         components: {
             bookList,
-            gravatar
         },
         mounted() {
             this.init();
