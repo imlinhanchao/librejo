@@ -5,10 +5,6 @@ let orm = {
         type: db.ID,
         comment: '图书ID'
     },
-    accountId: {
-        type: db.ID,
-        comment: '读书帐号'
-    },
     status: {
         type: db.INTEGER,
         comment: '读书状态'
