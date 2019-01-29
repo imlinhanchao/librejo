@@ -358,7 +358,26 @@ export default {
     }
   },
   data() {
+    const validatePasswd = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('Please enter your password'));
+        } else if (value.length < 6) {
+          callback(new Error('Your password was too short'));
+        } else {
+          callback();
+        }
+    };
+    const validateUser = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('Please enter your username'));
+        } else if (value.length < 5) {
+          callback(new Error('Your username was too short'));
+        } else {
+          callback();
+        }
+    };
     return {
+      validatePasswd,
       isCollapsed: false,
       loginModel: false,
       login: {
@@ -367,10 +386,8 @@ export default {
       },
       isPasswdShow: false,
       ruleValidate: {
-        username: [
-          { required: true, message: "请输入用户名。", trigger: "blur" }
-        ],
-        passwd: [{ required: true, message: "请输入密码。", trigger: "blur" }]
+        username: [ { validator: validateUser, trigger: "blur" } ],
+        passwd: [ { validator: validatePasswd, trigger: "blur" } ]
       },
       login_loading: false,
       isSearch: false,
