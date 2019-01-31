@@ -303,17 +303,16 @@
             </div>
         </div>
         </Header>
-        <Content :style="{padding: '10px 2em'}">
-            <Layout>
-                <router-view/>
-                <p v-if="!$root.isLogin && $route.path.indexOf('/u/') < 0" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
-            </Layout>
+        <Content>
+            <router-view/>
+            <p v-if="!$root.isLogin && $route.path.indexOf('/u/') < 0" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
         </Content>
         <Footer class="layout-footer">
             <Button v-if="$root.isLogin" class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>
             <p>&copy; 2018 ~ {{new Date().getFullYear()}} Library. All rights reserved.</p>
         </Footer>
         <Login v-model="loginModel" />
+        <BackTop style="top: 2em;"></BackTop>
     </Layout>
 </template>
 <script>

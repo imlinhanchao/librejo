@@ -3,6 +3,7 @@
     max-width: 35em;
     margin: auto;
     width: 100%;
+    padding: 10px 2em;
 }
 .header {
     padding: 0 1em 2em;

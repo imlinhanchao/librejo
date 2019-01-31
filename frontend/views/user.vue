@@ -10,26 +10,58 @@
     height: 2em;
 }
 .profile {
-    display: flex;
-    .avatar {
-        flex: 1;
-        img {
-            width: 100%;
+    background: #f6f6f6;
+    margin: 1em 0;
+    padding: 1em 2em;
+    .section {
+        max-width: 35em;
+        display: flex;
+        margin: auto;
+        .avatar {
+            flex: auto;
+            background: #FFF;
+            overflow: hidden;
             border-radius: 100%;
+            max-width: 128px;
+            img {
+                width: 100%;
+                display: block;
+            }
+        }
+        .info {
+            flex: 1;
+            padding: 0 2em;
+            .nickname {
+                font-size: 2em;
+            }
+            .lastlogin {
+                color: #CCC;
+                font-size: .5em;
+            }
+            .motte {
+                font-size: 1.5em;
+            }
         }
     }
-    .info {
-        flex: 2;
-    }
 }
+.layout-content {
+    padding: 10px 2em;
+}
+
 </style>
 <template>
     <div class="index">
         <Content class="profile">
-            <div v-if="info.id" class="avatar">
-                <img :src="info.avatar || '/img/user.png'">
-            </div>
-            <div class="info"></div>
+            <section class="section">
+                <div v-if="info.id" class="avatar">
+                    <img :src="info.avatar || '/img/user.png'">
+                </div>
+                <div class="info">
+                    <p class="nickname">{{info.nickname}}</p>
+                    <p class="lastlogin">{{new Date(info.lastlogin * 1000).toLocaleString()}}</p>
+                    <p class="motte">{{info.motte || 'Nothing to say.'}}</p>
+                </div>
+            </section>
         </Content>
         <Content class="layout-content">
             <bookList :params="query" v-if="info.id"/>

@@ -1,3 +1,8 @@
+<style lang="less" scoped>
+.index {
+    padding: 10px 2em;
+}
+</style>
 <template>
     <div class="index">
         <Dropdown placement="bottom-start" @on-click="switchBooks" v-if="$root.isLogin">
@@ -57,5 +62,3 @@
         }
     };
 </script>
-<style lang="less">
-</style>
