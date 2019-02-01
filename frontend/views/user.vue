@@ -1,4 +1,4 @@
-<style lang="less">
+<style lang="less" scoped>
 .loading {
     text-align: center;
     position: absolute;
@@ -17,15 +17,42 @@
         max-width: 35em;
         display: flex;
         margin: auto;
+        position: relative;
         .avatar {
             flex: auto;
             background: #FFF;
             overflow: hidden;
             border-radius: 100%;
             max-width: 128px;
+            height: 128px;
+            position: relative;
             img {
                 width: 100%;
                 display: block;
+                z-index: 1;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+            }
+            &:hover .avatar-upload{
+                display: block;
+            }
+            .avatar-upload {
+                display: none;
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                top: 0;
+                z-index: 3;
+                .upload-btn {
+                    height: 100%;
+                    width: 100%;
+                    &:hover {
+                        background: #00000030;
+                    }
+                }
             }
         }
         .info {
@@ -39,7 +66,7 @@
                 font-size: .5em;
             }
             .motte {
-                font-size: 1.5em;
+                font-size: 1em;
             }
         }
     }
@@ -47,14 +74,39 @@
 .layout-content {
     padding: 10px 2em;
 }
-
+</style>
+<style lang="less">
+.avatar-upload {
+    .ivu-upload {
+        height: 100%;
+        background: #00000030;
+        border: 0;
+        &:hover {
+            border: 0;
+        }
+    }
+}
 </style>
 <template>
     <div class="index">
         <Content class="profile">
             <section class="section">
                 <div v-if="info.id" class="avatar">
-                    <img :src="info.avatar || '/img/user.png'">
+                    <img :src="$root.fileUrl(info.avatar, '/img/user.png')">
+                    <Upload v-if="$root.isLogin && $root.loginUser.id == info.id" class="avatar-upload"
+                        :show-upload-list="false"
+                        :action="$root.uploadInterface"
+                        :on-success="handleSuccess"
+                        :max-size="$root.maxSize"
+                        :format="['jpg','jpeg','png', 'gif']"
+                        :on-format-error="$root.fileFormatError"
+                        :on-exceeded-size="$root.fileMaxSize"
+                        type="drag"
+                    >
+                        <Button class="upload-btn" type="text">
+                            <Icon type="ios-cloud-upload" size="30"></Icon>
+                        </Button>
+                    </Upload>
                 </div>
                 <div class="info">
                     <p class="nickname">{{info.nickname}}</p>
@@ -72,6 +124,7 @@
 <script>
     import axios from 'axios';
     import bookList from '../components/book-list.vue'
+    import config from '../../config.json';
     export default {
         components: {
             bookList,
@@ -100,6 +153,29 @@
                         }
                     })
                 }
+            },
+            handleSuccess (res, file) {
+                let rsp = file.response;
+                if (rsp.state == 0) {
+                    this.$set(this.info, 'avatar', rsp.data[0]);
+                    this.$store.dispatch('account/set', {
+                        info: this.info,
+                        callback: (rsp, err) => {
+                            if (rsp && rsp.state == 0) {
+                                this.$Message.success(`Update Avatar Success!`);
+                            } else {
+                                err = (err && err.message) || rsp.msg;
+                                this.$Message.error(err);
+                            }
+                        }
+                    })
+                }
+                else {
+                    this.$Notice.warning({
+                        title: 'Upload File Failed',
+                        desc: rsp.msg
+                    });
+                }
             }
         },
         data() {
@@ -121,6 +197,13 @@
                     'Reading',
                     'Lent'
                 ]
+            },
+            avatar() {
+                let img = this.info.avatar.indexOf('http') == 0 ? this.info.avatar : config.file.fileurl + this.info.avatar;
+                return this.info.avatar ? img : '/img/user.png';
+            },
+            uploadInterface() {
+                return '/api/lib/upload';
             },
             query () {
                 return {

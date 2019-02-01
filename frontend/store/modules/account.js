@@ -61,6 +61,20 @@ const actions = {
                 console.error(error.message);
                 callback(null, error);
             });
+    },
+    set({ commit }, { info, callback }) {
+        axios.post('/account/update', info)
+        .then((rsp) => {
+            rsp = rsp.data;
+            if (rsp.state == 0) {
+                commit('setLoginUser', rsp.data);
+            }
+            callback(rsp);
+        })
+        .catch((error) => {
+            console.error(error.message);
+            callback(null, error);
+        });
     }
 };
 const getters = {
