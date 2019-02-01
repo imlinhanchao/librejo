@@ -146,7 +146,7 @@ class App {
                 throw (App.error.existed(this.name, false));
             }
 
-            if (preUpdate && preUpdate(record)) {
+            if (!preUpdate || preUpdate(record)) {
                 data[unique] = undefined;
                 record = App.update(record, data, keys);
                 await record.save();
@@ -182,10 +182,10 @@ class App {
                 throw (App.error.existed(this.name, false));
             }
 
-            if (preDelete && preDelete(record)) {
+            if (!preDelete || preDelete(record)) {
                 await record.destroy();
                 return record;
-            } else {
+            } else if (preDelete) {
                 throw App.error.limited;
             }
 

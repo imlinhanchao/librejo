@@ -99,10 +99,10 @@ class Module extends App {
             throw (this.error.param);
         }
 
-        data = App.filter(data, Account.keys());
+        data = App.filter(data, Account.keys().concat(['id']));
 
         try {
-            let account = this.info(true);
+            let account = await this.info(true);
             if (account.username != data.username) {
                 throw this.error.limited;
             }
@@ -149,13 +149,19 @@ class Module extends App {
         return this.session && this.session.account_login;
     }
 
-    info(onlyData = false, fields=null) {
+    async info(onlyData = false, fields=null) {
         if (!this.islogin) {
             throw (this.error.nologin);
         }
         fields = fields || this.saftKey;
-        if (onlyData == true) return App.filter(this.session.account_login, fields);
-        return this.okget(App.filter(this.session.account_login, fields));
+        let data = await Account.findOne({
+            where: {
+                username: this.session.account_login.username
+            }
+        });
+
+        if (onlyData == true) return App.filter(data, fields);
+        return this.okget(App.filter(data, fields));
     }
 
     async query(query, fields=null, onlyData=false) {
