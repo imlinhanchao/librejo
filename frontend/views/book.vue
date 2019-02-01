@@ -105,16 +105,16 @@ button.delete-btn {
         <Content class="content">
             <section class="book-img">
                 <p>
-                    <img :src="bookImg" alt="">
+                    <img :src="$root.fileUrl(book.img)" alt="">
                 </p>
                 <Upload 
                     :show-upload-list="false"
-                    :action="uploadInterface"
+                    :action="$root.uploadInterface"
                     :on-success="handleSuccess"
-                    :max-size="maxSize"
+                    :max-size="$root.maxSize"
                     :format="['jpg','jpeg','png']"
-                    :on-format-error="handleFormatError"
-                    :on-exceeded-size="handleMaxSize"
+                    :on-format-error="$root.fileFormatError"
+                    :on-exceeded-size="$root.fileMaxSize"
                     >
                     <Button icon="ios-cloud-upload-outline">Upload files</Button>
                 </Upload>
@@ -157,7 +157,6 @@ button.delete-btn {
 </template>
 
 <script>
-import env from '../config/env';
 import config from '../../config.json';
 import Quagga from 'quagga';
 
@@ -276,18 +275,6 @@ export default {
                 });
             }
         },
-        handleFormatError (file) {
-            this.$Notice.warning({
-                title: 'The file format is incorrect',
-                desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
-            });
-        },
-        handleMaxSize (file) {
-            this.$Notice.warning({
-                title: 'Exceeding file size limit',
-                desc: 'File  ' + file.name + ' is too large, no more than 2M.'
-            });
-        },
         search() {
             this.$axios.get('/douban/isbn/' + this.book.ISBN)
                 .then((rsp) => {
@@ -349,14 +336,8 @@ export default {
             let img = this.book.img.indexOf('http') == 0 ? this.book.img : config.file.fileurl + this.book.img;
             return this.book.img ? img : '/img/default.jpg';
         },
-        maxSize() {
-            return config.file.maxSize * 1024;
-        },
         ruleValidate() {
             return {}
-        },
-        uploadInterface() {
-            return '/api/lib/upload';
         },
         yearMonth: {
             get() {

@@ -257,7 +257,8 @@
         <div class="layout-side">
             <div class="layout-avatar">
                 <router-link v-if="$root.isLogin"  :to="'/u/' + $root.loginUser.username">
-                    <Avatar icon="ios-person" size="default" :title="$root.name"/>
+                    <Avatar size="default" :title="$root.name" 
+                        :src="$root.fileUrl($root.loginUser.avatar, '/img/user.png')"/>
                 </router-link>
             </div>
             <div class="layout-menu">

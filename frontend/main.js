@@ -9,6 +9,7 @@ import store from './store';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
+import config from '../config.json';
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = Util.ajaxUrl;
@@ -46,8 +47,30 @@ new Vue({
     beforeMount() {
     },
     methods: {
+        fileFormatError (file) {
+            this.$Notice.warning({
+                title: 'The file format is incorrect',
+                desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+            });
+        },
+        fileMaxSize (file) {
+            this.$Notice.warning({
+                title: 'Exceeding file size limit',
+                desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+            });
+        },
+        fileUrl (name, defaults = '/img/default.jpg') {
+            let img = name.indexOf('http') == 0 ? name : config.file.fileurl + name;
+            return name ? img : defaults;
+        }
     },
     computed: {
+        maxSize() {
+            return config.file.maxSize * 1024;
+        },
+        uploadInterface() {
+            return '/api/lib/upload';
+        },
         loginUser() {
             return this.isLogin ? this.$store.getters['account/info'] : {};
         },
@@ -56,7 +79,7 @@ new Vue({
         },
         isLogin() {
             return this.$store.getters['account/isLogin'];
-        }      
+        }
     },
     created () {
         this.$store.dispatch('account/checklogin', (rsp, err) => { 
