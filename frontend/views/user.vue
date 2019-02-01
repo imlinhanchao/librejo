@@ -65,8 +65,17 @@
                 color: #CCC;
                 font-size: .5em;
             }
-            .motte {
+            .motto {
                 font-size: 1em;
+            }
+            .edit-text {
+                display: none;
+            }
+            p:hover {
+                .edit-text {
+                    display: inline;
+                    cursor: pointer;
+                }
             }
         }
     }
@@ -93,7 +102,7 @@
             <section class="section">
                 <div v-if="info.id" class="avatar">
                     <img :src="$root.fileUrl(info.avatar, '/img/user.png')">
-                    <Upload v-if="$root.isLogin && $root.loginUser.id == info.id" class="avatar-upload"
+                    <Upload v-if="isCurrentUser" class="avatar-upload"
                         :show-upload-list="false"
                         :action="$root.uploadInterface"
                         :on-success="handleSuccess"
@@ -109,9 +118,27 @@
                     </Upload>
                 </div>
                 <div class="info">
-                    <p class="nickname">{{info.nickname}}</p>
+                    <p class="nickname">
+                        <Input v-model="temp.nickname" v-if="edit.nickname"
+                        @on-keyup.enter="submitForm({
+                            nickname: temp.nickname
+                        }, 'Nicknamee');edit.nickname=false;"
+                        @on-keyup.esc="edit.nickname=false;"
+                        />
+                        <span v-if="!edit.nickname">{{info.nickname}}</span>
+                        <Icon @click="edit.nickname=true;temp.nickname=info.nickname" v-if="isCurrentUser && !edit.nickname" custom="fa fa-pencil" size="15" class="edit-text" />
+                    </p>
                     <p class="lastlogin">{{new Date(info.lastlogin * 1000).toLocaleString()}}</p>
-                    <p class="motte">{{info.motte || 'Nothing to say.'}}</p>
+                    <p class="motto">
+                        <Input v-model="temp.motto" v-if="edit.motto"
+                        @on-keyup.enter="submitForm({
+                            motto: temp.motto
+                        }, 'Motto');edit.motto=false;"
+                        @on-keyup.esc="edit.motto=false;"
+                        />
+                        <span v-if="!edit.motto">{{info.motto || 'Nothing to say.'}}</span>
+                        <Icon @click="edit.motto=true;temp.motto=info.motto||''" v-if="isCurrentUser && !edit.motto" custom="fa fa-pencil" size="15" class="edit-text" />
+                    </p>
                 </div>
             </section>
         </Content>
@@ -158,17 +185,9 @@
                 let rsp = file.response;
                 if (rsp.state == 0) {
                     this.$set(this.info, 'avatar', rsp.data[0]);
-                    this.$store.dispatch('account/set', {
-                        info: this.info,
-                        callback: (rsp, err) => {
-                            if (rsp && rsp.state == 0) {
-                                this.$Message.success(`Update Avatar Success!`);
-                            } else {
-                                err = (err && err.message) || rsp.msg;
-                                this.$Message.error(err);
-                            }
-                        }
-                    })
+                    this.submitForm({
+                        avatar: this.info.avatar
+                    }, 'Avatar');
                 }
                 else {
                     this.$Notice.warning({
@@ -176,6 +195,22 @@
                         desc: rsp.msg
                     });
                 }
+            },
+            submitForm(info, name) {
+                info.id = this.info.id;
+                info.username = this.info.username;
+                this.$store.dispatch('account/set', {
+                        info,
+                        callback: (rsp, err) => {
+                            if (rsp && rsp.state == 0) {
+                                this.$Message.success(`Update ${name} Success!`);
+                                this.info = rsp.data;
+                            } else {
+                                err = (err && err.message) || rsp.msg;
+                                this.$Message.error(err);
+                            }
+                        }
+                    })
             }
         },
         data() {
@@ -187,10 +222,21 @@
                     avatar: '',
                     motto: '',
                     lastLogin: 0,
+                },
+                edit: {
+                    nickname: false,
+                    motto: false
+                },
+                temp: {
+                    nickname: '',
+                    motto: ''
                 }
             };
         },
         computed: {
+            isCurrentUser () {
+                return this.$root.isLogin && this.$root.loginUser.id == this.info.id;
+            },
             bookType() {
                 return [
                     'All',
