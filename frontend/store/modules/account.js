@@ -62,6 +62,17 @@ const actions = {
                 callback(null, error);
             });
     },
+    exist({ commit }, { username, callback }) {
+        axios.get('/account/exist/' + username)
+            .then((rsp) => {
+                rsp = rsp.data;
+                callback(rsp);
+            })
+            .catch((error) => {
+                console.error(error.message);
+                callback(null, error);
+            });
+    },
     set({ commit }, { info, callback }) {
         axios.post('/account/update', info)
         .then((rsp) => {
@@ -75,6 +86,17 @@ const actions = {
             console.error(error.message);
             callback(null, error);
         });
+    },
+    create({ state, commit }, { user, callback }) {
+        axios.post('/account/create', user)
+            .then((rsp) => {
+                rsp = rsp.data;
+                callback(rsp);
+            })
+            .catch((error) => {
+                callback(null, error);
+                console.error(error.message);
+            });
     }
 };
 const getters = {

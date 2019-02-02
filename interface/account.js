@@ -48,7 +48,7 @@ class Module extends App {
         try {
             let account = await this.exist(data.username, true);
             if(!account) {
-                account = await this.create(data, true);
+                throw this.error.verify;
             } else {
                 let sha256 = crypto.createHash('sha256');
                 let passwd = sha256.update(data.passwd + __salt).digest('hex');
@@ -79,10 +79,10 @@ class Module extends App {
             data.lastlogin = new Date().valueOf() / 1000;
             let sha256 = crypto.createHash('sha256');
             data.passwd = sha256.update(data.passwd + __salt).digest('hex');
-            data.email = '';
-            data.phone = '';
-            data.motto = '';
-            data.avatar = '';
+            data.email = data.email || '';
+            data.phone = data.phone || '';
+            data.motto = data.motto || '';
+            data.avatar = data.avatar || '';
             let account = await super.new(data, Account, 'username');
             if (onlyData) return account;
             return this.okcreate(App.filter(account, this.saftKey));

@@ -10,6 +10,7 @@
                         v-model="login.username"
                         placeholder="username"
                         @on-keyup.enter="$refs['password'].focus()"
+                        @on-blur="existCheck"
                     >
                         <Icon custom="fa fa-user" slot="prepend"></Icon>
                     </Input>
@@ -20,7 +21,7 @@
                         :type="passwdType"
                         v-model="login.passwd"
                         placeholder="password"
-                        @on-keyup.enter="loginSubmit('loginForm')"
+                        @on-keyup.enter="isRegister ? $refs['email'].focus() : loginSubmit('loginForm')"
                     >
                         <Icon custom="fa fa-lock" slot="prepend"></Icon>
                         <Button
@@ -31,9 +32,21 @@
                         ></Button>
                     </Input>
                 </FormItem>
+                <FormItem>
+                    <Input ref="email"
+                        v-if="isRegister"
+                        type="text"
+                        v-model="login.email"
+                        placeholder="email"
+                        @on-keyup.enter="loginSubmit('loginForm')"
+                        @on-blur="existCheck"
+                    >
+                        <Icon custom="fa fa-envelope" slot="prepend"></Icon>
+                    </Input>
+                </FormItem>
             </Form>
             <div slot="footer" class="login-footer">
-                <Button type="primary" @click="loginSubmit('loginForm')" :loading="login_loading">登录</Button>
+                <Button type="primary" @click="submit('loginForm')" :loading="login_loading">{{btnName}}</Button>
             </div>
         </Modal>
     </Layout>
@@ -68,15 +81,17 @@ export default {
         return {
             loginModel: false,
             login: {
-                username: "",
-                passwd: ""
+                username: '',
+                passwd: '',
+                email: ''
             },
             isPasswdShow: false,
             ruleValidate: {
                 username: [{ validator: validateUser, trigger: "blur" }],
                 passwd: [{ validator: validatePasswd, trigger: "blur" }]
             },
-            login_loading: false
+            login_loading: false,
+            isRegister: false
         };
     },
     computed: {
@@ -85,6 +100,12 @@ export default {
         },
         passwdType() {
             return this.isPasswdShow ? "text" : "password";
+        },
+        submit () {
+            return this.isRegister ? this.registerSubmit : this.loginSubmit
+        },
+        btnName() {
+            return this.isRegister ? 'Register' : 'Login'
         }
     },
     watch: {
@@ -105,7 +126,7 @@ export default {
             this.$refs[form].validate(valid => {
                 if (valid) {
                     this.login_loading = true;
-                    this.$store.dispatch("account/login", {
+                    this.$store.dispatch('account/login', {
                         user: this.login,
                         callback: (rsp, err) => {
                             this.login_loading = false;
@@ -122,6 +143,34 @@ export default {
                     });
                 }
             });
+        },
+        registerSubmit(form) {
+            this.$refs[form].validate(valid => {
+                if (valid) {
+                    this.login_loading = true;
+                    this.$store.dispatch('account/create', {
+                        user: this.login,
+                        callback: (rsp, err) => {
+                            if (rsp && rsp.state == 0) {
+                                this.loginSubmit(form)
+                            } else {
+                                err = (err && err.message) || rsp.msg;
+                                this.$Message.error(err);
+                            }
+                        }
+                    });
+                }
+            });
+        },
+        existCheck (usename) {
+            if (this.login.username == '') return true;
+            this.$store.dispatch("account/exist", {
+                username: this.login.username,
+                callback: (rsp, err) => {
+                    console.log(rsp);
+                    this.isRegister = !rsp.data
+                }
+            })
         }
     }
 };
