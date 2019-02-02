@@ -62,6 +62,14 @@ new Vue({
         fileUrl (name, defaults = '/img/default.jpg') {
             let img = name.indexOf('http') == 0 ? name : config.file.fileurl + name;
             return name ? img : defaults;
+        },
+        accessCheck(route) {
+            if (!this.$store.getters['account/isLogin'] 
+              && route.path != '/'
+              && !['/u/', '/login'].find(p => route.path.indexOf(p) == 0)) {
+                return false;
+            }
+            return true;
         }
     },
     computed: {
@@ -80,15 +88,5 @@ new Vue({
         isLogin() {
             return this.$store.getters['account/isLogin'];
         }
-    },
-    created () {
-        this.$store.dispatch('account/checklogin', (rsp, err) => { 
-            if (!this.$store.getters['account/isLogin'] 
-              && this.$route.path != '/login'
-              && this.$route.path != '/'
-              && this.$route.path.indexOf('/u/')) {
-                this.$router.replace('/login');
-            }
-        });
     }
 });

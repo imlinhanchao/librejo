@@ -348,6 +348,11 @@ export default {
         }
     },
     mounted() {
+        this.$store.dispatch('account/checklogin', (rsp, err) => { 
+            if (!this.$root.accessCheck(this.$route)) {
+                this.$router.replace('/login');
+            }
+        });
         this.loginModel = this.loginPage;
     },
     methods: {
@@ -362,7 +367,7 @@ export default {
                     // this.$Message.error(err);
                     return;
                 }
-                this.loginAccount();
+                this.$root.accessCheck(this.$route);
             });
         },
         search () {

@@ -111,6 +111,7 @@ export default {
                             this.login_loading = false;
                             if (rsp && rsp.state == 0) {
                                 this.loginModel = false;
+                                this.$emit("input", false);
                                 this.$Message.success(`Welcome ${rsp.data.username} !`);
                                 this.$router.replace("/");
                             } else {
