@@ -7,6 +7,7 @@ const __salt = require('../config').salt;
 
 let __error__ = Object.assign({}, App.error);
 __error__.verify = App.error.reg('帐号或密码错误！');
+__error__.captcha = App.error.reg('验证码错误！');
 __error__.existed = App.error.existed('帐号');
 __error__.notexisted = App.error.existed('帐号', false);
 __error__.usertooshort = App.error.reg('用户名太短！');
@@ -72,9 +73,11 @@ class Module extends App {
             throw (this.error.param);
         }
 
-        data = App.filter(data, Account.keys());
+        data = App.filter(data, Account.keys().concat(['captcha']));
         
-        try {            
+        try {
+            if (this.session.captcha != data.captcha)
+                throw this.error.captcha;
             data.nickname = data.username;
             data.lastlogin = new Date().valueOf() / 1000;
             let sha256 = crypto.createHash('sha256');
@@ -131,6 +134,26 @@ class Module extends App {
             });
             if (onlyData) return data;
             return this.okget(!!data);
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    async exists(data, onlyData = false) {
+        const keys = ['email', 'phone'];
+
+        if (!App.hasone(data, keys)) {
+            throw (this.error.param);
+        }
+
+        data = App.filter(data, keys);
+        try {
+            let account = await Account.findOne({
+                where: data
+            });
+            if (onlyData) return account;
+            return this.okget(!!account);
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));

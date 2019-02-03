@@ -221,6 +221,16 @@ class App {
         return true;
     }
 
+    // 检查对象数据，至少包含检查
+    static hasone(data, keys) {
+        if (!data) return false;
+        for (let i = 0; i < keys.length; i++) {
+            if (undefined !== data[keys[i]]) 
+                return true;
+        }
+        return false;
+    }
+
     // 检查对象数据，仅包含检查
     static onlykeys(data, keys) {
         if (!data) return false;

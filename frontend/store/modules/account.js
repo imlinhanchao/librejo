@@ -62,16 +62,28 @@ const actions = {
                 callback(null, error);
             });
     },
-    exist({ commit }, { username, callback }) {
-        axios.get('/account/exist/' + username)
-            .then((rsp) => {
-                rsp = rsp.data;
-                callback(rsp);
-            })
-            .catch((error) => {
-                console.error(error.message);
-                callback(null, error);
-            });
+    exist({ commit }, { username, other, callback }) {
+        if (username) {
+            axios.get('/account/exist/' + username)
+                .then((rsp) => {
+                    rsp = rsp.data;
+                    callback(rsp);
+                })
+                .catch((error) => {
+                    console.error(error.message);
+                    callback(null, error);
+                });
+        } else if(other) {
+            axios.post('/account/exists/', other)
+                .then((rsp) => {
+                    rsp = rsp.data;
+                    callback(rsp);
+                })
+                .catch((error) => {
+                    console.error(error.message);
+                    callback(null, error);
+                });
+        }
     },
     set({ commit }, { info, callback }) {
         axios.post('/account/update', info)

@@ -1,4 +1,9 @@
 <style scoped lang="less">
+.layout-form {
+    i {
+        width: 15px;
+    }
+}
 </style>
 <template>
     <Layout>
@@ -32,16 +37,29 @@
                         ></Button>
                     </Input>
                 </FormItem>
-                <FormItem>
-                    <Input ref="email"
-                        v-if="isRegister"
+                <FormItem v-if="isRegister" prop="email">
+                    <Input ref="email" 
                         type="text"
                         v-model="login.email"
                         placeholder="email"
-                        @on-keyup.enter="loginSubmit('loginForm')"
-                        @on-blur="existCheck"
+                        @on-keyup.enter="$refs['captcha'].focus()"
                     >
                         <Icon custom="fa fa-envelope" slot="prepend"></Icon>
+                    </Input>
+                </FormItem>
+                <FormItem v-if="isRegister" prop="captcha">
+                    <Input ref="captcha"
+                        type="text"
+                        v-model="login.captcha"
+                        placeholder="Are you a robot ?"
+                        @on-keyup.enter="submit('loginForm')"
+                    >
+                        <Icon
+                            slot="prepend"
+                            custom="fa fa-refresh"
+                            @click="rand=Math.random()"
+                        />
+                        <img slot="append" :src="`/api/lib/captcha?r=${rand}`" style="height: 28px; margin: -4px -7px;"/>
                     </Input>
                 </FormItem>
             </Form>
@@ -78,20 +96,49 @@ export default {
                 callback();
             }
         };
+        const validateEmail = (rule, value, callback) => {
+            if (!this.isRegister) return;
+            if (value === "") {
+                callback(new Error("Please enter your email"));
+            } else {
+                this.$store.dispatch('account/exist', {
+                    other: {
+                        email: this.login.email
+                    },
+                    callback: (rsp, err) => {
+                        if (rsp && rsp.state == 0) {
+                            if (rsp.data) {
+                                callback(new Error('The email was register.'));
+                            } else {
+                                callback();
+                            }
+                        } else {
+                            err = (err && err.message) || rsp.msg;
+                            this.$Message.error(err);
+                        }  
+                    }
+                })
+                callback();
+            }
+        };
         return {
             loginModel: false,
             login: {
                 username: '',
                 passwd: '',
-                email: ''
+                email: '',
+                captcha: ''
             },
             isPasswdShow: false,
             ruleValidate: {
                 username: [{ validator: validateUser, trigger: "blur" }],
-                passwd: [{ validator: validatePasswd, trigger: "blur" }]
+                passwd: [{ validator: validatePasswd, trigger: "blur" }],
+                email: [{ validator: validateEmail, trigger: "blur" }],
+                captcha: [{ }]
             },
             login_loading: false,
-            isRegister: false
+            isRegister: false,
+            rand: Math.random()
         };
     },
     computed: {
@@ -157,6 +204,7 @@ export default {
                             if (rsp && rsp.state == 0) {
                                 this.loginSubmit(form)
                             } else {
+                                this.login_loading = false;
                                 err = (err && err.message) || rsp.msg;
                                 this.$Message.error(err);
                             }
