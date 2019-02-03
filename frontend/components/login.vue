@@ -2,7 +2,7 @@
 </style>
 <template>
     <Layout>
-        <Modal v-model="loginModel" title="Login" width="300">
+        <Modal v-model="loginModel" title="Login" width="300" :mask-closable="false" @on-visible-change="change">
             <Form ref="loginForm" :model="login" :rules="ruleValidate" class="layout-form">
                 <FormItem prop="username">
                     <Input
@@ -122,6 +122,9 @@ export default {
         this.loginModel = this.value;
     },
     methods: {
+        change (val) {
+            this.$emit("input", val);
+        },
         loginSubmit(form) {
             this.$refs[form].validate(valid => {
                 if (valid) {
