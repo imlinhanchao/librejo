@@ -9,6 +9,8 @@ let __error__ = Object.assign({}, App.error);
 __error__.verify = App.error.reg('帐号或密码错误！');
 __error__.captcha = App.error.reg('验证码错误！');
 __error__.existed = App.error.existed('帐号');
+__error__.existedmail = App.error.existed('邮箱');
+__error__.existedphone = App.error.existed('电话');
 __error__.notexisted = App.error.existed('帐号', false);
 __error__.usertooshort = App.error.reg('用户名太短！');
 __error__.passtooshort = App.error.reg('密码太短！');
@@ -78,6 +80,29 @@ class Module extends App {
         try {
             if (this.session.captcha != data.captcha)
                 throw this.error.captcha;
+            
+            if (data.email) {
+                let account = await Account.findOne({
+                    where: {
+                        email: data.email
+                    }
+                });
+                if (account) {
+                    throw this.error.existedmail;
+                }
+            }  
+        
+            if (data.phone) {
+                let account = await Account.findOne({
+                    where: {
+                        phone: data.phone
+                    }
+                });
+                if (account) {
+                    throw this.error.existedphone;
+                }
+            }
+            
             data.nickname = data.username;
             data.lastlogin = new Date().valueOf() / 1000;
             let sha256 = crypto.createHash('sha256');
@@ -116,6 +141,30 @@ class Module extends App {
                 let passwd = sha256.update(data.oldpasswd + __salt).digest('hex');
                 if (account.passwd != passwd) {
                     throw this.error.verify;
+                }
+            }
+      
+            // Mail 更新重复检查
+            if (data.email && data.email != account.email) {
+                let account = await Account.findOne({
+                    where: {
+                        email: data.email
+                    }
+                });
+                if (account) {
+                    throw this.error.existedmail;
+                }
+            }
+        
+            // Phone 更新重复检查
+            if (data.phone && data.phone != account.phone) {
+                let account = await Account.findOne({
+                    where: {
+                        phone: data.phone
+                    }
+                });
+                if (account) {
+                    throw this.error.existedphone;
                 }
             }
             return this.okupdate(await super.set(data, Account));
