@@ -14,9 +14,9 @@ let orm = {
         comment: '当前读到的页码'
     }
 };
-let table_name = prefix + 'read_record';
+let table_name = prefix + 'book_info';
 module.exports = db.defineModel(table_name, orm, {
-    comment: '读书记录表',
+    comment: '读书状态记录表',
 });
 module.exports.db = db;
 module.exports.tb = table_name;
