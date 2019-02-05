@@ -32,7 +32,8 @@
             left: .5em;
             .read {
                 position: absolute;
-                right: 0;
+                right: .2em;
+                bottom: -.2em;
                 width: 2em;
                 height: 2em;
                 border-radius: 1em;
@@ -84,6 +85,11 @@
         }
     }
 }
+.read-pop {
+    right: -.3em;
+    position: absolute;
+    bottom: -2.5em;
+}
 @media (max-width: 480px)  {
     .book {
         .info {
@@ -99,7 +105,17 @@
             <div class="info">
                 <div class="header form-item">
                     <span class="title" :title="book.name"><router-link :to="'/b/' + book.id">{{book.name}}</router-link></span>
-                    <Button shape="circle" type="text" title="Read" class="read"><Icon custom="fa fa-bookmark-o"></Icon></Button>
+                    <Poptip placement="bottom-end" class="read-pop"
+                            >
+                        <Button shape="circle" type="text" title="Read" class="read"><Icon custom="fa fa-bookmark-o"></Icon></Button>
+                        <section slot="content">
+                            <RadioGroup v-model="status" type="button" size="large">
+                                <Radio label="Begin" :value="1"></Radio>
+                                <Radio label="Ing" :value="2"></Radio>
+                                <Radio label="Ed" :value="3"></Radio>
+                            </RadioGroup>
+                        </section>
+                    </Poptip>
                 </div>
                 <Row class="footer" type="flex" justify="space-between">
                     <Col span="5" class="form-item">
@@ -136,6 +152,7 @@ export default {
     },
     data () {
         return {
+            status: 0
         }
     },
     mounted () {
