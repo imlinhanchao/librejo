@@ -32,8 +32,7 @@
             left: .5em;
             .read {
                 position: absolute;
-                right: .2em;
-                bottom: -.2em;
+                right: 0;
                 width: 2em;
                 height: 2em;
                 border-radius: 1em;
@@ -85,10 +84,27 @@
         }
     }
 }
-.read-pop {
-    right: -.3em;
+.read-form {
     position: absolute;
-    bottom: -2.5em;
+    background: #FFFFFF;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    padding: 3em;
+    color: #000;
+    p {
+        margin: 1em 0;
+    }
+    .close-read {
+        position: absolute;
+        right: 1em;
+        top: 1em;
+    }
+    .ivu-steps-item {
+        cursor: pointer;
+    }
 }
 @media (max-width: 480px)  {
     .book {
@@ -105,17 +121,7 @@
             <div class="info">
                 <div class="header form-item">
                     <span class="title" :title="book.name"><router-link :to="'/b/' + book.id">{{book.name}}</router-link></span>
-                    <Poptip placement="bottom-end" class="read-pop"
-                            >
-                        <Button shape="circle" type="text" title="Read" class="read"><Icon custom="fa fa-bookmark-o"></Icon></Button>
-                        <section slot="content">
-                            <RadioGroup v-model="status" type="button" size="large">
-                                <Radio label="Begin" :value="1"></Radio>
-                                <Radio label="Ing" :value="2"></Radio>
-                                <Radio label="Ed" :value="3"></Radio>
-                            </RadioGroup>
-                        </section>
-                    </Poptip>
+                    <Button shape="circle" type="text" title="Read" class="read"><Icon custom="fa fa-bookmark-o"></Icon></Button>
                 </div>
                 <Row class="footer" type="flex" justify="space-between">
                     <Col span="5" class="form-item">
@@ -136,6 +142,15 @@
                         <Button shape="circle" type="text" title="Notes"><Icon type="md-quote"></Icon></Button>
                     </Col>
                 </Row>
+                <section class="read-form">
+                    <Button class="close-read" type="text" icon="md-close" size="large"></Button>
+                    <p>Your Reading Progress</p>
+                    <Steps :current="status" direction="vertical">
+                        <Step title="Not Read" @click="status=0"></Step>
+                        <Step title="Reading" @click="status=1"></Step>
+                        <Step title="Have Read" @click="status=2"></Step>
+                    </Steps>
+                </section>
             </div>
         </div>
     </section>
