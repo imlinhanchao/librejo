@@ -121,7 +121,7 @@
             <div class="info">
                 <div class="header form-item">
                     <span class="title" :title="book.name"><router-link :to="'/b/' + book.id">{{book.name}}</router-link></span>
-                    <Button shape="circle" type="text" title="Read" class="read"><Icon custom="fa fa-bookmark-o"></Icon></Button>
+                    <Button shape="circle" type="text" title="Read" class="read" @click="isRead = true"><Icon custom="fa fa-bookmark-o"></Icon></Button>
                 </div>
                 <Row class="footer" type="flex" justify="space-between">
                     <Col span="5" class="form-item">
@@ -142,8 +142,8 @@
                         <Button shape="circle" type="text" title="Notes"><Icon type="md-quote"></Icon></Button>
                     </Col>
                 </Row>
-                <section class="read-form">
-                    <Button class="close-read" type="text" icon="md-close" size="large"></Button>
+                <section class="read-form" v-if="isRead">
+                    <Button class="close-read" type="text" icon="md-close" size="large" @click="isRead = false"></Button>
                     <p>Your Reading Progress</p>
                     <Steps :current="status" direction="vertical">
                         <Step title="Not Read" @click="status=0"></Step>
@@ -167,7 +167,8 @@ export default {
     },
     data () {
         return {
-            status: 0
+            status: 0,
+            isRead: false
         }
     },
     mounted () {
