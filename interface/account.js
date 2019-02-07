@@ -60,6 +60,9 @@ class Module extends App {
                 }
             }
 
+            account.lastlogin = new Date().valueOf() / 1000;
+            account.save();
+
             this.session.account_login = account;
             return this.oklogin(App.filter(this.session.account_login, this.saftKey));
         } catch (err) {
@@ -231,6 +234,9 @@ class Module extends App {
                 username: this.session.account_login.username
             }
         });
+
+        data.lastlogin = new Date().valueOf() / 1000;
+        data.save();
 
         if (onlyData == true) return App.filter(data, fields);
         return this.okget(App.filter(data, fields));
