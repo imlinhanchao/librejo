@@ -128,7 +128,7 @@
                         <span v-if="!edit.nickname">{{info.nickname}}</span>
                         <Icon @click="edit.nickname=true;temp.nickname=info.nickname" v-if="isCurrentUser && !edit.nickname" custom="fa fa-pencil" size="15" class="edit-text" />
                     </p>
-                    <p class="lastlogin">{{new Date(info.lastlogin * 1000).toLocaleString()}}</p>
+                    <p class="lastlogin" v-if="info.lastlogin">Last Login: <Time :time="info.lastlogin" /></p>
                     <p class="motto">
                         <Input v-model="temp.motto" v-if="edit.motto"
                         @on-keyup.enter="submitForm({
