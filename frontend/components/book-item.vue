@@ -87,24 +87,29 @@
 .read-form {
     position: absolute;
     background: #FFFFFF;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 3em;
+    right: .5em;
     z-index: 100;
-    padding: 3em;
+    padding: .5em;
     color: #000;
+    border-radius: .5em;
     p {
         margin: 1em 0;
     }
     .close-read {
-        position: absolute;
-        right: 1em;
-        top: 1em;
+        margin-left: -.5em;
     }
-    .ivu-steps-item {
-        cursor: pointer;
-    }
+}
+.separator {
+    position: absolute;
+    margin: auto;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 5px 6px 5px;
+    border-color: transparent transparent #FFF;
+    top: -.3em;
+    right: 1em;
 }
 @media (max-width: 480px)  {
     .book {
@@ -121,7 +126,7 @@
             <div class="info">
                 <div class="header form-item">
                     <span class="title" :title="book.name"><router-link :to="'/b/' + book.id">{{book.name}}</router-link></span>
-                    <Button shape="circle" type="text" title="Read" class="read" @click="isRead = true"><Icon custom="fa fa-bookmark-o"></Icon></Button>
+                    <Button shape="circle" type="text" title="Read" class="read" @click="isRead = true"><Icon custom="fa fa-star-o"></Icon></Button>
                 </div>
                 <Row class="footer" type="flex" justify="space-between">
                     <Col span="5" class="form-item">
@@ -143,13 +148,25 @@
                     </Col>
                 </Row>
                 <section class="read-form" v-if="isRead">
+                    <span class="separator"></span>
                     <Button class="close-read" type="text" icon="md-close" size="large" @click="isRead = false"></Button>
-                    <p>Your Reading Progress</p>
-                    <Steps :current="status" direction="vertical">
-                        <Step title="Not Read" @click="status=0"></Step>
-                        <Step title="Reading" @click="status=1"></Step>
-                        <Step title="Have Read" @click="status=2"></Step>
-                    </Steps>
+                    <RadioGroup v-model="status" type="button">
+                        <Radio :label="0">
+                            <Poptip trigger="hover" content="Not Read" :width="50" placement="top-start">
+                                <Icon custom="fa fa-star-o" />
+                            </Poptip>
+                        </Radio>
+                        <Radio :label="1" title="Reading">
+                            <Poptip trigger="hover" content="Reading" :width="50">
+                                <Icon custom="fa fa-star-half-o " />
+                            </Poptip>
+                        </Radio>
+                        <Radio :label="2" title="Have Read">
+                            <Poptip trigger="hover" content="Have Read" :width="50" placement="top-end">
+                                <Icon custom="fa fa-star" />
+                            </Poptip>
+                        </Radio>
+                    </RadioGroup>
                 </section>
             </div>
         </div>
