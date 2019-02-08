@@ -149,24 +149,33 @@
                 </Row>
                 <section class="read-form" v-if="isRead">
                     <span class="separator"></span>
-                    <Button class="close-read" type="text" icon="md-close" size="large" @click="isRead = false"></Button>
-                    <RadioGroup v-model="status" type="button">
-                        <Radio :label="0">
-                            <Poptip trigger="hover" content="Not Read" :width="50" placement="top-start">
-                                <Icon custom="fa fa-star-o" />
-                            </Poptip>
-                        </Radio>
-                        <Radio :label="1" title="Reading">
-                            <Poptip trigger="hover" content="Reading" :width="50">
-                                <Icon custom="fa fa-star-half-o " />
-                            </Poptip>
-                        </Radio>
-                        <Radio :label="2" title="Have Read">
-                            <Poptip trigger="hover" content="Have Read" :width="50" placement="top-end">
-                                <Icon custom="fa fa-star" />
-                            </Poptip>
-                        </Radio>
-                    </RadioGroup>
+                    <section>
+                        <Button class="close-read" type="text" icon="md-close" size="large" @click="isRead = false"></Button>
+                        <RadioGroup v-model="status" type="button">
+                            <Radio :label="0">
+                                <Poptip trigger="hover" content="Not Read" transfer>
+                                    <Icon custom="fa fa-star-o" />
+                                </Poptip>
+                            </Radio>
+                            <Radio :label="1" title="Reading" @click="$refs['page'].focus()">
+                                <Poptip trigger="hover" content="Reading" transfer>
+                                    <Icon custom="fa fa-star-half-o " />
+                                </Poptip>
+                            </Radio>
+                            <Radio :label="2" title="Have Read">
+                                <Poptip trigger="hover" content="Have Read" transfer>
+                                    <Icon custom="fa fa-star" />
+                                </Poptip>
+                            </Radio>
+                        </RadioGroup>
+                    </section>
+                    <Form>
+                        <Button v-if="status!=1" long type="primary">Save</Button>
+                        <FormItem label="Page" v-show="status==1" style="margin-bottom:0">
+                            <InputNumber ref="page" v-model="page" :min="0" :step="10" :precision="0"/>
+                            <Button type="primary">Save</Button>
+                        </FormItem>
+                    </Form>
                 </section>
             </div>
         </div>
@@ -185,7 +194,8 @@ export default {
     data () {
         return {
             status: 0,
-            isRead: false
+            isRead: false,
+            page: 0
         }
     },
     mounted () {
