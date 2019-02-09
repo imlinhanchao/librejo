@@ -95,4 +95,7 @@ for (let type of TYPES) {
     exp[type] = Sequelize[type];
 }
 exp.ID = ID_TYPE;
+exp.bitOp = (field, op, val, eq) => {
+    return sequelize.where(sequelize.literal(`${field} ${op} ${val}`), eq);
+};
 module.exports = exp;
