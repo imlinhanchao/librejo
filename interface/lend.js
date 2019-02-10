@@ -1,4 +1,3 @@
-//const req = require('../lib/req');
 const model = require('../model');
 const App = require('./app');
 const Lend = model.lend;
@@ -15,17 +14,21 @@ class Module extends App {
         return __error__;
     }
 
-    get status() {
+    static get status() {
+        let index = 1;
         return {
-            application: 1, // 申请
-            lent: 2,        // 借出
-            reject: 3,      // 驳回
-            remand: 4,      // 归还
+            application: index++, // 申请
+            lent: index++,        // 借出
+            reject: index++,      // 驳回
+            remand: index++,      // 归还
+            _max: index
         };
     }
 
     async new(data) {
         try {
+            if (data.status <= 0 || data.status >= this.status._max)
+                throw this.error.param;
             return this.okcreate(await super.new(data, Lend));
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -35,6 +38,8 @@ class Module extends App {
 
     async set(data) {
         try {
+            if (data.status <= 0 || data.status >= this.status._max)
+                throw this.error.param;
             // 借阅记录仅允许修改借阅状态与备注
             data = App.filter(data, ['status', 'remark', 'id']);
             return this.okupdate(await super.set(data, Lend));
