@@ -37,6 +37,11 @@ let orm = {
         type: db.STRING(20),
         comment: '出版日期',
         field: 'pub_date'
+    },
+    status: {
+        type: db.INTEGER,
+        comment: '图书状态',
+        defaultValue: 0
     }
 };
 let table_name = prefix + 'book_info';
