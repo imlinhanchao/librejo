@@ -2,6 +2,7 @@
 const model = require('../model');
 const App = require('./app');
 const Book = model.book;
+const Read = require('./read');
 const Account = require('./account');
 const fs = require('../lib/files');
 const path = require('path');
@@ -16,6 +17,7 @@ class Module extends App {
         this.session = session;
         this.saftKey = Book.keys().concat(['id']);
         this.account = new Account(session);
+        this.read = new Read(this.session);
     }
 
     get error() {
@@ -97,10 +99,17 @@ class Module extends App {
             let queryData = await super.query(
                 data, Book, ops
             );
+
+            var bookIds = queryData.data.map(b => b.id);
+            let reads = await this.read.lasts(bookIds, true);
+            queryData.data.forEach(d => d.read =
+                reads.find(r => r.bookId == d.id) || this.read.default(d.id));
+
             if (onlyData) return queryData;
             return this.okquery(queryData);
         } catch (err) {
-            throw (err);
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
         }
     }
     

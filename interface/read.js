@@ -16,7 +16,7 @@ class Module extends App {
         return __error__;
     }
 
-    static get status() {
+    get status() {
         let index = 1;
         return {
             reading: index++, 
@@ -37,32 +37,73 @@ class Module extends App {
     }
     
     async get(bookId, onlyData = false) {
-        let book = await Read.findAll({
-            where: { bookId }
-        });
+        try {
+            let book = await Read.findAll({
+                where: { bookId }
+            });
 
-        if (!book) {
-            book = [];
+            if (!book) {
+                book = [];
+            }
+
+            if (onlyData) return App.filter(book, this.saftKey);
+
+            return this.okquery(App.filter(book, this.saftKey));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
         }
-
-        if (onlyData) return App.filter(book, this.saftKey);
-
-        return this.okquery(App.filter(book, this.saftKey));
     }
     
     async last(bookId, onlyData = false) {
-        let book = await Read.findOne({
-            where: { bookId },
-            order: [['create_time', 'DESC']]
-        });
+        try {
+            let book = await Read.findOne({
+                where: { bookId },
+                order: [['create_time', 'DESC']]
+            });
 
-        if (!book) {
-            book = { bookId, status: 0 };
+            if (!book) {
+                book = this.default(bookId);
+            }
+
+            if (onlyData) return App.filter(book, this.saftKey);
+
+            return this.okquery(App.filter(book, this.saftKey));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
         }
+    }  
+    
+    async lasts(bookIds, onlyData = false) {
+        try {
+            let book = await Read.findAll({
+                where: {
+                    bookId: {
+                        $in: bookIds
+                    }
+                },
+                order: [['create_time', 'DESC']]
+            });
 
-        if (onlyData) return App.filter(book, this.saftKey);
+            if (!book) {
+                book = [];
+            }
 
-        return this.okquery(App.filter(book, this.saftKey));
+            let data = [];
+            book = book.filter(b => !data.find(d => d == b.id) && data.push(b.id));
+
+            if (onlyData) return book.map(b => App.filter(b, this.saftKey));
+
+            return this.okquery(book.map(b => App.filter(b, this.saftKey)));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.db(err));
+        }
+    }
+
+    default(bookId) {
+        return { bookId, status: 0, page: 0 }
     }
 }
 
