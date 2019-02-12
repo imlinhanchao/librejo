@@ -14,7 +14,7 @@ class Module extends App {
         return __error__;
     }
 
-    static get status() {
+    get status() {
         let index = 1;
         return {
             application: index++, // 申请
