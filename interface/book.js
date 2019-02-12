@@ -27,6 +27,7 @@ class Module extends App {
     async new(data) {
         try {
             data.userId = this.account.userId;
+            data.status = 0;
             if (data.img.indexOf('http') == 0) {
                 data.img = await this.__downloadImg(data.img);
             }
