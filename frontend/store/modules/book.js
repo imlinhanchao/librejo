@@ -63,6 +63,17 @@ const actions = {
             callback(null, error);
             console.error(error.message);
         });
+    },
+    read({ commit }, { read, callback }) {
+        axios.post('/read/new/', read)
+        .then((rsp) => {
+            rsp = rsp.data;
+            callback(rsp);
+        })
+        .catch((error) => {
+            callback(null, error);
+            console.error(error.message);
+        });
     }
 };
 

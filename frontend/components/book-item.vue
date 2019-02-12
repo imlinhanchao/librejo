@@ -93,6 +93,9 @@
     padding: .5em;
     color: #000;
     border-radius: .5em;
+    .ivu-spin {
+        border-radius: .5em;
+    }
     p {
         margin: 1em 0;
     }
@@ -126,7 +129,9 @@
             <div class="info">
                 <div class="header form-item">
                     <span class="title" :title="book.name"><router-link :to="'/b/' + book.id">{{book.name}}</router-link></span>
-                    <Button shape="circle" type="text" title="Read" class="read" @click="isRead = true"><Icon custom="fa fa-star-o"></Icon></Button>
+                    <Button shape="circle" type="text" title="Read" class="read" @click="isRead = true">
+                        <Icon :custom="`fa ${readIcon}`"></Icon>
+                    </Button>
                 </div>
                 <Row class="footer" type="flex" justify="space-between">
                     <Col span="5" class="form-item">
@@ -140,7 +145,7 @@
                             confirm
                             title="Are you sure you want to remove this book?"
                             @on-ok="deleteEvent">
-                            <Button shape="circle" type="text" title="Delete"><Icon custom="fa fa-trash"></Icon></Button>
+                            <Button shape="circle" type="text" title="Delete" :loading="removeloading"><Icon custom="fa fa-trash"></Icon></Button>
                         </Poptip>
                     </Col>
                     <Col span="5" class="form-item">
@@ -151,7 +156,7 @@
                     <span class="separator"></span>
                     <section>
                         <Button class="close-read" type="text" icon="md-close" size="large" @click="isRead = false"></Button>
-                        <RadioGroup v-model="status" type="button">
+                        <RadioGroup v-model="readInfo.status" type="button">
                             <Radio :label="0">
                                 <Poptip trigger="hover" content="Not Read" transfer>
                                     <Icon custom="fa fa-star-o" />
@@ -159,7 +164,7 @@
                             </Radio>
                             <Radio :label="1" title="Reading" @click="$refs['page'].focus()">
                                 <Poptip trigger="hover" content="Reading" transfer>
-                                    <Icon custom="fa fa-star-half-o " />
+                                    <Icon custom="fa fa-star-half-o" />
                                 </Poptip>
                             </Radio>
                             <Radio :label="2" title="Have Read">
@@ -170,12 +175,14 @@
                         </RadioGroup>
                     </section>
                     <Form>
-                        <Button v-if="status!=1" long type="primary">Save</Button>
-                        <FormItem label="Page" v-show="status==1" style="margin-bottom:0">
-                            <InputNumber ref="page" v-model="page" :min="0" :step="10" :precision="0"/>
-                            <Button type="primary">Save</Button>
+                        <Button v-if="readInfo.status!=1" long type="primary" 
+                        @click="ReadEvent" :disabled="readInfo.status==read.status">Save</Button>
+                        <FormItem label="Page" v-show="readInfo.status==1" style="margin-bottom:0">
+                            <InputNumber ref="page" v-model="readInfo.page" :min="0" :step="10" :precision="0"/>
+                            <Button type="primary" @click="ReadEvent" :disabled="readInfo.page==read.page && read.status==1">Save</Button>
                         </FormItem>
                     </Form>
+                    <Spin size="large" fix v-if="readloading"></Spin>
                 </section>
             </div>
         </div>
@@ -187,21 +194,54 @@ export default {
         book: {
             type: Object,
             required: true
+        },
+        read: {
+            type: Object,
+            required: true
         }
     },
     components: {
     },
     data () {
         return {
-            status: 0,
+            readInfo: {
+                status: 0,
+                page: 0,
+                bookId: ''
+            },
             isRead: false,
-            page: 0
+            removeloading: false,
+            readloading: false,
         }
     },
     mounted () {
+        this.readInfo = Object.assign({}, this.read);
+    },
+    computed: {
+        readIcon () {
+            let icon = ['fa-star-o', 'fa-star-half-o', 'fa-star'];
+            return icon[this.read.status];
+        }
     },
     methods: {
+        ReadEvent() {
+            this.readloading = true;
+            this.$store.dispatch('book/read', {
+                read: this.readInfo,
+                callback: (rsp, err) => {
+                    this.readloading = false;
+                    if (rsp && rsp.state == 0) {
+                        this.$Message.success(`Change Book Status Success!`);
+                        this.$emit('reads', this.readInfo);
+                    } else {
+                        err = (err && err.message) || rsp.msg;
+                        this.$Message.error(err);
+                    }
+                }
+            })
+        },
         deleteEvent() {
+            this.removeloading = true;
             this.$store.dispatch('book/remove', {
                 id: this.book.id,
                 callback: (rsp, err) => {

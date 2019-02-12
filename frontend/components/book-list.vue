@@ -28,7 +28,7 @@
                 move-class="item-move"
                 class="book"
             >
-                <bookItem :book="item.book" @remove="removeBook"/>
+                <bookItem :book="item.book" :read="item.book.read" @remove="removeBook" @reads="readBook"/>
             </waterfall-slot>
         </waterfall>
         <p style="color: #AAA; text-align:center;" v-if="!loading && total && total == books.length">--- No More Books ---</p>
@@ -127,6 +127,12 @@ export default {
         removeBook(id) {
             this.total -= 1;
             this.books = this.books.filter(b => b.book.id != id);
+        },
+        readBook(read) {
+            let index = this.books.findIndex(b => b.book.id == read.bookId);
+            // let book = this.books[index];
+            // book.read = read;
+            this.$set(this.books[index].book, 'read', read);
         }
     }
 }
