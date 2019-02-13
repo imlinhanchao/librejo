@@ -7,7 +7,7 @@
 </style>
 <template>
     <Layout>
-        <Modal v-model="loginModel" title="Login" width="300" :mask-closable="false" @on-visible-change="change">
+        <Modal v-model="loginModel" :title="btnName" width="300" :mask-closable="false" @on-visible-change="change">
             <Form ref="loginForm" :model="login" :rules="ruleValidate" class="layout-form">
                 <FormItem prop="username">
                     <Input
