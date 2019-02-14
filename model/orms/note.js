@@ -13,6 +13,11 @@ let orm = {
         type: db.STRING(100),
         comment: 'ISBN码'
     },
+    section: {
+        type: db.STRING(200),
+        comment: '章节',
+        defaultValue: ''
+    },
     content: {
         type: db.TEXT,
         comment: '笔记'
