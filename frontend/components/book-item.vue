@@ -207,7 +207,8 @@ export default {
             readInfo: {
                 status: 0,
                 page: 0,
-                bookId: ''
+                bookId: '',
+                ISBN: ''
             },
             isRead: false,
             removeloading: false,
@@ -216,6 +217,9 @@ export default {
     },
     mounted () {
         this.readInfo = Object.assign({}, this.read);
+        if (!this.readInfo.ISBN) {
+            this.readInfo.ISBN = this.book.ISBN;
+        }
     },
     computed: {
         readIcon () {

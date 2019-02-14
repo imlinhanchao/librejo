@@ -5,6 +5,10 @@ let orm = {
         type: db.ID,
         comment: '图书ID'
     },
+    ISBN: {
+        type: db.STRING(100),
+        comment: 'ISBN码'
+    },
     status: {
         type: db.INTEGER,
         comment: '读书状态'

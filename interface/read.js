@@ -103,7 +103,7 @@ class Module extends App {
     }
 
     default(bookId) {
-        return { bookId, status: 0, page: 0 }
+        return { bookId, status: 0, page: 0 };
     }
 }
 
