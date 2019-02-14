@@ -4,6 +4,13 @@
         width: 15px;
     }
 }
+.refresh-captcha {
+    cursor: pointer;
+    transition: all .5s;
+    &:active {
+        transform: rotate(180deg);
+    }
+}
 </style>
 <template>
     <Layout>
@@ -57,6 +64,7 @@
                         <Icon
                             slot="prepend"
                             custom="fa fa-refresh"
+                            class="refresh-captcha"
                             @click="rand=Math.random()"
                         />
                         <img slot="append" :src="`/api/lib/captcha?r=${rand}`" style="height: 28px; margin: -4px -7px;"/>
