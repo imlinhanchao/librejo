@@ -1,4 +1,3 @@
-//const req = require('../lib/req');
 const model = require('../model');
 const App = require('./app');
 const Book = model.book;

@@ -1,10 +1,7 @@
-//const req = require('../lib/req');
 const model = require('../model');
 const App = require('./app');
 const Note = model.note;
 const Book = require('./book');
-const fs = require('../lib/files');
-const path = require('path');
 
 let __error__ = Object.assign({}, App.error);
 __error__.nobook = App.error.existed('图书', false);
