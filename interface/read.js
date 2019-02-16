@@ -1,6 +1,7 @@
 const model = require('../model');
 const App = require('./app');
 const Read = model.read;
+const Book = model.book;
 
 let __error__ = Object.assign({}, App.error);
 
@@ -9,6 +10,7 @@ class Module extends App {
         super([]);
         this.name = '阅读记录';
         this.session = session;
+        this.book = new Book(session);
         this.saftKey = Read.keys().concat(['id']);
     }
 
@@ -27,8 +29,19 @@ class Module extends App {
 
     async new(data) {
         try {
+            if (!App.haskeys(data, ['status', 'bookId'])) {
+                throw (App.error.param);
+            }
+
             if (data.status < 0 || data.status >= this.status._max)
                 throw this.error.param;
+    
+            let book = this.book.get(data.bookId);
+
+            if (book.userId != this.book.account.userId) {
+                throw this.error.unauthorized;
+            }
+
             return this.okcreate(await super.new(data, Read));
         } catch (err) {
             if (err.isdefine) throw (err);
