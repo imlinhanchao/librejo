@@ -26,7 +26,7 @@ class Module extends App {
                 throw (App.error.param);
             }
 
-            let book = this.book.get(data.bookId);
+            let book = await this.book.get(data.bookId, true);
 
             if (book.userId != this.book.account.userId) {
                 throw this.error.unauthorized;
@@ -47,7 +47,7 @@ class Module extends App {
             data.bookId = undefined; // 已创建笔记不允许修改图书ID
             return this.okupdate(
                 App.filter(await super.set(data, Note, (note) => {
-                    let book = this.book.get(note.bookId);
+                    let book = await this.book.get(note.bookId, true);
 
                     if (book.userId != this.book.account.userId) {
                         throw this.error.unauthorized;
@@ -64,7 +64,7 @@ class Module extends App {
     async del(data) {
         try {
             let note = await super.del(data, Note, (note) => {
-                let book = this.book.get(note.bookId);
+                let book = await this.book.get(note.bookId, true);
     
                 if (book.userId != this.book.account.userId) {
                     throw this.error.unauthorized;
