@@ -1,17 +1,16 @@
 const model = require('../model');
 const App = require('./app');
 const Read = model.read;
-const Book = model.book;
 
 let __error__ = Object.assign({}, App.error);
 
 class Module extends App {
-    constructor(session) {
+    constructor(session, book) {
         super([]);
         this.name = '阅读记录';
         this.session = session;
-        this.book = new Book(session);
         this.saftKey = Read.keys().concat(['id']);
+        this.book = book || new (require('./book'))(session, this);
     }
 
     get error() {
@@ -36,7 +35,7 @@ class Module extends App {
             if (data.status < 0 || data.status >= this.status._max)
                 throw this.error.param;
     
-            let book = this.book.get(data.bookId);
+            let book = await this.book.get(data.bookId, true);
 
             if (book.userId != this.book.account.userId) {
                 throw this.error.unauthorized;

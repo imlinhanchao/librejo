@@ -1,7 +1,6 @@
 const model = require('../model');
 const App = require('./app');
 const Book = model.book;
-const Read = require('./read');
 const Account = require('./account');
 const fs = require('../lib/files');
 const path = require('path');
@@ -10,13 +9,13 @@ let __error__ = Object.assign({}, App.error);
 __error__.notexisted = App.error.existed('图书', false);
 
 class Module extends App {
-    constructor(session) {
+    constructor(session, read) {
         super([]);
         this.name = '图书';
         this.session = session;
         this.saftKey = Book.keys().concat(['id']);
         this.account = new Account(session);
-        this.read = new Read(this.session);
+        this.read = read || new (require('./read'))(this.session, this);
     }
 
     get error() {
