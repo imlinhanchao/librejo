@@ -34,12 +34,14 @@
         <p style="color: #AAA; text-align:center;" v-if="!loading && total && total == books.length">--- No More Books ---</p>
         <p style="color: #AAA; text-align:center;" v-if="!loading && total == 0 && $root.isLogin">You must <router-link to="/book/new">add</router-link> your book first.</p>
         <p v-show="loading" class="loading"><Spin fix></Spin></p>
+        <bookNote :book="bookModal" v-model="isNote" />
     </Layout>
 </template>
 <script>
 import Waterfall from 'vue-waterfall/lib/waterfall';
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot';
 import bookItem from './book-item';
+import bookNote from './book-note';
 export default {
     props: {
         params: {
@@ -49,7 +51,8 @@ export default {
     components: {
         Waterfall,
         WaterfallSlot,
-        bookItem
+        bookItem,
+        bookNote
     },
     data () {
         return {
@@ -57,7 +60,12 @@ export default {
             timestamp: new Date().valueOf(),
             total: 0,
             lastRequest: 0,
-            loading: false
+            loading: false,
+            bookModal: {
+                name: '',
+                id: ''
+            },
+            isNote: false
         }
     },
     mounted () {
@@ -133,7 +141,8 @@ export default {
             this.$set(this.books[index].book, 'read', read);
         },
         noteBook(book) {
-
+            this.bookModal = book;
+            this.isNote = true;
         }
     }
 }
