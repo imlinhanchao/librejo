@@ -129,7 +129,7 @@
             <div class="info">
                 <div class="header form-item">
                     <span class="title" :title="book.name"><router-link :to="'/b/' + book.id">{{book.name}}</router-link></span>
-                    <Button shape="circle" type="text" title="Read" class="read" @click="isRead = true">
+                    <Button shape="circle" type="text" title="Read" class="read" @click="isRead = !isRead">
                         <Icon :custom="`fa ${readIcon}`"></Icon>
                     </Button>
                 </div>
@@ -149,7 +149,7 @@
                         </Poptip>
                     </Col>
                     <Col span="5" class="form-item">
-                        <Button shape="circle" type="text" title="Notes"><Icon type="md-quote"></Icon></Button>
+                        <Button shape="circle" type="text" title="Notes" @click=""><Icon type="md-quote"></Icon></Button>
                     </Col>
                 </Row>
                 <section class="read-form" v-if="isRead">
@@ -237,6 +237,7 @@ export default {
                     if (rsp && rsp.state == 0) {
                         this.$Message.success(`Change Book Status Success!`);
                         this.$emit('reads', this.readInfo);
+                        this.isRead = false;
                     } else {
                         err = (err && err.message) || rsp.msg;
                         this.$Message.error(err);
