@@ -46,7 +46,7 @@ class Module extends App {
             data.ISBN = undefined; // 已创建笔记不允许修改ISBN
             data.bookId = undefined; // 已创建笔记不允许修改图书ID
             return this.okupdate(
-                App.filter(await super.set(data, Note, (note) => {
+                App.filter(await super.set(data, Note, async (note) => {
                     let book = await this.book.get(note.bookId, true);
 
                     if (book.userId != this.book.account.userId) {
@@ -63,7 +63,7 @@ class Module extends App {
 
     async del(data) {
         try {
-            let note = await super.del(data, Note, (note) => {
+            let note = await super.del(data, Note, async (note) => {
                 let book = await this.book.get(note.bookId, true);
     
                 if (book.userId != this.book.account.userId) {
