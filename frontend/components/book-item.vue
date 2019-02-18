@@ -149,7 +149,7 @@
                         </Poptip>
                     </Col>
                     <Col span="5" class="form-item">
-                        <Button shape="circle" type="text" title="Notes" @click=""><Icon type="md-quote"></Icon></Button>
+                        <Button shape="circle" type="text" title="Notes" @click="noteEvent"><Icon type="md-quote"></Icon></Button>
                     </Col>
                 </Row>
                 <section class="read-form" v-if="isRead">
@@ -260,6 +260,9 @@ export default {
                     }
                 }
             })
+        },
+        noteEvent () {
+            this.$emit('notes', this.book);
         }
     }
 }
