@@ -9,11 +9,13 @@ import store from './store';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
+import marked from 'marked';
 import config from '../config.json';
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = Util.ajaxUrl;
 Vue.prototype.$axios = axios;
+Vue.prototype.$marked = marked;
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
