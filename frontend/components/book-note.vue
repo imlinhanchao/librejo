@@ -9,8 +9,8 @@
         :mask-closable="false"
         @on-visible-change="change">
         <section v-if="book.name">
-            <Tabs type="card">
-                <TabPane label="笔记" icon="logo-markdown">
+            <Tabs type="card" v-model="notetab">
+                <TabPane name="note" label="笔记" icon="logo-markdown">
                     <Form ref="noteForm" :model="note" :rules="ruleValidate" inline>
                         <FormItem prop="page" label="页码" style="width: 30%">
                             <InputNumber ref="page" v-model="note.page" placeholder="页码" :min="1" :step="10" :precision="0"/>
@@ -24,10 +24,10 @@
                         </FormItem>
                     </Form>
                 </TabPane>
-                <TabPane label="预览" icon="md-eye">                
+                <TabPane name="preview" label="预览" icon="md-eye">                
                     <section class="markdown-preview" v-html="compiledMarkdown(note.content)"></section>
                 </TabPane>
-                <TabPane label="历史" icon="md-list" v-if="notes.length">
+                <TabPane name="history" label="历史" icon="md-list" v-if="notes.length">
                     
                 </TabPane>
             </Tabs>
@@ -56,6 +56,7 @@ export default {
             notesInput: '',
             loading: false,
             notes: [],
+            notetab: 'note',
             note: {
                 id: '',
                 bookId: '',
@@ -121,7 +122,9 @@ export default {
                             this.loading = false;
                             if (rsp && rsp.state == 0) {
                                 this.$Message.success(`New Note Success!`);
-                                this.note = rsp.data;
+                                this.notes.push(rsp.data);
+                                this.note.content = '';
+                                this.notetab = 'history';
                             } else {
                                 err = (err && err.message) || rsp.msg;
                                 this.$Message.error(err);
