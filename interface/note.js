@@ -79,18 +79,18 @@ class Module extends App {
         }
     }
 
-    async get(id, onlyData = false) {
-        let book = await Note.findAll({
-            where: { id }
+    async get(bookId, onlyData = false) {
+        let note = await Note.findAll({
+            where: { bookId }
         });
 
-        if (!book) {
+        if (!note) {
             throw this.error.notexisted;
         }
 
-        if (onlyData) return App.filter(book, this.saftKey);
+        if (onlyData) return note.map(n => App.filter(n, this.saftKey));
 
-        return this.okquery(App.filter(book, this.saftKey));
+        return this.okquery(note.map(n => App.filter(n, this.saftKey)));
     }
     
     async query(data, onlyData = false) {

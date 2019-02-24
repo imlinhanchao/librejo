@@ -28,7 +28,11 @@
                     <section class="markdown-preview" v-html="compiledMarkdown(note.content)"></section>
                 </TabPane>
                 <TabPane name="history" label="历史" icon="md-list" v-if="notes.length">
-                    
+                    <ul>
+                        <li v-for="n in notes">
+                            <router-link :to="'note/' + n.id">[Page {{n.page}}] {{n.section||'No Section'}}</router-link>
+                        </li>
+                    </ul>
                 </TabPane>
             </Tabs>
         </section>
@@ -81,6 +85,7 @@ export default {
             if (book.read.status == 1) {
                 this.note.page = book.read.page;
             }
+            this.loadNotes(this.note.bookId);
         },
         modal(val) {
             if (this.modal != val) {
@@ -109,9 +114,24 @@ export default {
             if (this.book.read.statue == 1) {
                 this.note.page = this.book.read.page;
             }
+            this.loadNotes(this.note.bookId);
         }
     },
     methods: {
+        loadNotes(id) {
+            this.$store.dispatch('note/get', {
+                id,
+                callback: (rsp, err) => {
+                    if (rsp && rsp.state == 0) {
+                        this.notes = [];
+                        rsp.data.forEach(d => this.notes.push(d))
+                    } else {
+                        err = (err && err.message) || rsp.msg;
+                        this.$Message.error(err);
+                    }
+                }
+            })
+        },
         handleNew() {
             this.$refs['noteForm'].validate((valid) => {
                 if (valid) {
