@@ -1,5 +1,32 @@
 <style lang="less" scoped>
-
+.form-title {
+    display: flex;
+    .form-page {
+        flex: 200px 1;
+    }
+    .form-section {
+        width: 100%
+    }
+}
+.note-list {
+    li {
+        border-bottom: 1px dashed #ccc;
+        padding: 10px 0;
+    }
+}
+.note-view {
+    h1 {
+        font-size: 2em;
+        .view-back {
+            font-size: .8em;
+            padding-right: .2em;
+            color: #D21C13;
+      }
+    }
+    .markdown-preview {
+        font-size: 1.3em;
+    }
+}
 </style>
 <template>
     <Modal 
@@ -12,12 +39,14 @@
             <Tabs type="card" v-model="notetab">
                 <TabPane name="note" label="笔记" icon="logo-markdown">
                     <Form ref="noteForm" :model="note" :rules="ruleValidate" inline>
-                        <FormItem prop="page" label="页码" style="width: 30%">
-                            <InputNumber ref="page" v-model="note.page" placeholder="页码" :min="1" :step="10" :precision="0"/>
-                        </FormItem>
-                        <FormItem prop="section" label="章节名" style="width: 65%">
-                            <Input type="text" v-model="note.section" placeholder="章节名" style="width: calc(100% - 4em)" />
-                        </FormItem>
+                        <section class="form-title">
+                            <FormItem class="form-page" prop="page" label="页码">
+                                <InputNumber ref="page" v-model="note.page" placeholder="页码" :min="1" :step="10" :precision="0"/>
+                            </FormItem>
+                            <FormItem class="form-section" prop="section" label="章节名">
+                                <Input type="text" v-model="note.section" placeholder="章节名" style="width: calc(100% - 4em)" />
+                            </FormItem>
+                        </section>
                         <FormItem prop="content" style="width: 100%">
                             <Input v-model="note.content" type="textarea" placeholder="笔记（支持 markdown）" 
                             :autosize="{ minRows: 5, maxRows: 15 }" size="default"/>
@@ -28,11 +57,20 @@
                     <section class="markdown-preview" v-html="compiledMarkdown(note.content)"></section>
                 </TabPane>
                 <TabPane name="history" label="历史" icon="md-list" v-if="notes.length">
-                    <ul>
+                    <ul class="note-list" v-show="!isView">
                         <li v-for="n in notes">
-                            <router-link :to="'note/' + n.id">[Page {{n.page}}] {{n.section||'No Section'}}</router-link>
+                            <a href="javascript:void(0)" @click="viewNote(n)">[Page {{n.page}}] {{n.section||'No Section'}}</a>
                         </li>
                     </ul>
+                    <article v-if="isView" class="note-view">
+                        <header>
+                            <h1>
+                                <i class="fa fa-chevron-left view-back" aria-hidden="true" @click="isView=false"></i>
+                                <span class="title">[Page {{noteView.page}}] {{noteView.section||'No Section'}}</span>
+                            </h1>
+                        </header>
+                        <section class="markdown-preview" v-html="compiledMarkdown(noteView.content)"></section>
+                    </article>
                 </TabPane>
             </Tabs>
         </section>
@@ -55,13 +93,23 @@ export default {
     },
     data(){
         return {
-            fullscreen: false,
+            isView: false,
+            fullscreen: true,
             modal: false,
             notesInput: '',
             loading: false,
             notes: [],
             notetab: 'note',
             note: {
+                id: '',
+                bookId: '',
+                ISBN: '',
+                page: 0,
+                section: '',
+                content: '',
+                favcount: 0
+            },
+            noteView: {
                 id: '',
                 bookId: '',
                 ISBN: '',
@@ -118,6 +166,10 @@ export default {
         }
     },
     methods: {
+        viewNote(n) {
+            this.noteView = n;
+            this.isView = true;
+        },
         loadNotes(id) {
             this.$store.dispatch('note/get', {
                 id,
