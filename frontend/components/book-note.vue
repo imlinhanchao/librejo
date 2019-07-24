@@ -64,7 +64,7 @@
                             </FormItem>
                         </section>
                         <FormItem prop="content" style="width: 100%">
-                            <Input v-model="note.content" type="textarea" placeholder="笔记（支持 markdown）" 
+                            <Input ref="note-content" v-model="note.content" type="textarea" placeholder="笔记（支持 markdown）" 
                             :autosize="{ minRows: 5, maxRows: 15 }" size="default"/>
                         </FormItem>
                     </Form>
@@ -100,7 +100,8 @@
             </Tabs>
         </section>
         <div slot="footer" class="login-footer">
-            <Button type="primary" :loading="loading" @click="handleEvent">{{btnWord}}</Button>
+            <Button type="primary" :loading="loading" @click="handleUpdate" v-if="isUpdate">Update</Button>
+            <Button type="primary" :loading="loading && !isUpdate" @click="handleEvent" :style="btnStyle">{{btnWord}}</Button>
         </div>
     </Modal>
 </template>
@@ -167,11 +168,20 @@ export default {
         }
     },
     computed: {
+        isUpdate () {
+            return !!this.note.id;
+        },
         handleEvent () {
-            return this.note.id ? this.handleUpdate : this.handleNew;
+            return this.isUpdate ? this.handleCancel : this.handleNew;
         },
         btnWord () {
-            return this.note.id ? 'Update' : 'New'
+            return this.isUpdate ? 'Cancel' : 'New';
+        },
+        btnStyle() {
+            return this.isUpdate ? {
+                backgroundColor: '#464444',
+                borderColor: '#464444'
+            } : {}
         },
         title() {
             return this.book.name + '的笔记';
@@ -237,7 +247,18 @@ export default {
                 }
             })
         },
+        handleCancel () {
+            this.note.id = '';
+            this.note.content = '';
+            this.note.section = '';
+            this.notetab = 'history';            
+        },
         handleNew() {
+            if (this.notetab != 'note' && this.note.content == '') {
+                this.notetab = 'note';
+                setTimeout(() => this.$refs['note-content'].focus(), 500);
+                return;
+            }
             this.$refs['noteForm'].validate((valid) => {
                 if (valid) {
                     this.loading = true;
@@ -248,8 +269,7 @@ export default {
                             if (rsp && rsp.state == 0) {
                                 this.$Message.success(`New Note Success!`);
                                 this.notes.push(rsp.data);
-                                this.note.content = '';
-                                this.notetab = 'history';
+                                this.handleCancel();
                             } else {
                                 err = (err && err.message) || rsp.msg;
                                 this.$Message.error(err);
@@ -275,10 +295,7 @@ export default {
                                         this.$set(this.notes, i, Object.assign({}, n));
                                     }
                                 });
-                                this.note.id = '';
-                                this.note.content = '';
-                                this.note.section = '';
-                                this.notetab = 'history';
+                                this.handleCancel();                                
                             } else {
                                 err = (err && err.message) || rsp.msg;
                                 this.$Message.error(err);
