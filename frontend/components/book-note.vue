@@ -12,6 +12,22 @@
     li {
         border-bottom: 1px dashed #ccc;
         padding: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        a:hover{
+            font-weight: bold;
+        }
+        .note-form {
+            .form-btn {
+                width: 2em;
+                margin-right: 5px;
+                padding: 1px 0 2px;
+                &.delete-btn {
+                    background-color: #464444;
+                    border-color: #464444;
+                }
+            }
+        }
     }
 }
 .note-view {
@@ -60,6 +76,15 @@
                     <ul class="note-list" v-show="!isView">
                         <li v-for="n in notes">
                             <a href="javascript:void(0)" @click="viewNote(n)">[Page {{n.page}}] {{n.section||'No Section'}}</a>
+                            <span class="note-form">
+                                <Button type="primary" icon="md-create" size="small" class="form-btn" @click="updateNote(n)"></Button>
+                                <Poptip
+                                    confirm
+                                    title="Are you sure you want to remove this note?"
+                                    @on-ok="deleteNote(n)">
+                                    <Button type="error" icon="ios-trash" size="small" class="form-btn delete-btn"></Button>    
+                                </Poptip>
+                            </span>
                         </li>
                     </ul>
                     <article v-if="isView" class="note-view">
@@ -75,7 +100,7 @@
             </Tabs>
         </section>
         <div slot="footer" class="login-footer">
-            <Button type="primary" :loading="loading" @click="handleNew">New</Button>
+            <Button type="primary" :loading="loading" @click="handleEvent">{{btnWord}}</Button>
         </div>
     </Modal>
 </template>
@@ -142,6 +167,12 @@ export default {
         }
     },
     computed: {
+        handleEvent () {
+            return this.note.id ? this.handleUpdate : this.handleNew;
+        },
+        btnWord () {
+            return this.note.id ? 'Update' : 'New'
+        },
         title() {
             return this.book.name + '的笔记';
         },
@@ -170,6 +201,28 @@ export default {
             this.noteView = n;
             this.isView = true;
         },
+        updateNote(n) {
+            this.notetab = 'note';
+            this.note = n;
+        },
+        deleteNote(n) {
+            this.$store.dispatch('note/remove', {
+                id: n.id,
+                callback: (rsp, err) => {
+                    if (rsp && rsp.state == 0) {
+                        this.notes.forEach((d, i) => {
+                            if(d.id == n.id) {
+                                this.$Message.success(`Remove Note Success!`);
+                                this.notes.splice(i, 1);
+                            }
+                        });
+                    } else {
+                        err = (err && err.message) || rsp.msg;
+                        this.$Message.error(err);
+                    }
+                }
+            })
+        },
         loadNotes(id) {
             this.$store.dispatch('note/get', {
                 id,
@@ -196,6 +249,35 @@ export default {
                                 this.$Message.success(`New Note Success!`);
                                 this.notes.push(rsp.data);
                                 this.note.content = '';
+                                this.notetab = 'history';
+                            } else {
+                                err = (err && err.message) || rsp.msg;
+                                this.$Message.error(err);
+                            }
+                        }
+                    })
+                }
+            })
+        },
+        handleUpdate() {
+            this.$refs['noteForm'].validate((valid) => {
+                if (valid) {
+                    this.loading = true;
+                    this.$store.dispatch('note/set', {
+                        note: this.note,
+                        callback: (rsp, err) => {
+                            this.loading = false;
+                            if (rsp && rsp.state == 0) {
+                                this.$Message.success(`Update Note Success!`);
+                                this.notes.forEach((n, i) => {
+                                    if(n.id == this.note.id) {
+                                        n = this.note;
+                                        this.$set(this.notes, i, Object.assign({}, n));
+                                    }
+                                });
+                                this.note.id = '';
+                                this.note.content = '';
+                                this.note.section = '';
                                 this.notetab = 'history';
                             } else {
                                 err = (err && err.message) || rsp.msg;
