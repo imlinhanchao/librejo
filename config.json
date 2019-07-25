@@ -24,5 +24,13 @@
         "prefix": "lib_",
         "port": 3306,
         "logging": true
+    },
+    "weixin": {
+        "appid":"", 
+        "appsecret": "",
+        "encodingAESKey": "", 
+        "token":"",
+        "checkSignature": false,
+        "safeurl": ""
     }
 }

@@ -43,7 +43,9 @@
         "vue": "^2.5.2",
         "vue-router": "^3.0.1",
         "vue-waterfall": "^1.0.6",
-        "vuex": "^2.2.1"
+        "vuex": "^2.2.1",
+        "wechat": "^2.1.0",
+        "wechat-api": "^1.35.1"
     },
     "devDependencies": {
         "autoprefixer-loader": "^3.2.0",
