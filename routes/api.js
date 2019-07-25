@@ -13,6 +13,7 @@ router.use('/note', loader(modules.note));
 router.use('/lend', loader(modules.lend));
 router.use('/account', loader(modules.account));
 router.use('/douban', loader(modules.douban));
+router.use('/wx', require('./wx'));
 
 router.get('/', function (req, res) {
     res.render('index', { title: 'API' });
