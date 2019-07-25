@@ -32,7 +32,7 @@ class Module extends App {
         api.getJsConfig(param, callback);
     }
 
-    api(req, res, next) {
+    static loader(req, res, next) {
         return wechat(config, async (req, res/*, next*/) => {
             // 微信输入信息都在req.weixin上
             let message = req.weixin;
