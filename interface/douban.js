@@ -28,7 +28,7 @@ class Module extends App {
 
     async id(id) {
         try {
-            let rsp = await req.get(`${__domain__}/${id}`, __encoding__);
+            let rsp = await req.get(`${__domain__}/${id}?apikey=0df993c66c0c636e29ecbb5344252a4a`, __encoding__);
             return this.okquery(JSON.parse(rsp.body));
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -38,7 +38,7 @@ class Module extends App {
 
     async isbn(isbn) {
         try {
-            let rsp = await req.get(`${__domain__}/isbn/${isbn}`, __encoding__);
+            let rsp = await req.get(`${__domain__}/isbn/${isbn}?apikey=0df993c66c0c636e29ecbb5344252a4a`, __encoding__);
             return this.okquery(JSON.parse(rsp.body));
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -48,7 +48,7 @@ class Module extends App {
 
     async query(name) {
         try {
-            let rsp = await req.get(`${__domain__}/search?q=${name}`, __encoding__);
+            let rsp = await req.get(`${__domain__}/search?q=${name}?apikey=0df993c66c0c636e29ecbb5344252a4a`, __encoding__);
             return this.okquery(JSON.parse(rsp.body));
         } catch (err) {
             if (err.isdefine) throw (err);
