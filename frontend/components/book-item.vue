@@ -4,7 +4,7 @@
     padding: .6em;
     .panel {
         border-radius: .6em;
-        box-shadow: #00000033 0 4px 10px;
+        box-shadow: rgba(0, 0, 0, 0.2) 0 4px 10px;
         overflow: hidden;
         position: relative;
         img {
@@ -23,7 +23,7 @@
         right: 0;
         top: 0;
         bottom: 0;
-        background: #0000004d;
+        background: rgba(0, 0, 0, 0.3);
         color: #FFF;
         .header {
             position: absolute;
@@ -36,7 +36,7 @@
                 width: 2em;
                 height: 2em;
                 border-radius: 1em;
-                background: #00000066;
+                background: rgba(0, 0, 0, 0.4);
                 text-align: center;
             }
             .title {
@@ -45,7 +45,7 @@
                 right: 2.5em;
                 height: 2em;
                 border-radius: 1em;
-                background: #00000066;
+                background: rgba(0, 0, 0, 0.4);
                 padding: 0 .6em;
                 font-weight: bold;
                 text-overflow: ellipsis;
@@ -70,10 +70,10 @@
                 font-size: 1.2em;
                 text-align: center;
                 line-height: 0em;
-                background: #00000066;
+                background: rgba(0, 0, 0, 0.4);
                 color: #FFF;
                 &:hover {
-                    background: #27272766;
+                    background: rgba(39, 39, 39, 0.4);
                     color: #D21C13;
                 }
             }
