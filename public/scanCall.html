@@ -8,7 +8,7 @@
     <script>
         var param = location.search;
         var mat = param.match(/(\?|&)(q=.*?)(&|$)/);
-        if(!mat) location = 'https://api.sxisa.com/scan/?c=' + location.href;
+        if(!mat) window.open('https://api.sxisa.com/scan/');
         else {
             var callMat = param.match(/(\?|&)(c=.*?)(&|$)/);
             var data = mat[2];
