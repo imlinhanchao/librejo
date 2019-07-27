@@ -7,17 +7,22 @@
     <title>Scan Call</title>
     <script>
         var param = location.search;
-        var mat = param.match(/(\?|&)(q=.*?)(&|$)/);
-        if(!mat) window.open('https://api.sxisa.com/scan/');
-        else {
+        window.open('https://api.sxisa.com/scan/?o=' + location.href);
+        function getScan(data) {
             var callMat = param.match(/(\?|&)(c=.*?)(&|$)/);
-            var data = mat[2];
             if (!callMat) alert(data);
             else {
                 var callUrl = callMat[2];
                 if(opener) opener[callback](data);
-            }
+            }        
         }
+        window.addEventListener('message', function(event) { 
+            if (~event.origin.indexOf('https://api.sxisa.com')) { 
+                getScan(event.data); 
+            } else { 
+                return; 
+            } 
+        }); 
     </script>
 </head>
 <body>
