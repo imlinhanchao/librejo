@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Scan Call</title>
+    <script>
+        var param = location.search;
+        var mat = param.match(/(\?|&)(r=.*?)(&|$)/);
+        if(!mat) location = 'https://api.sxisa.com/scan/?c=' + location.href;
+        else {
+            var callMat = param.match(/(\?|&)(c=.*?)(&|$)/);
+            var data = mat[2];
+            if (!callMat) alert(data);
+            else {
+                var callback = callMat[2];
+                parent.window[callback](data);
+            }
+        }
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
