@@ -14,8 +14,8 @@
             var data = mat[2];
             if (!callMat) alert(data);
             else {
-                var callback = callMat[2];
-                parent.window[callback](data);
+                var callUrl = callMat[2];
+                if(opener) opener[callback](data);
             }
         }
     </script>

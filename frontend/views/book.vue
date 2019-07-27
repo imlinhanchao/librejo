@@ -153,7 +153,6 @@ button.delete-btn {
             <Button type="text" icon="md-close" @click="scanClose" class="close-btn"></Button>
             <div id="scan-canvas"></div>
         </section>
-        <iframe src="/scanCall.html?c=__callBarCode" v-if="isScan" frameborder="0" style="display:none"></iframe>
     </Layout>
 </template>
 
@@ -335,7 +334,7 @@ export default {
             window.__callScanBarCode = (code) => {
                 this.book.ISBN = code;
             };
-            this.isScan = true;
+            window.open('/scanCall.html?c=__callBarCode');
         }
     },
     computed: {
