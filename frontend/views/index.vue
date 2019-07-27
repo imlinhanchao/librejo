@@ -139,6 +139,7 @@
 @media (max-width: 480px)  {
     .search-btn {
         display: inline-block;
+        padding: 5px 0;
     }
     .search-input {
         display: none;
@@ -274,6 +275,11 @@
                     </li>
                     <li>
                     <ul :class="menuClasses">
+                        <li v-if="isWx">
+                        <a href="/scanCall.html?r=/book/new/">
+                        <Icon type="md-qr-scanner"></Icon>
+                        <span>Scan</span></a>
+                        </li>
                         <li>
                         <router-link to="/"><Icon type="ios-bookmark"></Icon>
                         <span>Books</span></router-link>
@@ -337,6 +343,9 @@ export default {
         };
     },
     computed: {
+        isWx() {
+            return navigator.userAgent.toLowerCase().indexOf('micromessenger') >= 0;
+        },
         menuItemClasses() {
             return ["menu-item", this.isCollapsed ? "actived-menu" : ""];
         },

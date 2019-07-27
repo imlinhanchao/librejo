@@ -206,6 +206,10 @@ export default {
                 })
             } else {
                 this.isUpdate = false;
+                if (this.isbn) {
+                    this.book.ISBN = this.isbn;
+                    this.search(this.isbn);
+                }
             }
             this.$refs['bookForm'].resetFields();
         },
@@ -275,8 +279,9 @@ export default {
                 });
             }
         },
-        search() {
-            this.$axios.get('/douban/isbn/' + this.book.ISBN)
+        search(isbn) {
+            isbn = isbn || this.book.ISBN;
+            this.$axios.get('/douban/isbn/' + isbn)
                 .then((rsp) => {
                     rsp = rsp.data;
                     let data = rsp.data;
@@ -356,6 +361,9 @@ export default {
         },
         bookId () {
             return this.$route.params.id;
+        },
+        isbn () {
+            return this.$route.params.isbn;
         }
     },
     watch: {
