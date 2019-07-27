@@ -153,7 +153,7 @@ button.delete-btn {
             <Button type="text" icon="md-close" @click="scanClose" class="close-btn"></Button>
             <div id="scan-canvas"></div>
         </section>
-        <iframe :src="/scanCall.html?c=__callBarCode" v-if="isScan" frameborder="0" style="display:none"></iframe>
+        <iframe src="/scanCall.html?c=__callBarCode" v-if="isScan" frameborder="0" style="display:none"></iframe>
     </Layout>
 </template>
 
