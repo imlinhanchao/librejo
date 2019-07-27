@@ -149,7 +149,7 @@ button.delete-btn {
                 </FormItem>
             </Form>
         </Content>
-        <section v-show="isScan" class="fullscreen">
+        <section v-show="false" class="fullscreen">
             <Button type="text" icon="md-close" @click="scanClose" class="close-btn"></Button>
             <div id="scan-canvas"></div>
         </section>
