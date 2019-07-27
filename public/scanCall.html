@@ -7,7 +7,7 @@
     <title>Scan Call</title>
     <script>
         var param = location.search;
-        window.open('https://api.sxisa.com/scan/?o=' + location.href);
+        window.open('https://api.sxisa.com/scan/?o=' + encodeURI(location.href));
         function getScan(data) {
             var callMat = param.match(/(\?|&)(c=.*?)(&|$)/);
             if (!callMat) alert(data);
