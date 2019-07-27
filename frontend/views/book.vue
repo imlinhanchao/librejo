@@ -122,7 +122,7 @@ button.delete-btn {
             <Form class="book-form" ref="bookForm" :model="book" :rules="ruleValidate" :label-width="100">
                 <FormItem label="ISBN" prop="ISBN" required>
                     <Input autofocus v-model="book.ISBN" v-if="!isUpdate" :disabled="isUpdate" placeholder="ISBN" :maxlength="200" size="default">
-                        <Button slot="prepend" class="pend-btn" icon="md-qr-scanner" @click="scan"/>
+                        <Button slot="prepend" class="pend-btn" icon="md-qr-scanner" @click="scanInit"/>
                         <Button slot="append" class="pend-btn" icon="ios-search" @click="search"/>
                     </Input>
                     <span v-if="isUpdate" >{{book.ISBN}}</span>
@@ -149,7 +149,7 @@ button.delete-btn {
                 </FormItem>
             </Form>
         </Content>
-        <section v-show="false" class="fullscreen">
+        <section v-show="isScan" class="fullscreen">
             <Button type="text" icon="md-close" @click="scanClose" class="close-btn"></Button>
             <div id="scan-canvas"></div>
         </section>
@@ -334,12 +334,6 @@ export default {
         scanClose() {
             Quagga.stop();
             this.isScan = false;
-        },
-        scan() {
-            window.__callScanBarCode = (code) => {
-                this.book.ISBN = code;
-            };
-            window.open('/scanCall.html?c=__callBarCode');
         }
     },
     computed: {
