@@ -9,7 +9,7 @@
         var param = location.search;
         var mat = param.match(/(\?|&)q=(.*?)(&|$)/);
         if(!mat) location = 'https://api.sxisa.com/scan/?c=' + escape(location.href);
-        var data = mat[2];
+        var data = decodeURIComponent(mat[2]);
         
         var redirectMat = param.match(/(\?|&)r=(.*?)(&|$)/);
         if (!redirectMat) alert(data);
