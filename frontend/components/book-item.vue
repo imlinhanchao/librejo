@@ -36,7 +36,7 @@
                 width: 2em;
                 height: 2em;
                 border-radius: 1em;
-                background: rgba(0, 0, 0, 0.4);
+                background: rgba(81, 90, 110, 0.8);
                 text-align: center;
             }
             .title {
@@ -45,12 +45,18 @@
                 right: 2.5em;
                 height: 2em;
                 border-radius: 1em;
-                background: rgba(0, 0, 0, 0.4);
+                background: rgba(81, 90, 110, 0.8);
                 padding: 0 .6em;
                 font-weight: bold;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
+                &:hover {
+                    background: rgba(200, 27, 18, 0.6);
+                }
+                a:hover {
+                    color: inherit;
+                }
             }
         }
         .footer {
@@ -70,11 +76,11 @@
                 font-size: 1.2em;
                 text-align: center;
                 line-height: 0em;
-                background: rgba(0, 0, 0, 0.4);
+                background: rgba(81, 90, 110, 0.8);
                 color: #FFF;
                 &:hover {
-                    background: rgba(39, 39, 39, 0.4);
-                    color: #D21C13;
+                    background: rgba(200, 27, 18, 0.6);
+                    color: #FFF;
                 }
             }
         }
