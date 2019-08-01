@@ -1,3 +1,4 @@
+const Op = require('../model/db').Op;
 
 class AppError extends Error {
     constructor(state, message, data) {
@@ -307,23 +308,20 @@ class App {
 
     static op(data) {
         const ops = {
-            '<=': '$lte',
-            '>=': '$gte',
-            '!=': '$ne',
-            '!$': '$notLike',
-            '=': '$eq',
-            '<': '$lt',
-            '>': '$gt',
-            '^': '$bitXor',
-            '&': '$bitAnd',
-            '|': '$bitOr',
-            '$': '$like',
-            '<>': '$between',
-            '!<>': '$notBetween',
-            '~': '$in'
+            '<=': Op.lte,
+            '>=': Op.gte,
+            '!=': Op.ne,
+            '!$': Op.notLike,
+            '=': Op.eq,
+            '<': Op.lt,
+            '>': Op.gt,
+            '$': Op.like,
+            '<>': Op.between,
+            '!<>': Op.notBetween,
+            '~': Op.in
         };
 
-        let operator = '$eq';
+        let operator = Op.eq;
         if (data.op && ops[data.op]) {
             operator = ops[data.op];
             data = data.val;

@@ -92,7 +92,7 @@ class Module extends App {
             let book = await Read.findAll({
                 where: {
                     bookId: {
-                        $in: bookIds
+                        [Read.db.Op.in]: bookIds
                     }
                 },
                 order: [['create_time', 'DESC']]
