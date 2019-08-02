@@ -9,7 +9,7 @@ class Module extends App {
         super([]);
         this.name = '阅读记录';
         this.session = session;
-        this.saftKey = Read.keys().concat(['id']);
+        this.saftKey = Read.keys().concat(['id', 'create_time']);
         this.book = book || new (require('./book'))(session, this);
     }
 

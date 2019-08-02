@@ -13,7 +13,7 @@ class Module extends App {
         super([]);
         this.name = '图书';
         this.session = session;
-        this.saftKey = Book.keys().concat(['id']);
+        this.saftKey = Book.keys().concat(['id', 'read']);
         this.account = new Account(session);
         this.read = read || new (require('./read'))(this.session, this);
     }
@@ -78,6 +78,9 @@ class Module extends App {
         if (!book) {
             throw this.error.notexisted;
         }
+
+        let read = await this.read.last(id, true);
+        book.read = read;
 
         if (onlyData) return App.filter(book, this.saftKey);
 

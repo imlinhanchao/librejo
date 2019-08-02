@@ -16,6 +16,7 @@ axios.defaults.withCredentials = true;
 axios.defaults.baseURL = Util.ajaxUrl;
 Vue.prototype.$axios = axios;
 Vue.prototype.$marked = marked;
+Vue.prototype.$util = Util;
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
