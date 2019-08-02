@@ -242,7 +242,7 @@ export default {
                     this.readloading = false;
                     if (rsp && rsp.state == 0) {
                         this.$Message.success(`Change Book Status Success!`);
-                        this.$emit('reads', this.readInfo);
+                        this.$emit('reads', Object.assign({}, this.readInfo));
                         this.isRead = false;
                     } else {
                         err = (err && err.message) || rsp.msg;
