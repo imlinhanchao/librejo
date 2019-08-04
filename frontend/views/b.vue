@@ -8,7 +8,7 @@
 .header {
     padding: 0 1em 2em;
 }
-.content {
+.book-content {
     margin: auto;
     display: flex;
 }
@@ -41,8 +41,35 @@
         }
     }
 }
+.note-header {
+    padding-left: 1.3em;
+    h2 {
+        font-size: 1.3em;
+        margin: 1em 0 0;
+    }
+}
+.note-list {
+    list-style: none;
+    padding: 0;
+    .note-item {
+        margin: 0 0 1em;
+        details {
+            &[open] {
+                background-color: #f3f3f3;
+                border-radius: .5em;
+            }
+            summary {
+                padding: .5em;
+            }
+            section {
+                padding: .5em 1.5em;
+            }
+        }
+    }
+}
+
 @media (max-width: 560px)  {
-    .content {
+    .book-content {
         display: block;
     }
     .book-img {
@@ -73,43 +100,56 @@
             </Breadcrumb>
         </header>
         <Content class="content">
-            <section class="book-img">
-                <p>
-                    <img :src="$root.fileUrl(book.img)" alt="">
-                </p>
-            </section>
-            <section class="book-info">
-                <header><h1 class="book-title">{{book.name}}</h1></header>
-                <section class="book-attrs">
+            <article class="book-content">
+                <section class="book-img">
                     <p>
-                        <span class="book-attr">ISBN</span>
-                        <span class="">{{book.ISBN}}</span>
-                    </p>
-                    <p>
-                        <span class="book-attr">Author</span>
-                        <span class="book-value">{{book.author}}</span>
-                    </p>
-                    <p>
-                        <span class="book-attr">Publisher</span>
-                        <span class="book-value">{{book.publisher}}</span>
-                    </p>
-                    <p>
-                        <span class="book-attr">Publish Date</span>
-                        <span class="book-value">{{book.pubDate}}</span>
-                    </p>
-                    <p>
-                        <span class="book-attr">Page</span>
-                        <span class="book-value">{{book.page}}</span>
-                    </p>
-                    <p>
-                        <span class="book-attr">Reading</span>
-                        <span class="book-value">
-                            <Progress :percent="readProgress" v-if="book.read.status != 0"/>
-                            <span v-if="book.read.status == 0">Not Read yet</span>
-                        </span>
+                        <img :src="$root.fileUrl(book.img)" alt="">
                     </p>
                 </section>
-            </section>
+                <section class="book-info">
+                    <header><h1 class="book-title">{{book.name}}</h1></header>
+                    <section class="book-attrs">
+                        <p>
+                            <span class="book-attr">ISBN</span>
+                            <span class="">{{book.ISBN}}</span>
+                        </p>
+                        <p>
+                            <span class="book-attr">Author</span>
+                            <span class="book-value">{{book.author}}</span>
+                        </p>
+                        <p>
+                            <span class="book-attr">Publisher</span>
+                            <span class="book-value">{{book.publisher}}</span>
+                        </p>
+                        <p>
+                            <span class="book-attr">Publish Date</span>
+                            <span class="book-value">{{book.pubDate}}</span>
+                        </p>
+                        <p>
+                            <span class="book-attr">Page</span>
+                            <span class="book-value">{{book.page}}</span>
+                        </p>
+                        <p>
+                            <span class="book-attr">Reading</span>
+                            <span class="book-value">
+                                <Progress :percent="readProgress" v-if="book.read.status != 0"/>
+                                <span v-if="book.read.status == 0">Not Read yet</span>
+                            </span>
+                        </p>
+                    </section>
+                </section>
+            </article>
+            <article class="note-content">
+                <header class="note-header"><h2>Notes</h2></header>
+                <ul class="note-list">
+                    <li v-for="n in notes" class="note-item">
+                        <details>
+                            <summary>[Page {{n.page}}] {{n.section||'No Section'}}</summary>
+                            <section class="markdown-preview" v-html="compiledMarkdown(n.content)"></section>
+                        </details>
+                    </li>
+                </ul>
+            </article>
         </Content>
     </Layout>
 </template>
@@ -130,9 +170,11 @@ export default {
                 publisher: '',
                 page: 1,
                 ISBN: '',
-                pubDate: ''
+                pubDate: '',
+                read: {}
             },
             loading: false,
+            notes: [],
         };
     },
     mounted() {
@@ -159,9 +201,27 @@ export default {
                         }
                     }
                 })
+                this.loadNotes(this.bookId);
             } else {
                 this.$router.push('/');
             }
+        },
+        loadNotes(id) {
+            this.$store.dispatch('note/get', {
+                id,
+                callback: (rsp, err) => {
+                    if (rsp && rsp.state == 0) {
+                        this.notes = [];
+                        rsp.data.forEach(d => this.notes.push(d))
+                    } else {
+                        err = (err && err.message) || rsp.msg;
+                        this.$Message.error(err);
+                    }
+                }
+            })
+        },
+        compiledMarkdown (notes) {
+            return this.$marked(notes, { sanitize: true })
         }
     },
     computed: {
