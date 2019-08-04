@@ -32,9 +32,10 @@
 7. view - 视图  
 8. script - 脚本 
 
-## 数据库部署说明
-1. 新建数据库`db`（以`config.json`内配置的数据库为准）；
-3. 执行`npm run initdb`，并根据提示填写数据库连接信息（仅第一次）；
+## 配置说明
+1. 新建数据库`db`(根据需要，第二步配置时填入)；
+2. 执行`npm run init`，并根据提示填写信息（仅第一次）；
+3. 若需要重新配置数据库，则运行`npm run initdb`。
 4. 若需要重置某个表，如：重置`account`表，则执行`npm run initdb -- account`。
 
 # 调试说明
@@ -61,6 +62,10 @@ npm start
 ```bash
 forever start ./bin/www
 ```
+or
+```bash
+pm2 start ./bin/www
+```
 
 ## 端口号
-- 6789 （可在`config.json`配置）
+- 6789 （可在`config.json`或`npm run init`配置）

@@ -6,7 +6,7 @@ let util = {
 
 };
 util.title = function(title) {
-    title = title ? title + ' - ' + config.web.name: config.web.name;
+    title = title ? title + ' - ' + config.base.name: config.base.name;
     window.document.title = title;
 };
 

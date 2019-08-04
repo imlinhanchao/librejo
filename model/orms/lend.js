@@ -1,5 +1,5 @@
 const db = require('../db');
-const prefix = require('../config').db.prefix;
+const prefix = require('../config').prefix;
 let orm = {
     bookId: {
         type: db.ID,

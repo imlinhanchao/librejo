@@ -1,17 +1,11 @@
 {
     "base": {
-        "port": 3000,
-        "domain": "http://localhost:3000",
-        "cookie_domain": "localhost",
-        "suffix": ".htm",
-        "identityKey": "_LIB_SESSION_ID_ZTPZ4Wa3KhFx5",
-        "secret": "v3VFEWGyVH4Uc",
-        "salt": "00622432-5249-4939-82f4-2249dfbcae90"
-    },
-    "error": {
-    },
-    "web": {
-        "name": "My Book"
+        "name": "My Book",
+        "port": 6789,
+        "domain": "http://localhost:6789",
+        "identityKey": "",
+        "secret": "",
+        "salt": ""
     },
     "file": {
         "upload": "/public/upload/",
@@ -23,14 +17,13 @@
         "dialect": "mysql",
         "prefix": "lib_",
         "port": 3306,
-        "logging": true
+        "logging": false
     },
     "weixin": {
-        "appid":"", 
+        "appid": "",
         "appsecret": "",
-        "encodingAESKey": "", 
-        "token":"",
-        "checkSignature": false,
-        "safeurl": ""
+        "encodingAESKey": "",
+        "token": "",
+        "checkSignature": false
     }
 }
