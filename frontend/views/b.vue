@@ -140,7 +140,7 @@
                 </section>
             </article>
             <article class="note-content">
-                <header class="note-header"><h2>Notes</h2></header>
+                <header class="note-header"><h2>Notes <Icon custom="fa fa-plus" @click="isNote=true" /></h2></header>
                 <ul class="note-list">
                     <li v-for="n in notes" class="note-item">
                         <details>
@@ -149,6 +149,7 @@
                         </details>
                     </li>
                 </ul>
+                <bookNote :book="book" v-model="isNote" @change="notesChange" :fullscreen="false"/>
             </article>
         </Content>
     </Layout>
@@ -157,8 +158,12 @@
 <script>
 import config from '../../config.json';
 import Quagga from 'quagga';
+import bookNote from '../components/book-note';
 
 export default {
+    components: {
+        bookNote
+    },
     data() {
         return {
             book: {
@@ -175,6 +180,7 @@ export default {
             },
             loading: false,
             notes: [],
+            isNote: false
         };
     },
     mounted() {
@@ -222,6 +228,10 @@ export default {
         },
         compiledMarkdown (notes) {
             return this.$marked(notes, { sanitize: true })
+        },
+        notesChange(notes) {
+            this.notes = [];
+            notes.forEach(n => this.notes.push(n));
         }
     },
     computed: {

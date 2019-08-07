@@ -115,12 +115,16 @@ export default {
         value: {
             type: Boolean,
             required: true
+        },
+        fullscreen: {
+            type: Boolean,
+            required: false,
+            default: true
         }
     },
     data(){
         return {
             isView: false,
-            fullscreen: true,
             modal: false,
             notesInput: '',
             loading: false,
@@ -226,6 +230,7 @@ export default {
                                 this.notes.splice(i, 1);
                             }
                         });
+                        this.updateNotes(this.notes);
                     } else {
                         err = (err && err.message) || rsp.msg;
                         this.$Message.error(err);
@@ -270,6 +275,7 @@ export default {
                                 this.$Message.success(`New Note Success!`);
                                 this.notes.push(rsp.data);
                                 this.handleCancel();
+                                this.updateNotes(this.notes);
                             } else {
                                 err = (err && err.message) || rsp.msg;
                                 this.$Message.error(err);
@@ -295,6 +301,7 @@ export default {
                                         this.$set(this.notes, i, Object.assign({}, n));
                                     }
                                 });
+                                this.updateNotes(this.notes);
                                 this.handleCancel();                                
                             } else {
                                 err = (err && err.message) || rsp.msg;
@@ -310,6 +317,9 @@ export default {
         },
         change (val) {
             this.$emit("input", val);
+        },
+        updateNotes(notes) {
+            this.$emit("change", notes);
         }
     }
 }
