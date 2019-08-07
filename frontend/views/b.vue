@@ -149,6 +149,9 @@
                         </details>
                     </li>
                 </ul>
+                <section style="text-align:center" v-if="notes.length == 0">
+                    No Notes yet.
+                </section>
                 <bookNote :book="book" v-model="isNote" @change="notesChange" :fullscreen="false"/>
             </article>
         </Content>
