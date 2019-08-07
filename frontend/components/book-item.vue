@@ -134,7 +134,7 @@
             <div class="thum"><img :src="'/upload/' + book.img" alt=""></div>
             <div class="info">
                 <div class="header form-item">
-                    <span class="title" :title="book.name"><router-link :to="'/b/' + book.id">{{book.name}}</router-link></span>
+                    <span class="title" :title="book.name"><router-link :to="'/detail/' + book.id">{{book.name}}</router-link></span>
                     <Button shape="circle" type="text" title="Read" class="read" @click="isRead = !isRead">
                         <Icon :custom="`fa ${readIcon}`"></Icon>
                     </Button>

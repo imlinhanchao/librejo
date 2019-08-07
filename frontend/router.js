@@ -41,11 +41,11 @@ const routers = [{
             component: (resolve) => require(['./views/book.vue'], resolve)
         },
         {
-            path: 'b/:id',
+            path: 'detail/:id',
             meta: {
                 title: 'Book Information'
             },
-            component: (resolve) => require(['./views/b.vue'], resolve)
+            component: (resolve) => require(['./views/detail.vue'], resolve)
         },
         {
             path: 'book/:id',
