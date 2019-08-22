@@ -275,34 +275,35 @@
                     </li>
                     <li>
                     <ul :class="menuClasses">
-                        <li v-if="isWx">
-                        <a href="/scanCall.html?r=/book/new/">
-                        <Icon type="md-qr-scanner"></Icon>
-                        <span>Scan</span></a>
+                        <li v-if="$root.isWx">
+                            <a href="javascript:void(0)" @click="handleScan">
+                                <Icon type="md-qr-scanner"></Icon>
+                                <span>Scan</span>
+                            </a>
                         </li>
                         <li>
-                        <router-link to="/"><Icon type="ios-bookmark"></Icon>
-                        <span>Books</span></router-link>
+                            <router-link to="/"><Icon type="ios-bookmark"></Icon>
+                            <span>Books</span></router-link>
                         </li>
                         <li v-if="!$root.isLogin" @click="loginAccount">
-                        <Icon custom="fa fa-sign-in"></Icon>
-                        <span>Login</span>
+                            <Icon custom="fa fa-sign-in"></Icon>
+                            <span>Login</span>
                         </li>
                         <li v-if="$root.isLogin">
-                        <Icon type="ios-hand"></Icon>
-                        <span>Lends</span>
+                            <Icon type="ios-hand"></Icon>
+                            <span>Lends</span>
                         </li>
                         <li v-if="$root.isLogin">
-                        <Icon type="md-document"/>
-                        <span>Notes</span>
+                            <Icon type="md-document"/>
+                            <span>Notes</span>
                         </li>
                         <li v-if="$root.isLogin">
-                        <Icon type="md-settings"/>
-                        <span>Setting</span>
+                            <Icon type="md-settings"/>
+                            <span>Setting</span>
                         </li>
                         <li v-if="$root.isLogin" @click="logoutAccount">
-                        <Icon type="md-log-out"/>
-                        <span>Logout</span>
+                            <Icon type="md-log-out"/>
+                            <span>Logout</span>
                         </li>
                     </ul>
                     </li>
@@ -330,22 +331,20 @@ export default {
     },
     props: {
         loginPage: {
-        type: Boolean,
-        default: false
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
-        isCollapsed: false,
-        loginModel: false,
-        isSearch: false,
-        searchWord: this.$route.params.word || ''
+            isWxConfig: false,
+            isCollapsed: false,
+            loginModel: false,
+            isSearch: false,
+            searchWord: this.$route.params.word || ''
         };
     },
     computed: {
-        isWx() {
-            return navigator.userAgent.toLowerCase().indexOf('micromessenger') >= 0;
-        },
         menuItemClasses() {
             return ["menu-item", this.isCollapsed ? "actived-menu" : ""];
         },
@@ -381,6 +380,24 @@ export default {
         },
         search () {
             this.$router.replace('/s/' + this.searchWord);
+        },
+        scanCode () {
+            this.$root.wx.scanQRCode({
+                needResult: 1, 
+                scanType: ["qrCode","barCode"], 
+                success: (res) => {
+                    var isbn = res.resultStr.split(',').slice(-1).join('');
+                    this.$router.push('/book/new/' + isbn);
+                },
+                error: function(res){
+                    this.$Message.error(res.errMsg);
+                }
+            });
+        },
+        handleScan () {
+            this.$root.registerWx(['scanQRCode'], () => {
+                this.scanCode();
+            });
         }
     }
 };

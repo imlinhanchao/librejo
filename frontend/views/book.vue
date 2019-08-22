@@ -122,7 +122,7 @@ button.delete-btn {
             <Form class="book-form" ref="bookForm" :model="book" :rules="ruleValidate" :label-width="100">
                 <FormItem label="ISBN" prop="ISBN" required>
                     <Input autofocus v-model="book.ISBN" v-if="!isUpdate" :disabled="isUpdate" placeholder="ISBN" :maxlength="200" size="default">
-                        <Button slot="prepend" class="pend-btn" icon="md-qr-scanner" @click="scanInit"/>
+                        <Button slot="prepend" class="pend-btn" icon="md-qr-scanner" @click="handleScan" v-if="$root.isWx"/>
                         <Button slot="append" class="pend-btn" icon="ios-search" @click="search"/>
                     </Input>
                     <span v-if="isUpdate" >{{book.ISBN}}</span>
@@ -177,7 +177,8 @@ export default {
             loading: false,
             removeloading: false,
             isUpdate: false,
-            isScan: false
+            isScan: false,
+            isWxConfig: false
         };
     },
     mounted() {
@@ -256,7 +257,7 @@ export default {
                             this.loading = false;
                             if (rsp && rsp.state == 0) {
                                 this.$Message.success(`New Book Success!`);
-                                this.$router.push('/book/' + rsp.data.id);
+                                this.$router.replace('/book/' + rsp.data.id);
                                 this.book = rsp.data;
                                 this.isUpdate = true;
                             } else {
@@ -279,7 +280,27 @@ export default {
                 });
             }
         },
+        handleScan () {
+            this.$root.registerWx(['scanQRCode'], () => {
+                this.scanCode();
+            });
+        },
+        scanCode () {
+            this.$root.wx.scanQRCode({
+                needResult: 1, 
+                scanType: ["qrCode","barCode"], 
+                success: (res) => {
+                    var isbn = res.resultStr.split(',').slice(-1).join('');
+                    this.book.ISBN = isbn;
+                    this.search();
+                },
+                error: function(res){
+                    this.$Message.error(res.errMsg);
+                }
+            });
+        },
         search() {
+            if (this.book.ISBN == '') return;
             this.$axios.get('/douban/isbn/' + this.book.ISBN)
                 .then((rsp) => {
                     rsp = rsp.data;
@@ -297,42 +318,13 @@ export default {
                         };
                         this.yearMonth = new Date(data.pubdate.replace(/年/, '-').replace(/月/, ''));
                     } else {
-                        this.$Message.error(rsp.msg);
+                        this.$Message.error('ISBN not found.');
                     }
                 })
                 .catch((error) => {
                     this.$Message.error(error.message);
                     console.error(error);
                 });
-        },
-        scanInit() {
-            this.isScan = true;
-            Quagga.init({
-                inputStream : {
-                    name : "Live",
-                    type : "LiveStream",
-                    target: document.getElementById('scan-canvas')    // Or '#yourElement' (optional)
-                },
-                decoder : {
-                    readers : ["ean_reader"]
-                }
-            }, (err) => {
-                if (err) {
-                    this.$Message.error(err);
-                    return;
-                }
-                Quagga.start();
-
-                Quagga.onDetected((data) => {
-                    this.book.ISBN = data.codeResult.code;
-                    this.scanClose();
-                    this.search();
-                })
-            });
-        },
-        scanClose() {
-            Quagga.stop();
-            this.isScan = false;
         }
     },
     computed: {

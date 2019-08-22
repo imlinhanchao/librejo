@@ -17,6 +17,7 @@ axios.defaults.baseURL = Util.ajaxUrl;
 Vue.prototype.$axios = axios;
 Vue.prototype.$marked = marked;
 Vue.prototype.$util = Util;
+Vue.prototype.$wx = window.wx ? Object.assign(window.wx) : {};
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -46,8 +47,22 @@ new Vue({
     store,
     render: h => h(App),
     data: {
+        wx: window.wx,
+        isWxConfig: false
     },
     beforeMount() {
+    },
+    watch: {
+        '$route'() {
+            this.isWxConfig = false;
+            this.wx = Object.assign(this.$wx);
+            this.wx.ready(function(){
+                //alert('ready');
+            });
+            this.wx.error(function(res){
+                this.$Message.error(JSON.stringify(res));
+            });
+        }
     },
     methods: {
         fileFormatError (file) {
@@ -73,6 +88,29 @@ new Vue({
                 return false;
             }
             return true;
+        },
+        registerWx(apiList, callback) {
+            if (!window.wx || this.isWxConfig) return;
+            this.$axios.post('/wx/sign', {
+                apiList,
+                'url': location.href
+            }, {
+                responseType: 'json',
+                contentType: 'application/json'
+            })
+                .then((rsp) => {
+                    try {
+                        var data = rsp.data;
+                        data.debug = false;
+                        this.wx.config(data);
+                        callback();                        
+                    } catch (error) {
+                        alert(error);
+                    }
+                })
+                .catch((error) => {
+                    this.$Message.error(error.message);
+                });
         }
     },
     computed: {
@@ -90,6 +128,17 @@ new Vue({
         },
         isLogin() {
             return this.$store.getters['account/isLogin'];
+        },
+        isWx() {
+            return navigator.userAgent.toLowerCase().indexOf('micromessenger') >= 0;
         }
+    },
+    mounted() {
+        this.wx.ready(function(){
+            console.info('ready');
+        });
+        this.wx.error(function(res){
+            this.$Message.error(JSON.stringify(res));
+        });
     }
 });

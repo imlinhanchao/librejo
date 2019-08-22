@@ -17,19 +17,17 @@ class Module extends App {
     }
 
     sign(data, callback) {
-        let keys = ['apiList', 'path'];
+        let keys = ['apiList', 'url'];
         if (!App.haskeys(data, keys)) {
             throw (this.error.param);
         }
 
-        data.domain = data.domain || config.safeurl;
-        data.protocol = data.protocol || 'https:';
         var param = {
             debug: false,
             jsApiList: data.apiList,
-            url: `${data.protocol}//${data.domain}${data.path}`
+            url: data.url
         };
-        api.getJsConfig(param, callback);
+        api.getJsConfig(param, (err, result) => callback(err || result));
     }
 
     static loader(req, res, next) {
