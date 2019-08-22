@@ -208,7 +208,7 @@ export default {
                 this.isUpdate = false;
                 if (this.isbn) {
                     this.book.ISBN = this.isbn;
-                    this.search(this.isbn);
+                    this.search();
                 }
             }
             this.$refs['bookForm'].resetFields();
@@ -279,9 +279,8 @@ export default {
                 });
             }
         },
-        search(isbn) {
-            isbn = isbn || this.book.ISBN;
-            this.$axios.get('/douban/isbn/' + isbn)
+        search() {
+            this.$axios.get('/douban/isbn/' + this.book.ISBN)
                 .then((rsp) => {
                     rsp = rsp.data;
                     let data = rsp.data;
