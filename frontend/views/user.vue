@@ -171,8 +171,10 @@
                     this.$store.dispatch('account/getInfo', {
                         username: this.$route.params.user,
                         callback: (rsp, err) => {
-                            if(rsp.data.total)
+                            if(rsp.data.total) {
                                 this.info = rsp.data.data[0];
+                                this.$util.title(this.info.nickname);
+                            }
                             else {
                                 this.$Message.error('Username was not exist.')
                                 this.$router.push('/')
