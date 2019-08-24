@@ -57,7 +57,7 @@
         }
         .info {
             flex: 1;
-            padding: 0 2em;
+            padding-left: 2em;
             .nickname {
                 font-size: 2em;
             }

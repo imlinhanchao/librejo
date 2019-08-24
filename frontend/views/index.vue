@@ -282,7 +282,7 @@
                             </a>
                         </li>
                         <li>
-                            <router-link to="/"><Icon type="ios-bookmark"></Icon>
+                            <router-link :to="'/u/' + $root.loginUser.username"><Icon type="ios-bookmark"></Icon>
                             <span>Books</span></router-link>
                         </li>
                         <li v-if="!$root.isLogin" @click="loginAccount">
@@ -320,7 +320,7 @@
             <p>&copy; 2018 ~ {{new Date().getFullYear()}} Library. All rights reserved.</p>
         </Footer>
         <Login v-model="loginModel" />
-        <BackTop style="top: 2em;"></BackTop>
+        <BackTop style="top: 2em;bottom: auto;"></BackTop>
     </Layout>
 </template>
 <script>
