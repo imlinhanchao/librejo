@@ -317,7 +317,7 @@
         </Content>
         <Footer class="layout-footer">
             <Button v-if="$root.isLogin" class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>
-            <p>&copy; 2018 ~ {{new Date().getFullYear()}} Library. All rights reserved.</p>
+            <p>&copy; 2018 ~ {{new Date().getFullYear()}} Librejo. All rights reserved.</p>
         </Footer>
         <Login v-model="loginModel" />
         <BackTop style="top: 2em;bottom: auto;"></BackTop>
