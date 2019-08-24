@@ -84,7 +84,7 @@ new Vue({
         accessCheck(route) {
             if (!this.$store.getters['account/isLogin'] 
               && route.path != '/'
-              && !['/u/', '/login'].find(p => route.path.indexOf(p) == 0)) {
+              && !['/u/', '/login', '/detail/'].find(p => route.path.indexOf(p) == 0)) {
                 return false;
             }
             return true;

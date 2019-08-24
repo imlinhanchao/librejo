@@ -143,7 +143,7 @@
             </section>
         </Content>
         <Content class="layout-content">
-            <bookList :params="query" v-if="info.id"/>
+            <bookList :params="query" v-if="info.id" :admin="info.id == $root.loginUser.id"/>
         </Content>
         <p v-show="!info.id" class="loading"><Spin fix></Spin></p>
     </div>

@@ -135,11 +135,11 @@
             <div class="info">
                 <div class="header form-item">
                     <span class="title" :title="book.name"><router-link :to="'/detail/' + book.id">{{book.name}}</router-link></span>
-                    <Button shape="circle" type="text" title="Read" class="read" @click="isRead = !isRead">
+                    <Button shape="circle" type="text" :title="readTitle" class="read" @click="isRead = !isRead">
                         <Icon :custom="`fa ${readIcon}`"></Icon>
                     </Button>
                 </div>
-                <Row class="footer" type="flex" justify="space-between">
+                <Row class="footer" type="flex" v-if="admin" justify="space-between">
                     <Col span="5" class="form-item">
                         <Button shape="circle" type="text" title="Borrow"><Icon type="md-hand"></Icon></Button>
                     </Col>
@@ -158,7 +158,7 @@
                         <Button shape="circle" type="text" title="Notes" @click="noteEvent"><Icon type="md-quote"></Icon></Button>
                     </Col>
                 </Row>
-                <section class="read-form" v-if="isRead">
+                <section class="read-form" v-if="isRead && admin">
                     <span class="separator"></span>
                     <section>
                         <Button class="close-read" type="text" icon="md-close" size="large" @click="isRead = false"></Button>
@@ -204,6 +204,9 @@ export default {
         read: {
             type: Object,
             required: true
+        },
+        admin: {
+            type: Boolean,
         }
     },
     components: {
@@ -231,7 +234,12 @@ export default {
         readIcon () {
             let icon = ['fa-star-o', 'fa-star-half-o', 'fa-star'];
             return icon[this.read.status];
+        },
+        readTitle () {
+            let icon = ['Unread', 'Reading', 'Have Read'];
+            return icon[this.read.status];
         }
+
     },
     methods: {
         ReadEvent() {

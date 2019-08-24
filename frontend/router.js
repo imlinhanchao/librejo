@@ -6,7 +6,7 @@ const routers = [{
     component: (resolve) => require(['./views/index.vue'], resolve),
     props: { loginPage: false },
     beforeRouteEnter(to, from, next) {
-        if(!this.$store.getters['account/isLogin'] && to.path.indexOf('/u/')) {
+        if(!this.$root.accessCheck(to)) {
             to = '/login';
             next();
         }
@@ -41,24 +41,25 @@ const routers = [{
             component: (resolve) => require(['./views/book.vue'], resolve)
         },
         {
-            path: 'detail/:id',
-            meta: {
-                title: 'Book Information'
-            },
-            component: (resolve) => require(['./views/detail.vue'], resolve)
-        },
-        {
             path: 'book/:id',
             meta: {
                 title: 'Update Book'
             },
             component: (resolve) => require(['./views/book.vue'], resolve)
-        }, {
+        },
+        {
             path: 'u/:user',
             meta: {
                 title: 'User'
             },
             component: (resolve) => require(['./views/user.vue'], resolve),
+        },
+        {
+            path: 'detail/:id',
+            meta: {
+                title: 'Book Information'
+            },
+            component: (resolve) => require(['./views/detail.vue'], resolve)
         }
 
     ]

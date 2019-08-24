@@ -313,7 +313,7 @@
         </Header>
         <Content>
             <router-view/>
-            <p v-if="!$root.isLogin && $route.path.indexOf('/u/') < 0" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
+            <p v-if="!$root.isLogin && !$root.accessCheck($route)" class="login-tip">You must <a href="javascript:void(0)" @click="loginAccount">login</a> first.</p>
         </Content>
         <Footer class="layout-footer">
             <Button v-if="$root.isLogin" class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>

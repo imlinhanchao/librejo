@@ -140,7 +140,7 @@
                 </section>
             </article>
             <article class="note-content">
-                <header class="note-header"><h2>Notes <Icon custom="fa fa-plus" @click="isNote=true" /></h2></header>
+                <header class="note-header"><h2>Notes <Icon custom="fa fa-plus" @click="isNote=true" v-if="book.userId == $root.loginUser.id"/></h2></header>
                 <ul class="note-list">
                     <li v-for="n in notes" class="note-item">
                         <details>
@@ -171,6 +171,7 @@ export default {
         return {
             book: {
                 id: '',
+                userId: '',
                 name: '',
                 dbId: '',
                 img: '',

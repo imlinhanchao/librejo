@@ -28,7 +28,7 @@
                 move-class="item-move"
                 class="book"
             >
-                <bookItem :book="item.book" :read="item.book.read" @remove="removeBook" @reads="readBook" @notes="noteBook"/>
+                <bookItem :book="item.book" :read="item.book.read" @remove="removeBook" @reads="readBook" @notes="noteBook" :admin="admin"/>
             </waterfall-slot>
         </waterfall>
         <p style="color: #AAA; text-align:center;" v-if="!loading && total && total == books.length">--- No More Books ---</p>
@@ -46,6 +46,10 @@ export default {
     props: {
         params: {
             type: Object,
+        },
+        admin: {
+            type: Boolean,
+            default: true
         }
     },
     components: {
