@@ -24,6 +24,7 @@
         "express-partials": "^0.3.0",
         "express-robots": "^0.1.6",
         "express-session": "^1.15.6",
+        "highlight.js": "^9.15.10",
         "iconv-lite": "^0.4.19",
         "iview": "^3.2.2",
         "js-cookie": "^2.1.3",

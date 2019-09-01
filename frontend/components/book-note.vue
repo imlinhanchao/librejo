@@ -106,6 +106,8 @@
     </Modal>
 </template>
 <script>
+import hljs from 'highlight.js';
+import { clearInterval } from 'timers';
 export default {
     props: {
         book: {
@@ -147,7 +149,8 @@ export default {
                 section: '',
                 content: '',
                 favcount: 0
-            }
+            },
+            hljsTimer: -1
         };
     },
     watch: {
@@ -169,6 +172,22 @@ export default {
             if (this.modal != val) {
                 this.$emit("input", val);
             }
+        },
+        notetab (val) {
+            if (val == 'preview' && this.hasHighlight(this.note.content)) 
+                this.refreshHighlight();
+        },
+        isView (val) {
+            if (val == true && this.hasHighlight(this.noteView.content)) 
+                this.refreshHighlight();
+        },
+        "noteView.content" () {
+            if (this.isView == true && this.hasHighlight(this.noteView.content)) 
+                this.refreshHighlight();
+        },
+        "note.content" () {
+            if (this.notetab == 'preview' && this.hasHighlight(this.note.content)) 
+                this.refreshHighlight();
         }
     },
     computed: {
@@ -253,10 +272,12 @@ export default {
             })
         },
         handleCancel () {
-            this.note.id = '';
-            this.note.content = '';
-            this.note.section = '';
-            this.notetab = 'history';            
+            this.note = Object.assign({}, this.note, {
+                id: '',
+                content: '',
+                section: '',
+            });
+            this.notetab = 'history'
         },
         handleNew() {
             if (this.notetab != 'note' && this.note.content == '') {
@@ -313,13 +334,30 @@ export default {
             })
         },
         compiledMarkdown (notes) {
-            return this.$marked(notes, { sanitize: true })
+            return this.$marked(notes, { sanitize: true }).replace(/class="language-([^"]*?)">/g, 'class="md-highlight $1">')
+        },
+        hasHighlight (notes) {
+            return this.$marked(notes, { sanitize: true }).match(/class="language-([^"]*?)">/) != null;
         },
         change (val) {
             this.$emit("input", val);
         },
         updateNotes(notes) {
             this.$emit("change", notes);
+        },
+        refreshHighlight() {
+            window.clearInterval(this.hljsTimer);
+            this.hljsTimer = window.setInterval(() => {
+                console.info('check highlight block');
+                let blocks = document.getElementsByClassName('md-highlight');
+                if (blocks.length > 0) {
+                    window.clearInterval(this.hljsTimer);
+                    this.hljsTimer = -1;
+                }
+                Array.from(blocks).forEach((block) => {
+                    hljs.highlightBlock(block);
+                });
+            }, 100);
         }
     }
 }

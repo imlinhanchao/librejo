@@ -1,3 +1,4 @@
+@import '~highlight.js/styles/railscasts.css';
 @import '~iview/src/styles/index.less';
 @import './fontawesome/font-awesome.less';
 @import './font.less';
@@ -82,15 +83,22 @@ a {
     pre {
         background-color: #282c34;
         color: #FFF;
-        padding: .5em 1em;
+        padding: .3em .5em;
         border-left: .4em solid #555;
-        border-radius: 0 .4em .4em 0;
         code{
-            background-color:transparent; 
+            background-color: #232323; 
+            padding: 2px 0; 
+        }
+        overflow: auto;
+        &::-webkit-scrollbar-thumb {
+            background: #d5d5d5;
         }
     }
     ol, ul {
         list-style-position: inside;
+        li {
+            margin: 5px 0;
+        }
     }
     b, strong {
         font-weight: bold;
@@ -113,3 +121,12 @@ a {
 :focus {
     outline: none;
 }
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+::-webkit-scrollbar-thumb {
+    background: #2b435e;
+}
+  
