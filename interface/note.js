@@ -2,6 +2,7 @@ const model = require('../model');
 const App = require('./app');
 const Note = model.note;
 const Book = require('./book');
+const Read = require('./read');
 
 let __error__ = Object.assign({}, App.error);
 __error__.nobook = App.error.existed('图书', false);
@@ -14,6 +15,7 @@ class Module extends App {
         this.session = session;
         this.saftKey = Note.keys().concat(['id']);
         this.book = new Book(session);
+        this.read = new Read(session);
     }
 
     get error() {
@@ -30,6 +32,17 @@ class Module extends App {
 
             if (book.userId != this.book.account.userId) {
                 throw this.error.unauthorized;
+            }
+
+            // update reading progress if new a notes
+            if (book.read.status != this.read.status.haveRead
+             && book.read.page < data.page) {
+                this.read.new({
+                    bookId: book.id,
+                    ISBN: book.ISBN,
+                    status: this.read.status.reading,
+                    page: data.page
+                });
             }
 
             return this.okcreate(
