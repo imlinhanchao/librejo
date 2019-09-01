@@ -26,7 +26,7 @@ class Module extends App {
         };
     }
 
-    async new(data) {
+    async new(data, onlyData = false) {
         try {
             if (!App.haskeys(data, ['status', 'bookId'])) {
                 throw (App.error.param);
@@ -41,7 +41,10 @@ class Module extends App {
                 throw this.error.unauthorized;
             }
 
-            return this.okcreate(await super.new(data, Read));
+            let read = await super.new(data, Read);
+            if (onlyData) return read;
+
+            return this.okcreate(read);
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));

@@ -66,6 +66,7 @@
                         <FormItem prop="content" style="width: 100%">
                             <Input ref="note-content" v-model="note.content" type="textarea" placeholder="笔记（支持 markdown）" 
                             :autosize="{ minRows: 5, maxRows: 15 }" size="default"/>
+                            <Checkbox v-model="note.autoread">自动更新阅读进度</Checkbox>
                         </FormItem>
                     </Form>
                 </TabPane>
@@ -139,7 +140,8 @@ export default {
                 page: 0,
                 section: '',
                 content: '',
-                favcount: 0
+                favcount: 0,
+                autoread: true
             },
             noteView: {
                 id: '',
@@ -295,6 +297,7 @@ export default {
                             if (rsp && rsp.state == 0) {
                                 this.$Message.success(`New Note Success!`);
                                 this.notes.push(rsp.data);
+                                if (rsp.data.read) this.updateRead(rsp.data.read);
                                 this.handleCancel();
                                 this.updateNotes(this.notes);
                             } else {
@@ -322,6 +325,7 @@ export default {
                                         this.$set(this.notes, i, Object.assign({}, n));
                                     }
                                 });
+                                if (rsp.data.read) this.updateRead(rsp.data.read);
                                 this.updateNotes(this.notes);
                                 this.handleCancel();                                
                             } else {
@@ -344,6 +348,9 @@ export default {
         },
         updateNotes(notes) {
             this.$emit("change", notes);
+        },
+        updateRead(read) {
+            this.$emit("read", { read, book: this.book });
         },
         refreshHighlight() {
             window.clearInterval(this.hljsTimer);

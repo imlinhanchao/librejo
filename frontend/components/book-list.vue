@@ -34,7 +34,7 @@
         <p style="color: #AAA; text-align:center;" v-if="!loading && total && total == books.length">--- No More Books ---</p>
         <p style="color: #AAA; text-align:center;" v-if="!loading && total == 0 && $root.isLogin">You must <router-link to="/book/new">add</router-link> your book first.</p>
         <p v-show="loading" class="loading"><Spin fix></Spin></p>
-        <bookNote :book="bookModal" v-model="isNote" />
+        <bookNote :book="bookModal" v-model="isNote" @read="handleRead" />
     </Layout>
 </template>
 <script>
@@ -147,6 +147,10 @@ export default {
         noteBook(book) {
             this.bookModal = book;
             this.isNote = true;
+        },
+        handleRead ({read, book}) {
+            console.dir(read);
+            this.$set(this.bookModal, 'read', read);
         }
     }
 }

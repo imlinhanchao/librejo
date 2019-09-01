@@ -34,19 +34,21 @@ class Module extends App {
                 throw this.error.unauthorized;
             }
 
+            let read = null;
             // update reading progress if new a notes
-            if (book.read.status != this.read.status.haveRead
+            if (data.autoread
+             && book.read.status != this.read.status.haveRead
              && book.read.page < data.page) {
-                this.read.new({
+                read = await this.read.new({
                     bookId: book.id,
                     ISBN: book.ISBN,
                     status: this.read.status.reading,
                     page: data.page
-                });
+                }, true);
             }
 
             return this.okcreate(
-                App.filter(await super.new(data, Note), this.saftKey)
+                Object.assign({ read }, App.filter(await super.new(data, Note), this.saftKey))
             );
         } catch (err) {
             if (err.isdefine) throw (err);
@@ -56,10 +58,25 @@ class Module extends App {
 
     async set(data) {
         try {
+            let read = null;
+            if (data.autoread) {
+                let book = await this.book.get(data.bookId, true);
+                if (book.read.status != this.read.status.haveRead
+                    && book.read.page < data.page) {
+                    read = await this.read.new({
+                        bookId: book.id,
+                        ISBN: book.ISBN,
+                        status: this.read.status.reading,
+                        page: data.page
+                    }, true);
+                }
+            }
+
             data.ISBN = undefined; // 已创建笔记不允许修改ISBN
             data.bookId = undefined; // 已创建笔记不允许修改图书ID
+         
             return this.okupdate(
-                App.filter(await super.set(data, Note, async (note) => {
+                Object.assign({ read }, App.filter(await super.set(data, Note, async (note) => {
                     let book = await this.book.get(note.bookId, true);
 
                     if (book.userId != this.book.account.userId) {
@@ -67,7 +84,7 @@ class Module extends App {
                     }
 
                     return true;
-                }), this.saftKey));
+                }), this.saftKey)));
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.db(err));

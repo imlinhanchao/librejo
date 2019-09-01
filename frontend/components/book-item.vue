@@ -230,6 +230,11 @@ export default {
             this.readInfo.ISBN = this.book.ISBN;
         }
     },
+    watch: {
+        read (val) { 
+            this.readInfo = Object.assign({}, val);
+        }
+    },
     computed: {
         readIcon () {
             let icon = ['fa-star-o', 'fa-star-half-o', 'fa-star'];
