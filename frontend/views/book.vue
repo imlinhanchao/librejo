@@ -158,7 +158,6 @@ button.delete-btn {
 
 <script>
 import config from '../../config.json';
-import Quagga from 'quagga';
 
 export default {
     data() {
@@ -183,11 +182,6 @@ export default {
     },
     mounted() {
         this.init();
-    },
-    destoryed() {
-        if(this.isScan) {
-            Quagga.stop();
-        }
     },
     methods: {
         init () {

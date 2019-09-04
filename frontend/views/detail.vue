@@ -132,7 +132,7 @@
                         <p>
                             <span class="book-attr">Reading</span>
                             <span class="book-value">
-                                <Progress :percent="readProgress" v-if="book.read.status != 0"/>
+                                <Progress :percent="readProgress" v-if="book.read.status != 0" :title="readPage"/>
                                 <span v-if="book.read.status == 0">Not Read yet</span>
                             </span>
                         </p>
@@ -160,7 +160,6 @@
 
 <script>
 import config from '../../config.json';
-import Quagga from 'quagga';
 import bookNote from '../components/book-note';
 
 export default {
@@ -189,11 +188,6 @@ export default {
     },
     mounted() {
         this.init();
-    },
-    destoryed() {
-        if(this.isScan) {
-            Quagga.stop();
-        }
     },
     methods: {
         init () {
@@ -246,10 +240,11 @@ export default {
         bookId () {
             return this.$route.params.id;
         },
+        readPage () {
+            return this.book.read.page < this.book.page ? this.book.read.page : this.book.page;
+        },
         readProgress() {
-            return this.book.read.status == 1 && this.book.read.page < this.book.page ? 
-                parseInt(this.book.read.page * 100 / this.book.page) :
-                100;
+            return parseInt(this.readPage * 100 / this.book.page)
         }
     },
     watch: {
