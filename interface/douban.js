@@ -22,18 +22,13 @@ class Module extends App {
         return __error__;
     }
 
-    static get cache() {
-        return {
-        };
-    }
-
     async id(id) {
         try {
             let rsp = await req.get(`${__domain__}/${id}?apikey=${__apikey__}`, __encoding__);
             return this.okquery(JSON.parse(rsp.body));
         } catch (err) {
             if (err.isdefine) throw (err);
-            throw (this.error.network);
+            throw (this.error.server(err.message));
         }
     }
 
@@ -43,7 +38,7 @@ class Module extends App {
             return this.okquery(JSON.parse(rsp.body));
         } catch (err) {
             if (err.isdefine) throw (err);
-            throw (this.error.network);
+            throw (this.error.server(err.message));
         }
     }
 
@@ -52,6 +47,10 @@ class Module extends App {
         if (typeof data == 'string') {
             query = `name=${data}`;
         } else {
+            if (!App.haskeys(data, ['query'])) {
+                throw (App.error.param);
+            }
+
             data = App.filter(data, ['query', 'field', 'count', 'index']);
             query = req.toFormData(data, __encoding__);
         }
@@ -60,29 +59,55 @@ class Module extends App {
             return this.okquery(JSON.parse(rsp.body));
         } catch (err) {
             if (err.isdefine) throw (err);
-            throw (this.error.network);
+            throw (this.error.server(err.message));
         }
     }
 
     // 获取某个用户的所有图书收藏信息
-    async collections(user) {
+    async collections(data) {
+        let query = '', user = '';
+        if (typeof data == 'string') {
+            user = data;
+        } else {
+            if (!App.haskeys(data, ['user'])) {
+                throw (App.error.param);
+            }
+
+            user = data.user;
+            data = App.filter(data, ['field', 'count', 'index']);
+            query = req.toFormData(data, __encoding__);
+        }
+        
         try {
-            let rsp = await req.get(`${__domain__}/user/${user}/collections?apikey=${__apikey__}`, __encoding__);
+            let rsp = await req.get(`${__domain__}/user/${user}/collections?apikey=${__apikey__}&${query}`, __encoding__);
             return this.okquery(JSON.parse(rsp.body));
         } catch (err) {
             if (err.isdefine) throw (err);
-            throw (this.error.network);
+            throw (this.error.server(err.message));
         }
     }
 
     // 获取某个用户的所有笔记
-    async annotations(user) {
+    async annotations(data) {
+        let query = '', user = '';
+        if (typeof data == 'string') {
+            user = data;
+        } else {
+            if (!App.haskeys(data, ['user'])) {
+                throw (App.error.param);
+            }
+
+            user = data.user;
+            data = App.filter(data, ['field', 'count', 'index']);
+            query = req.toFormData(data, __encoding__);
+        }
+
         try {
-            let rsp = await req.get(`${__domain__}/user/${user}/annotations?apikey=${__apikey__}`, __encoding__);
+            let rsp = await req.get(`${__domain__}/user/${user}/annotations?apikey=${__apikey__}&${query}`, __encoding__);
             return this.okquery(JSON.parse(rsp.body));
         } catch (err) {
             if (err.isdefine) throw (err);
-            throw (this.error.network);
+            throw (this.error.server(err.message));
         }
     }
 }
