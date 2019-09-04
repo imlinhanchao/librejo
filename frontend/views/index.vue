@@ -357,7 +357,7 @@ export default {
     },
     mounted() {
         this.$store.dispatch('account/checklogin', (rsp, err) => { 
-            if (!this.$root.accessCheck(this.$route)) {
+            if (!this.$root.accessCheck(this.$route) && to.route.path != '/') {
                 this.$router.replace('/login');
             }
         });

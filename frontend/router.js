@@ -6,7 +6,7 @@ const routers = [{
     component: (resolve) => require(['./views/index.vue'], resolve),
     props: { loginPage: false },
     beforeRouteEnter(to, from, next) {
-        if(!this.$root.accessCheck(to)) {
+        if(!this.$root.accessCheck(to) && to.route.path != '/') {
             to = '/login';
             next();
         }
