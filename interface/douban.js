@@ -45,13 +45,13 @@ class Module extends App {
     async query(data) {
         let query = '';
         if (typeof data == 'string') {
-            query = `name=${data}`;
+            query = `q=${data}`;
         } else {
-            if (!App.haskeys(data, ['query'])) {
+            if (!App.haskeys(data, ['q'])) {
                 throw (App.error.param);
             }
 
-            data = App.filter(data, ['query', 'field', 'count', 'index']);
+            data = App.filter(data, ['q', 'field', 'count', 'index']);
             query = req.toFormData(data, __encoding__);
         }
         try {
@@ -105,6 +105,17 @@ class Module extends App {
         try {
             let rsp = await req.get(`${__domain__}/user/${user}/annotations?apikey=${__apikey__}&${query}`, __encoding__);
             return this.okquery(JSON.parse(rsp.body));
+        } catch (err) {
+            if (err.isdefine) throw (err);
+            throw (this.error.server(err.message));
+        }
+    }
+
+    async img(data) {
+        try {
+            data = Object.keys(data)[0];
+            let rsp = await req.get(`https://img1.doubanio.com/view/subject/${data}`);
+            return rsp.body;
         } catch (err) {
             if (err.isdefine) throw (err);
             throw (this.error.server(err.message));
