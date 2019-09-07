@@ -110,6 +110,9 @@ new Vue({
                 .catch((error) => {
                     this.$Message.error(error.message);
                 });
+        },
+        dbImg(url) {
+            return url.replace(/https:\/\/\w+\.doubanio\.com\/view\/subject\//, '/api/douban/img/?');
         }
     },
     computed: {

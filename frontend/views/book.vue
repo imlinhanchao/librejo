@@ -70,6 +70,65 @@ button.delete-btn {
         }
     }
 }
+.comp-section {
+    position: absolute;
+    z-index: 100;
+    background: #FFF;
+    border: 1px solid #CCC;
+    border-top: 0;
+    width: 100%;
+    padding-top: .5em;
+    .comp-list {
+        list-style: none;
+        .comp-item {
+            padding: 0 .5em;
+            &:hover {
+                background: #EEE;
+            }
+            a {
+                display: flex;
+                .comp-img {
+                    padding-right: 2px;
+                    img {
+                        width: 30px;
+                    }
+                }
+                .comp-content {
+                    flex: 1;
+                    width: calc(100% - 40px);
+                    p {
+                        display: flex;
+                        padding: 0;
+                        line-height: 1.8;
+                        span {
+                            &.comp-title {
+                                color: #D21C13;
+                                overflow: hidden;
+                                text-overflow:ellipsis;
+                                white-space: nowrap;
+                                display: inline-block;
+                                flex: 1;
+                            }
+                            &.comp-pubdate {
+                                width: 4em;
+                                text-align: right;
+                                color: #999;
+                            }
+                        }
+                        &.comp-author {
+                            display: block;
+                            overflow: hidden;
+                            text-overflow:ellipsis;
+                            white-space: nowrap;
+                            width: 100%;
+                            color: #999;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 @media (max-width: 480px)  {
     .content {
         display: block;
@@ -128,7 +187,23 @@ button.delete-btn {
                     <span v-if="isUpdate" >{{book.ISBN}}</span>
                 </FormItem>
                 <FormItem label="Book Name" prop="name" required>
-                    <Input v-model="book.name" placeholder="Book Name" :maxlength="200" size="default"/>
+                    <Input v-model="book.name" placeholder="Book Name" :maxlength="200" size="default" @on-change="handleName"/>
+                    <section v-if="!isUpdate && this.books.length" class="comp-section">
+                        <ul class="comp-list">
+                            <li v-for="b in books" class="comp-item">
+                                <a href="javascript:void(0)" @click="handleSearch(b)">
+                                    <div class="comp-img"><img :src="$root.dbImg(b.images.small)" :alt="b.title" rel="noreferrer" referrerpolicy ="never"></div>
+                                    <div class="comp-content">
+                                        <p>
+                                            <span class="comp-title">{{b.title}}</span>
+                                            <span class="comp-pubdate">{{b.pubdate.split('-')[0].slice(0, 4) || ''}}</span>
+                                        </p>
+                                        <p class="comp-author">{{b.author[0] || ''}}</p>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
                 </FormItem>
                 <FormItem label="Author" prop="author">
                     <Input v-model="book.author" placeholder="Author" :maxlength="200" size="default"/>
@@ -149,10 +224,6 @@ button.delete-btn {
                 </FormItem>
             </Form>
         </Content>
-        <section v-show="isScan" class="fullscreen">
-            <Button type="text" icon="md-close" @click="scanClose" class="close-btn"></Button>
-            <div id="scan-canvas"></div>
-        </section>
     </Layout>
 </template>
 
@@ -173,6 +244,7 @@ export default {
                 ISBN: '',
                 pubDate: ''
             },
+            books: [],
             loading: false,
             removeloading: false,
             isUpdate: false,
@@ -192,6 +264,7 @@ export default {
                     callback: (rsp, err) => {
                         if (rsp && rsp.state == 0) {
                             this.book = rsp.data;
+                            this.$util.title('Update Book ' + this.book.name);
                         } else {
                             err = (err && err.message) || rsp.msg;
                             this.$Message.error(err);
@@ -207,6 +280,29 @@ export default {
                 }
             }
             this.$refs['bookForm'].resetFields();
+        },
+        handleSearch(book) {
+            this.$router.replace('/book/new/' + book.isbn13);
+            this.books = [];
+        },
+        handleName () {
+            if (this.isUpdate || this.book.name == '') return;
+            this.$axios.post('/douban/query/', {
+                q: this.book.name,
+                index: 0,
+                count: 5
+            })
+                .then((rsp) => {
+                    rsp = rsp.data;
+                    let data = rsp.data;
+                    if (rsp.state == 0) {
+                        this.books = rsp.data.books;
+                    }
+                })
+                .catch((error) => {
+                    this.$Message.error(error.message);
+                    console.error(error);
+                });
         },
         handleUpdate() {
             this.loading = true;
