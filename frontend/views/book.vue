@@ -88,7 +88,7 @@ button.delete-btn {
             a {
                 display: flex;
                 .comp-img {
-                    padding-right: 2px;
+                    padding-right: .5em;
                     img {
                         width: 30px;
                     }
