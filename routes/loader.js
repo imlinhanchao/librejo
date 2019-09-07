@@ -17,9 +17,16 @@ function loader(Module) {
             try {
                 let module = new Module(req.session);
                 let fn = req.params.fn;
-                if (module[fn]) res.json((await module[fn](Object.assign({}, req.body))));
-                else if (Module[fn]) res.json((await Module[fn](Object.assign({}, req.body))));
+                let ret = null;
+                if (module[fn]) ret = await module[fn](Object.assign({}, req.body));
+                else if (Module[fn]) ret = await Module[fn](Object.assign({}, req.body));
                 else throw (module.error.param);
+                if (ret instanceof Buffer) {
+                    res.write(ret);
+                    res.end();
+                } else {
+                    res.json(ret);
+                }
             } catch (err) {
                 return res.json(App.err(err));
             }
@@ -33,10 +40,15 @@ function loader(Module) {
                 let fn = req.params.fn;
                 let param = req.params.param;
                 let ret = null;
-                if (module[fn]) ret = res.json((await module[fn](param)));
-                else if (Module[fn]) ret = res.json((await Module[fn](param)));
+                if (module[fn]) ret = await module[fn](param);
+                else if (Module[fn]) ret = await Module[fn](param);
                 else throw (module.error.param);
-                return ret;
+                if (ret instanceof Buffer) {
+                    res.write(ret);
+                    res.end();
+                } else {
+                    res.json(ret);
+                }
             } catch (err) {
                 return res.json(App.err(err));
             }
@@ -49,9 +61,17 @@ function loader(Module) {
                 let module = new Module(req.session);
                 let fn = req.params.fn;
                 let param = req.query;
-                if (module[fn]) res.json((await module[fn](param)));
-                else if (Module[fn]) res.json((await Module[fn](param)));
+                let ret = null;
+                if (module[fn]) ret = await module[fn](param);
+                else if (Module[fn]) ret = await Module[fn](param);
                 else throw (module.error.param);
+                if (ret instanceof Buffer) {
+                    res.write(ret);
+                    res.end();
+                } else {
+                    res.json(ret);
+                }
+
             } catch (err) {
                 return res.json(App.err(err));
             }
