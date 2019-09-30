@@ -297,6 +297,9 @@ export default {
                     let data = rsp.data;
                     if (rsp.state == 0) {
                         this.books = rsp.data.books;
+                        setTimeout(() => {
+                            this.books = []
+                        }, 5000)
                     }
                 })
                 .catch((error) => {
