@@ -187,7 +187,7 @@ button.delete-btn {
                     <span v-if="isUpdate" >{{book.ISBN}}</span>
                 </FormItem>
                 <FormItem label="Book Name" prop="name" required>
-                    <Input v-model="book.name" placeholder="Book Name" :maxlength="200" size="default" @on-change="handleName"/>
+                    <Input v-model="book.name" placeholder="Book Name" :maxlength="200" size="default" @on-change="handleName" @on-blur="this.books = []"/>
                     <section v-if="!isUpdate && this.books.length" class="comp-section">
                         <ul class="comp-list">
                             <li v-for="b in books" class="comp-item">
@@ -297,9 +297,6 @@ export default {
                     let data = rsp.data;
                     if (rsp.state == 0) {
                         this.books = rsp.data.books;
-                        setTimeout(() => {
-                            this.books = []
-                        }, 5000)
                     }
                 })
                 .catch((error) => {
