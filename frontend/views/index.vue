@@ -115,8 +115,9 @@
         width: 4em;
         height: 4em;
         position: fixed;
-        bottom: 3em;
-        right: 3em;
+        bottom: 1em;
+        right: 1em;
+        z-index: 1000;
     }
 }
 .login-link {
