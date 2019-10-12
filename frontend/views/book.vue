@@ -179,7 +179,7 @@ button.delete-btn {
                 </Upload>
             </section>
             <Form class="book-form" ref="bookForm" :model="book" :rules="ruleValidate" :label-width="100">
-                <FormItem label="ISBN" prop="ISBN" required>
+                <FormItem label="ISBN" prop="ISBN">
                     <Input autofocus v-model="book.ISBN" v-if="!isUpdate" :disabled="isUpdate" placeholder="ISBN" :maxlength="200" size="default">
                         <Button slot="prepend" class="pend-btn" icon="md-qr-scanner" @click="handleScan" v-if="$root.isWx"/>
                         <Button slot="append" class="pend-btn" icon="ios-search" @click="search"/>

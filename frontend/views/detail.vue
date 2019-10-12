@@ -111,7 +111,7 @@
                     <section class="book-attrs">
                         <p>
                             <span class="book-attr">ISBN</span>
-                            <span class="">{{book.ISBN}}</span>
+                            <span class="">{{book.ISBN||'未出版'}}</span>
                         </p>
                         <p>
                             <span class="book-attr">Author</span>
