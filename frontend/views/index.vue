@@ -74,25 +74,25 @@
         cursor: pointer;
         }
         .menu-list {
-        transition: all 0.2s;
-        padding: 0;
-        list-style: none;
-        z-index: 99;
-        position: absolute;
-        top: 2.8em;
-        height: 0;
-        background: #030914;
-        left: 0.8em;
-        color: #A7AEB7;
-        border-radius: 0.5em;
-        overflow: hidden;
-        li {
-            line-height: 2em;
-            cursor: pointer;
-            &:hover {
-            color: #D21C13;
+            transition: all 0.2s;
+            padding: 0;
+            list-style: none;
+            z-index: 99;
+            position: absolute;
+            top: 2.8em;
+            height: 0;
+            background: #030914;
+            left: 0.8em;
+            color: #A7AEB7;
+            border-radius: 0.5em;
+            overflow: hidden;
+            li {
+                line-height: 2em;
+                cursor: pointer;
+                &:hover {
+                color: #D21C13;
+                }
             }
-        }
         }
         .ivu-icon {
             width: 16px; 
@@ -176,7 +176,7 @@
                 .menu-list {
                     padding-top: 0;
                     top: 3em;
-                    left: -2em;
+                    left: -3em;
                 }
                 .menu-item {
                     margin-left: .5em;
@@ -185,7 +185,7 @@
                         color: #2b435e;
                     }
                 }
-                .separator.visibi-sep {
+                .separator {
                     visibility: visible;
                     position: absolute;
                     margin: auto;
