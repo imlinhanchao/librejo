@@ -83,6 +83,9 @@ export default {
         value: {
             type: Boolean,
             default: false
+        },
+        register: {
+            default: null
         }
     },
     data() {
@@ -145,7 +148,7 @@ export default {
                 captcha: [{ }]
             },
             login_loading: false,
-            isRegister: false,
+            isRegister: null,
             rand: Math.random()
         };
     },
@@ -160,7 +163,7 @@ export default {
             return this.isRegister ? this.registerSubmit : this.loginSubmit
         },
         btnName() {
-            return this.isRegister ? 'Register' : 'Login'
+            return this.isRegister == null ? 'Login / Register' : this.isRegister ? 'Register' : 'Login'
         }
     },
     watch: {
@@ -171,10 +174,14 @@ export default {
             if (this.loginModel != val) {
                 this.$emit("input", val);
             }
+        },
+        register (val) {
+            this.isRegister = val;
         }
     },
     mounted() {
         this.loginModel = this.value;
+        this.isRegister = this.register;
     },
     methods: {
         change (val) {

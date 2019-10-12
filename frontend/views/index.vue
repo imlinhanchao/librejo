@@ -287,8 +287,12 @@
                             <span>Books</span></router-link>
                         </li>
                         <li v-if="!$root.isLogin" @click="loginAccount">
-                            <Icon custom="fa fa-sign-in"></Icon>
+                            <Icon custom="fa fa-user"></Icon>
                             <span>Login</span>
+                        </li>
+                        <li v-if="!$root.isLogin" @click="registerAccount">
+                            <Icon custom="fa fa-user-plus"></Icon>
+                            <span>Register</span>
                         </li>
                         <li v-if="$root.isLogin">
                             <Icon type="ios-hand"></Icon>
@@ -320,7 +324,7 @@
             <Button v-if="$root.isLogin && $route.path != '/book/new'" class="plus-btn" type="primary" shape="circle" icon="md-add" @click="$router.push('/book/new')"></Button>
             <p>&copy; 2018 ~ {{new Date().getFullYear()}} Librejo. All rights reserved.</p>
         </Footer>
-        <Login v-model="loginModel" />
+        <Login v-model="loginModel" :register="isRegister"/>
         <BackTop style="top: 2em;bottom: auto;"></BackTop>
     </Layout>
 </template>
@@ -342,7 +346,8 @@ export default {
             isCollapsed: false,
             loginModel: false,
             isSearch: false,
-            searchWord: this.$route.params.word || ''
+            searchWord: this.$route.params.word || '',
+            isRegister: null
         };
     },
     computed: {
@@ -358,7 +363,7 @@ export default {
     },
     mounted() {
         this.$store.dispatch('account/checklogin', (rsp, err) => { 
-            if (!this.$root.accessCheck(this.$route) && to.route.path != '/') {
+            if (!this.$root.accessCheck(this.$route) && this.$route.path != '/') {
                 this.$router.replace('/login');
             }
         });
@@ -367,7 +372,13 @@ export default {
     methods: {
         loginAccount() {
             this.$router.replace('/login');
-            this.loginModel=true;
+            this.loginModel = true;
+            this.isRegister = false;
+        },
+        registerAccount() {
+            this.$router.replace('/login');
+            this.loginModel = true;
+            this.isRegister = true;
         },
         logoutAccount() {
             this.$store.dispatch("account/logout", (rsp, err) => {
