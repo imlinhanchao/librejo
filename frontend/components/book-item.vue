@@ -38,6 +38,7 @@
                 border-radius: 1em;
                 background: rgba(81, 90, 110, 0.8);
                 text-align: center;
+                font-size: 100%;
             }
             .title {
                 position: absolute;
@@ -70,8 +71,8 @@
             button {
                 padding: 0;
                 display: inline-block;
-                height: 2em;
-                width: 2em;
+                height: 1.8em;
+                width: 1.8em;
                 color: inherit;
                 font-size: 1.2em;
                 text-align: center;
