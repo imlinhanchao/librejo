@@ -109,7 +109,7 @@ export default {
                                 });
                                 this.loading = false;
                             }
-                            img.src = '/upload/' + d.img;
+                            img.src = this.$root.fileUrl(d.img);
                         })
                         this.total = rsp.data.total;
                         if (!this.total) this.loading = false;

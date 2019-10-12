@@ -131,7 +131,7 @@
 <template>
     <section class="book" :index="book.index">
         <div class="panel">
-            <div class="thum"><img :src="'/upload/' + book.img" alt=""></div>
+            <div class="thum"><img :src="$root.fileUrl(book.img)" alt=""></div>
             <div class="info">
                 <div class="header form-item">
                     <span class="title" :title="book.name"><router-link :to="'/detail/' + book.id">{{book.name}}</router-link></span>
