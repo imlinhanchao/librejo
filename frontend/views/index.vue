@@ -168,7 +168,7 @@
     }
     .layout-menu {
         .menu {
-            margin-left: -3em;
+            margin-left: -1em;
             .menu-title {
                 display: none;
             }
@@ -176,7 +176,7 @@
                 .menu-list {
                     padding-top: 0;
                     top: 3em;
-                    left: -3em;
+                    left: -1em;
                 }
                 .menu-item {
                     margin-left: .5em;
@@ -202,7 +202,7 @@
             .menu-li {
                 text-align: center;
             }
-            .separator.visibi-sep {
+            .separator {
                 border-width: 0;
                 margin-left: .6em;
             }
