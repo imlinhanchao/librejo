@@ -5,7 +5,8 @@
         "domain": "http://localhost:6789",
         "identityKey": "",
         "secret": "",
-        "salt": ""
+        "salt": "",
+        "api_key": ""
     },
     "file": {
         "upload": "/public/upload/",

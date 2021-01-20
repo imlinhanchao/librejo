@@ -1,9 +1,10 @@
 const req = require('../lib/req');
 const App = require('./app');
+const Config = require('../config');
 
 const __encoding__ = 'utf-8';
 const __domain__ = 'https://api.douban.com/v2/book';
-const __apikey__ = '0df993c66c0c636e29ecbb5344252a4a';
+const __apikey__ = Config.base.api_key;
 
 let __error__ = Object.assign({}, App.error);
 __error__.query = App.error.reg('查询失败');

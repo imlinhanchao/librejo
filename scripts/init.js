@@ -35,6 +35,7 @@ async function main() {
     }
     config.base['port'] = parseInt(await rl.inputData('Port', config.base['port']));
     config.base['domain'] = await rl.inputData('Domain', config.base['domain']);
+    config.base['api_key'] = await rl.inputData('Douban API Key', config.base['api_key']);
 
     config.base['name'] = await rl.inputData('Website Name', config.base['name']);
     
