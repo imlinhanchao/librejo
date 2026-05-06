@@ -1,0 +1,85 @@
+{
+  "nav": {
+    "search": "Search books",
+    "books": "My Books",
+    "scan": "Scan",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "settings": "Settings",
+    "notes": "Notes",
+    "lends": "Lends"
+  },
+  "book": {
+    "isbn": "ISBN",
+    "name": "Book Name",
+    "author": "Author",
+    "publisher": "Publisher",
+    "pubDate": "Publish Date",
+    "page": "Pages",
+    "status": "Status",
+    "img": "Cover",
+    "notPublished": "Not Published",
+    "submit": "Submit",
+    "update": "Update",
+    "remove": "Remove",
+    "search": "Search",
+    "add": "Add",
+    "new": "Add Book",
+    "edit": "Edit Book",
+    "addFirst": "No books yet, go {0} to add one!",
+    "noMore": "--- No More Books ---"
+  },
+  "read": {
+    "unread": "Unread",
+    "reading": "Reading",
+    "haveRead": "Have Read",
+    "savePage": "Save Progress",
+    "page": "Page"
+  },
+  "note": {
+    "title": "Notes",
+    "page": "Page",
+    "section": "Section",
+    "content": "Note content",
+    "preview": "Preview",
+    "history": "History",
+    "add": "New",
+    "cancel": "Cancel",
+    "update": "Update",
+    "delete": "Delete",
+    "autoread": "Auto update reading progress",
+    "noSection": "No Section",
+    "empty": "No notes yet.",
+    "minLength": "Note must be at least 10 characters"
+  },
+  "auth": {
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "captcha": "Captcha",
+    "loginTitle": "Login",
+    "registerTitle": "Register",
+    "loginOrRegister": "Login / Register",
+    "welcome": "Welcome, {name}!"
+  },
+  "error": {
+    "notFound": "Page Not Found",
+    "serverError": "Server Error",
+    "noLogin": "Please login first"
+  },
+  "action": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close",
+    "upload": "Upload",
+    "borrow": "Borrow",
+    "confirmDelete": "Are you sure you want to remove this book?",
+    "confirmDeleteNote": "Are you sure you want to remove this note?"
+  },
+  "user": {
+    "lastLogin": "Last Login: ",
+    "noMotto": "Nothing to say."
+  }
+}

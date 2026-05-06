@@ -1,0 +1,85 @@
+{
+  "nav": {
+    "search": "搜索书籍",
+    "books": "我的书架",
+    "scan": "扫码",
+    "login": "登录",
+    "register": "注册",
+    "logout": "登出",
+    "settings": "设置",
+    "notes": "笔记",
+    "lends": "借阅"
+  },
+  "book": {
+    "isbn": "ISBN",
+    "name": "书名",
+    "author": "作者",
+    "publisher": "出版社",
+    "pubDate": "出版日期",
+    "page": "总页数",
+    "status": "状态",
+    "img": "封面",
+    "notPublished": "未出版",
+    "submit": "提交",
+    "update": "更新",
+    "remove": "删除",
+    "search": "查询",
+    "add": "添加",
+    "new": "添加书籍",
+    "edit": "编辑书籍",
+    "addFirst": "您还没有添加任何书籍，快去 {0} 添加吧！",
+    "noMore": "--- 没有更多了 ---"
+  },
+  "read": {
+    "unread": "未读",
+    "reading": "在读",
+    "haveRead": "已读",
+    "savePage": "保存进度",
+    "page": "页码"
+  },
+  "note": {
+    "title": "笔记",
+    "page": "页码",
+    "section": "章节",
+    "content": "笔记内容",
+    "preview": "预览",
+    "history": "历史",
+    "add": "新增",
+    "cancel": "取消",
+    "update": "更新",
+    "delete": "删除",
+    "autoread": "自动更新阅读进度",
+    "noSection": "无章节",
+    "empty": "暂无笔记",
+    "minLength": "笔记不能少于10个字"
+  },
+  "auth": {
+    "username": "用户名",
+    "password": "密码",
+    "email": "邮箱",
+    "captcha": "验证码",
+    "loginTitle": "登录",
+    "registerTitle": "注册",
+    "loginOrRegister": "登录 / 注册",
+    "welcome": "欢迎, {name}！"
+  },
+  "error": {
+    "notFound": "页面未找到",
+    "serverError": "服务器错误",
+    "noLogin": "请先登录"
+  },
+  "action": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "save": "保存",
+    "close": "关闭",
+    "upload": "上传",
+    "borrow": "借阅",
+    "confirmDelete": "确定要删除这本书吗？",
+    "confirmDeleteNote": "确定要删除这条笔记吗？"
+  },
+  "user": {
+    "lastLogin": "最后登录：",
+    "noMotto": "这个人很懒，什么都没写。"
+  }
+}

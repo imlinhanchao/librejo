@@ -1,0 +1,75 @@
+// This is your Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model lib_account {
+  id          String  @id @default(uuid())
+  username    String  @unique @db.VarChar(20)
+  nickname    String  @db.VarChar(20)
+  passwd      String  @db.VarChar(64)
+  email       String  @db.VarChar(100)
+  phone       String  @db.VarChar(20)
+  motto       String  @db.VarChar(200)
+  avatar      String  @db.VarChar(200)
+  lastlogin   Int?
+  create_time Int?
+  update_time Int?
+}
+
+model lib_book_info {
+  id          String  @id @default(uuid())
+  userId      String  @db.VarChar(36)
+  dbId        String  @db.VarChar(20)
+  img         String  @db.VarChar(400)
+  name        String  @db.VarChar(200)
+  author      String  @db.VarChar(100)
+  publisher   String  @db.VarChar(100)
+  page        Int
+  ISBN        String  @db.VarChar(100)
+  pub_date    String  @db.VarChar(20)
+  status      Int     @default(0)
+  create_time Int?
+  update_time Int?
+}
+
+model lib_book_note {
+  id          String  @id @default(uuid())
+  bookId      String  @db.VarChar(36)
+  page        Int
+  ISBN        String  @db.VarChar(100)
+  section     String  @default("") @db.VarChar(200)
+  content     String  @db.Text
+  favcount    Int     @default(0)
+  create_time Int?
+  update_time Int?
+}
+
+model lib_read_record {
+  id          String  @id @default(uuid())
+  bookId      String  @db.VarChar(36)
+  ISBN        String  @db.VarChar(100)
+  status      Int
+  page        Int
+  create_time Int?
+  update_time Int?
+}
+
+model lib_lend_record {
+  id          String  @id @default(uuid())
+  bookId      String  @db.VarChar(36)
+  accountId   String  @db.VarChar(36)
+  remark      String  @db.VarChar(800)
+  status      Int
+  lend_date   Int?
+  back_date   Int?
+  create_time Int?
+  update_time Int?
+}
