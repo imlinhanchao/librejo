@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import './session.js'
 import express from 'express'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
@@ -66,7 +67,7 @@ async function startServer() {
   app.use('/api/:resource/:fn*', (req: Request, res: Response, next: NextFunction) => {
     const resource = req.params.resource
     const fn = req.params.fn
-    const session = req.session as Record<string, unknown>
+    const session = req.session as unknown as Record<string, unknown>
     const allowed = NO_AUTH[resource]
     if (allowed && (allowed.includes('*') || allowed.includes(fn))) return next()
     if (!session.account_login) return res.json(err({ message: '你没有登录或登录信息已过期！', state: 8 }))
@@ -98,7 +99,7 @@ async function startServer() {
    *         description: Login result
    */
   app.post('/api/account/login', async (req, res) => {
-    try { res.json(await accountApi.login(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await accountApi.login(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
@@ -113,7 +114,7 @@ async function startServer() {
    *         description: Logout result
    */
   app.get('/api/account/logout', async (req, res) => {
-    try { res.json(await accountApi.logout(req.session as Record<string, unknown>)) }
+    try { res.json(await accountApi.logout(req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
@@ -130,17 +131,17 @@ async function startServer() {
    *         description: User info
    */
   app.get('/api/account/info', async (req, res) => {
-    try { res.json(await accountApi.info(req.session as Record<string, unknown>)) }
+    try { res.json(await accountApi.info(req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
   app.post('/api/account/create', async (req, res) => {
-    try { res.json(await accountApi.create(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await accountApi.create(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
   app.post('/api/account/update', async (req, res) => {
-    try { res.json(await accountApi.update(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await accountApi.update(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
@@ -187,17 +188,17 @@ async function startServer() {
    *         description: Created book
    */
   app.post('/api/book/new', async (req, res) => {
-    try { res.json(await bookApi.newBook(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await bookApi.newBook(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
   app.post('/api/book/set', async (req, res) => {
-    try { res.json(await bookApi.setBook(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await bookApi.setBook(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
   app.post('/api/book/del', async (req, res) => {
-    try { res.json(await bookApi.delBook(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await bookApi.delBook(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
@@ -237,17 +238,17 @@ async function startServer() {
 
   // Note routes
   app.post('/api/note/new', async (req, res) => {
-    try { res.json(await noteApi.newNote(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await noteApi.newNote(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
   app.post('/api/note/set', async (req, res) => {
-    try { res.json(await noteApi.setNote(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await noteApi.setNote(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
   app.post('/api/note/del', async (req, res) => {
-    try { res.json(await noteApi.delNote(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await noteApi.delNote(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
@@ -263,7 +264,7 @@ async function startServer() {
 
   // Read routes
   app.post('/api/read/new', async (req, res) => {
-    try { res.json(await readApi.newRead(req.body, req.session as Record<string, unknown>)) }
+    try { res.json(await readApi.newRead(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
 
@@ -336,7 +337,7 @@ async function startServer() {
   const { renderPage } = await import('vike/server')
 
   app.get('*', async (req: Request, res: Response) => {
-    const userInfo = (req.session as Record<string, unknown>).account_login
+    const userInfo = (req.session as unknown as Record<string, unknown>).account_login
     const pageContext = await renderPage({
       urlOriginal: req.originalUrl,
       userInfo: userInfo ?? null,

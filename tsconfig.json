@@ -16,7 +16,9 @@
     "types": ["node"]
   },
   "include": [
+    "shims-vue.d.ts",
     "server/**/*.ts",
+    "server/**/*.d.ts",
     "pages/**/*.ts",
     "pages/**/*.vue",
     "components/**/*.ts",

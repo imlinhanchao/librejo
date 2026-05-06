@@ -19,7 +19,7 @@ export function libRouter() {
 
   router.get('/captcha', (req: Request, res: Response) => {
     const code = svgCaptcha.create({ noise: 2, color: true })
-    ;(req.session as Record<string, unknown>).captcha = code.text.toLowerCase()
+    ;(req.session as unknown as Record<string, unknown>).captcha = code.text.toLowerCase()
     res.header('Content-Type', 'image/svg+xml')
     res.end(code.data)
   })
