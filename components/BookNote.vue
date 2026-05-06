@@ -99,7 +99,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { marked } from 'marked'
+import { renderMarkdown } from '../renderer/markdown'
 import { useNoteStore, type Note } from '../stores/note'
 import type { BookInfo } from '../stores/book'
 
@@ -144,13 +144,11 @@ const form = ref({
 const contentError = computed(() => form.value.content.length > 0 && form.value.content.length < 10)
 
 const renderedContent = computed(() => {
-  if (!form.value.content) return ''
-  return marked.parse(form.value.content) as string
+  return renderMarkdown(form.value.content)
 })
 
 const viewedContent = computed(() => {
-  if (!viewingNote.value?.content) return ''
-  return marked.parse(viewingNote.value.content) as string
+  return renderMarkdown(viewingNote.value?.content ?? '')
 })
 
 async function loadNotes() {

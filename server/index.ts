@@ -7,6 +7,7 @@ import session from 'express-session'
 import FileStoreFactory from 'session-file-store'
 import morgan from 'morgan'
 import compression from 'compression'
+import rateLimit from 'express-rate-limit'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { setupSwagger } from './middleware/swagger.js'
@@ -43,9 +44,23 @@ async function startServer() {
       store: new FileStore({ path: './sessions', ttl: 86400 * 365, retries: 1, logFn: () => {} }),
       saveUninitialized: false,
       resave: false,
-      cookie: { maxAge: 1000 * 60 * 60 * 24 * 365 },
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365,
+        secure: isProduction,
+        httpOnly: true,
+        sameSite: 'lax',
+      },
     })
   )
+
+  // Rate limit login and register endpoints
+  const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { state: 3, msg: '请求过于频繁，请稍后再试', data: '' },
+  })
 
   // Static files
   const publicDir = path.join(__dirname, '..', 'public')
@@ -98,7 +113,7 @@ async function startServer() {
    *       200:
    *         description: Login result
    */
-  app.post('/api/account/login', async (req, res) => {
+  app.post('/api/account/login', loginLimiter, async (req, res) => {
     try { res.json(await accountApi.login(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
@@ -135,7 +150,7 @@ async function startServer() {
     catch (e) { res.json(err(e)) }
   })
 
-  app.post('/api/account/create', async (req, res) => {
+  app.post('/api/account/create', loginLimiter, async (req, res) => {
     try { res.json(await accountApi.create(req.body, req.session as unknown as Record<string, unknown>)) }
     catch (e) { res.json(err(e)) }
   })
@@ -324,6 +339,51 @@ async function startServer() {
   app.get('/api/isbn/:isbn', async (req, res) => {
     try { res.json(await isbnQuery(req.params.isbn)) }
     catch (e) { res.json(err(e)) }
+  })
+
+  /**
+   * @openapi
+   * /isbn/search:
+   *   get:
+   *     tags: [ISBN]
+   *     summary: Search books by title using Open Library
+   *     parameters:
+   *       - in: query
+   *         name: q
+   *         required: true
+   *         schema:
+   *           type: string
+   *       - in: query
+   *         name: count
+   *         schema:
+   *           type: integer
+   *           default: 5
+   *     responses:
+   *       200:
+   *         description: Book search results
+   */
+  app.get('/api/isbn/search', async (req, res) => {
+    try {
+      const q = (req.query.q as string | undefined)?.trim()
+      const count = Math.min(Number(req.query.count ?? 5), 20)
+      if (!q) { res.json(err(new Error('Missing q parameter'))); return }
+      const { default: axios } = await import('axios')
+      const searchUrl = `https://openlibrary.org/search.json?title=${encodeURIComponent(q)}&limit=${count}&fields=title,author_name,isbn,cover_i,first_publish_year`
+      const resp = await axios.get(searchUrl, { timeout: 8000 })
+      const docs = (resp.data as { docs?: Array<Record<string, unknown>> }).docs ?? []
+      const results = docs.map((d: Record<string, unknown>) => {
+        const isbn = (d.isbn as string[] | undefined)?.[0] ?? ''
+        const coverId = d.cover_i as number | undefined
+        return {
+          ISBN: isbn,
+          name: (d.title as string | undefined) ?? '',
+          author: (d.author_name as string[] | undefined)?.[0] ?? '',
+          pubDate: String(d.first_publish_year ?? ''),
+          img: coverId ? `https://covers.openlibrary.org/b/id/${coverId}-S.jpg` : '',
+        }
+      })
+      res.json({ state: 0, msg: '查询成功', data: results })
+    } catch (e) { res.json(err(e)) }
   })
 
   // ─── Vike SSR ──────────────────────────────────────────────────────────────

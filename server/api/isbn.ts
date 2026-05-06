@@ -18,11 +18,19 @@ interface IsbnBookData {
 export async function isbnQuery(isbn: string): Promise<ReturnType<typeof ok>> {
   if (!isbn) throw AppErrors.param
 
+  // Validate ISBN format to prevent SSRF (only digits, hyphens, X for ISBN-10)
+  const sanitizedIsbn = isbn.replace(/[-\s]/g, '').replace(/[^0-9X]/gi, '')
+  if (sanitizedIsbn.length !== 10 && sanitizedIsbn.length !== 13) {
+    throw AppErrors.reg('无效的 ISBN 格式')
+  }
+  if (!/^[0-9X]{10}$|^[0-9]{13}$/.test(sanitizedIsbn)) {
+    throw AppErrors.reg('无效的 ISBN 格式')
+  }
+
   const { default: axios } = await import('axios')
 
   try {
-    // Open Library Works API
-    const olUrl = `https://openlibrary.org/isbn/${isbn}.json`
+    const olUrl = `https://openlibrary.org/isbn/${encodeURIComponent(sanitizedIsbn)}.json`
     const resp = await axios.get(olUrl, { timeout: 8000 })
     const d = resp.data as Record<string, unknown>
 
@@ -68,13 +76,27 @@ export async function isbnQuery(isbn: string): Promise<ReturnType<typeof ok>> {
     const publishers = (d.publishers as string[] | undefined) ?? []
     const publishDate = (d.publish_date as string | undefined) ?? ''
 
+    // Normalize various date formats from Open Library (e.g. 'January 1, 2001', '2001', 'Jan 2001')
+    let normalizedPubDate = ''
+    const yearMatch = publishDate.match(/\d{4}/)
+    if (yearMatch) {
+      const monthMatch = publishDate.match(/(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4}/i)
+      if (monthMatch) {
+        const d2 = new Date(monthMatch[0])
+        if (!isNaN(d2.getTime())) normalizedPubDate = `${d2.getFullYear()}-${String(d2.getMonth() + 1).padStart(2, '0')}`
+      } else {
+        // Just the year
+        normalizedPubDate = yearMatch[0]
+      }
+    }
+
     const book: IsbnBookData = {
       name: (d.title as string) ?? '',
       author,
       publisher: publishers[0] ?? '',
       page: (d.number_of_pages as number | undefined) ?? 0,
-      ISBN: isbn,
-      pubDate: publishDate.slice(0, 7),
+      ISBN: sanitizedIsbn,
+      pubDate: normalizedPubDate,
       img,
       dbId: (d.key as string | undefined) ?? '',
     }

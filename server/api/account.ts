@@ -1,11 +1,16 @@
 import crypto from 'crypto'
+import bcrypt from 'bcrypt'
 import { prisma } from '../prisma.js'
 import { AppErrors, ok, nowTs, filterObj } from './app.js'
 
-const SALT = process.env.SALT ?? ''
+const SALT_ROUNDS = 12
 
-function hashPasswd(passwd: string) {
-  return crypto.createHash('sha256').update(passwd + SALT).digest('hex')
+async function hashPasswd(passwd: string): Promise<string> {
+  return bcrypt.hash(passwd, SALT_ROUNDS)
+}
+
+async function verifyPasswd(passwd: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(passwd, hash)
 }
 
 const SAFE_KEYS = ['id', 'username', 'nickname', 'email', 'phone', 'motto', 'avatar', 'lastlogin', 'create_time', 'update_time']
@@ -19,8 +24,8 @@ export async function login(data: Record<string, string>, session: Record<string
   const account = await prisma.lib_account.findUnique({ where: { username } })
   if (!account) throw AppErrors.reg('帐号或密码错误！')
 
-  const hashed = hashPasswd(passwd)
-  if (account.passwd !== hashed) throw AppErrors.reg('帐号或密码错误！')
+  const valid = await verifyPasswd(passwd, account.passwd)
+  if (!valid) throw AppErrors.reg('帐号或密码错误！')
 
   await prisma.lib_account.update({ where: { id: account.id }, data: { lastlogin: nowTs() } })
   session.account_login = account
@@ -68,7 +73,7 @@ export async function create(data: Record<string, string>, session: Record<strin
       id: crypto.randomUUID(),
       username,
       nickname: username,
-      passwd: hashPasswd(passwd),
+      passwd: await hashPasswd(passwd),
       email: email ?? '',
       phone: phone ?? '',
       motto: data.motto ?? '',
@@ -90,7 +95,8 @@ export async function update(data: Record<string, string>, session: Record<strin
   if (!account) throw AppErrors.nologin
 
   if (data.oldpasswd) {
-    if (account.passwd !== hashPasswd(data.oldpasswd)) throw AppErrors.reg('帐号或密码错误！')
+    const valid = await verifyPasswd(data.oldpasswd, account.passwd)
+    if (!valid) throw AppErrors.reg('帐号或密码错误！')
   }
 
   if (data.email && data.email !== account.email) {
@@ -108,7 +114,7 @@ export async function update(data: Record<string, string>, session: Record<strin
   for (const f of allowedFields) {
     if (data[f] !== undefined) updateData[f] = data[f]
   }
-  if (data.passwd && data.oldpasswd) updateData.passwd = hashPasswd(data.passwd)
+  if (data.passwd && data.oldpasswd) updateData.passwd = await hashPasswd(data.passwd)
 
   const updated = await prisma.lib_account.update({ where: { id: account.id }, data: updateData })
   session.account_login = updated

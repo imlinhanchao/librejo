@@ -2,12 +2,22 @@ import crypto from 'crypto'
 import path from 'path'
 import fs from 'fs'
 import { prisma } from '../prisma.js'
-import { AppErrors, ok, nowTs, filterObj } from './app.js'
+import { AppErrors, ok, nowTs } from './app.js'
+
+const ALLOWED_IMG_HOSTS = ['covers.openlibrary.org', 'img1.doubanio.com', 'img2.doubanio.com', 'img3.doubanio.com', 'img9.doubanio.com']
+
+function isSafeImageUrl(src: string): boolean {
+  try {
+    const url = new URL(src)
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') return false
+    return ALLOWED_IMG_HOSTS.includes(url.hostname)
+  } catch {
+    return false
+  }
+}
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR ?? './public/upload'
 const FILE_URL = process.env.FILE_URL ?? '/upload/'
-
-const SAFE_KEYS = ['id', 'userId', 'dbId', 'img', 'name', 'author', 'publisher', 'page', 'ISBN', 'pubDate', 'status', 'create_time', 'update_time', 'read']
 
 function getUserId(session: Record<string, unknown>): string {
   const user = session.account_login as { id: string } | undefined
@@ -16,6 +26,7 @@ function getUserId(session: Record<string, unknown>): string {
 }
 
 async function downloadImg(src: string): Promise<string> {
+  if (!isSafeImageUrl(src)) throw new Error('Image URL not from an allowed host')
   const { default: axios } = await import('axios')
   const ext = path.extname(new URL(src).pathname) || '.jpg'
   const tmpName = `${Date.now()}.${Math.floor(Math.random() * 100000)}${ext}`

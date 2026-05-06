@@ -83,7 +83,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { marked } from 'marked'
+import { renderMarkdown } from '../../../renderer/markdown'
 import { useBookStore, type BookInfo } from '../../../stores/book'
 import { useNoteStore, type Note } from '../../../stores/note'
 import BookNote from '../../../components/BookNote.vue'
@@ -118,7 +118,7 @@ const readProgress = computed(() => {
 })
 
 function renderMd(content: string) {
-  return marked.parse(content) as string
+  return renderMarkdown(content)
 }
 
 onMounted(async () => {

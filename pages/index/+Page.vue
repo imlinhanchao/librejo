@@ -36,7 +36,7 @@ const userInfo = inject<Record<string, unknown> | null>('userInfo', null)
 
 const currentType = ref(0)
 
-const bookTypeLabels = computed(() => ['All', 'Reading', 'Lent'])
+const bookTypeLabels = computed(() => [t('read.unread'), t('read.reading'), t('read.haveRead')])
 
 const bookQuery = ref<Record<string, unknown>>({})
 

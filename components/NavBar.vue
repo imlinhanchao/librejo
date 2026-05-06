@@ -2,7 +2,9 @@
   <nav class="navbar bg-base-100 shadow-md px-4">
     <!-- Logo -->
     <div class="navbar-start">
-      <a href="/" class="btn btn-ghost text-xl font-bold">📚 Librejo</a>
+      <a href="/" class="btn btn-ghost text-xl font-bold" aria-label="Librejo Home">
+        <span aria-hidden="true">📚</span> Librejo
+      </a>
     </div>
 
     <!-- Search -->
