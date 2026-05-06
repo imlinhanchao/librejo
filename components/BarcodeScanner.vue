@@ -58,7 +58,7 @@ async function startScan() {
     stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
     videoEl.value.srcObject = stream
 
-    codeReader.decodeFromVideoDevice(null, videoEl.value, (result, err) => {
+    codeReader.decodeFromVideoDevice(null, videoEl.value, (result, _err) => {
       if (result) {
         const code = result.getText()
         emit('detected', code)

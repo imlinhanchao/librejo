@@ -14,7 +14,7 @@ model lib_account {
   id          String  @id @default(uuid())
   username    String  @unique @db.VarChar(20)
   nickname    String  @db.VarChar(20)
-  passwd      String  @db.VarChar(64)
+  passwd      String  @db.VarChar(100)
   email       String  @db.VarChar(100)
   phone       String  @db.VarChar(20)
   motto       String  @db.VarChar(200)

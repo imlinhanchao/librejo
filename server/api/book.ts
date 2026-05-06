@@ -27,13 +27,15 @@ function getUserId(session: Record<string, unknown>): string {
 
 async function downloadImg(src: string): Promise<string> {
   if (!isSafeImageUrl(src)) throw new Error('Image URL not from an allowed host')
+  // Re-parse the URL after validation to ensure we use a clean URL object
+  const safeUrl = new URL(src)
   const { default: axios } = await import('axios')
-  const ext = path.extname(new URL(src).pathname) || '.jpg'
+  const ext = path.extname(safeUrl.pathname) || '.jpg'
   const tmpName = `${Date.now()}.${Math.floor(Math.random() * 100000)}${ext}`
   const tmpPath = path.join(UPLOAD_DIR, tmpName)
 
   fs.mkdirSync(UPLOAD_DIR, { recursive: true })
-  const resp = await axios.get(src, { responseType: 'arraybuffer' })
+  const resp = await axios.get(safeUrl.href, { responseType: 'arraybuffer', maxRedirects: 3 })
   fs.writeFileSync(tmpPath, resp.data as Buffer)
 
   const hash = crypto.createHash('md5').update(resp.data as Buffer).digest('hex')

@@ -24,7 +24,7 @@
     "update": "更新",
     "remove": "删除",
     "search": "查询",
-    "add": "添加",
+    "nameAndPageRequired": "书名和页数是必填项",
     "new": "添加书籍",
     "edit": "编辑书籍",
     "addFirst": "您还没有添加任何书籍，快去 {0} 添加吧！",

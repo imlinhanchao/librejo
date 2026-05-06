@@ -3,7 +3,7 @@ CREATE TABLE `lib_account` (
     `id` VARCHAR(36) NOT NULL,
     `username` VARCHAR(20) NOT NULL,
     `nickname` VARCHAR(20) NOT NULL,
-    `passwd` VARCHAR(64) NOT NULL,
+    `passwd` VARCHAR(100) NOT NULL,
     `email` VARCHAR(100) NOT NULL,
     `phone` VARCHAR(20) NOT NULL,
     `motto` VARCHAR(200) NOT NULL,

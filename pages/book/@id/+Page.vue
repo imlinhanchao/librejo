@@ -204,7 +204,7 @@ async function uploadCover(e: Event) {
 }
 
 async function submitForm() {
-  if (!form.value.name || !form.value.page) { errorMsg.value = 'Name and page are required'; return }
+  if (!form.value.name || !form.value.page) { errorMsg.value = t('book.nameAndPageRequired') ?? 'Name and page are required'; return }
   loading.value = true
   try {
     const res = await bookStore.insertBook(form.value)

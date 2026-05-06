@@ -24,7 +24,7 @@
     "update": "Update",
     "remove": "Remove",
     "search": "Search",
-    "add": "Add",
+    "nameAndPageRequired": "Book name and page count are required.",
     "new": "Add Book",
     "edit": "Edit Book",
     "addFirst": "No books yet, go {0} to add one!",

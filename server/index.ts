@@ -388,8 +388,6 @@ async function startServer() {
 
   // ─── Vike SSR ──────────────────────────────────────────────────────────────
   if (isProduction) {
-    const compression = await import('compression')
-    app.use(compression.default())
     const distDir = path.join(__dirname, '..', 'dist', 'client')
     app.use(express.static(distDir))
   }
